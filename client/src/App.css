@@ -1,0 +1,11 @@
+* {
+  margin:0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.landing {
+  background-image: url("./assets/mesh3.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
