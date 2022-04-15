@@ -85,7 +85,7 @@ export default function Layout({ children }) {
               } : null}>
                   {item.icon}
                 </ListItemIcon>
-                <ListItemText primary={item.text} />
+                <ListItemText primary={item.text}/>
               </ListItem>
             ))}
           </List>

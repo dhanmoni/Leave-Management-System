@@ -51,7 +51,7 @@ export default function Landing() {
             color="primary"
             sx={{mt:2, fontWeight: 'bold'}}
             endIcon={<AddOutlined />}
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/create-profile')}
           >
             Connect Wallet
           </Button>

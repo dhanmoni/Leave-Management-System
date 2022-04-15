@@ -4,6 +4,7 @@ import Landing from './pages/Landing'
 import Dashboard from './pages/Dashbaord'
 import ApplyLeave from './pages/ApplyLeave'
 import './App.css'
+import CreateProfile from './pages/CreateProfile'
 const theme = createTheme({
   
   // typography: {
@@ -33,6 +34,13 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />}></Route>
+          <Route
+              exact
+              path="/create-profile"
+              element={
+                  <CreateProfile />
+              }
+            />
             <Route
               exact
               path="/dashboard"
