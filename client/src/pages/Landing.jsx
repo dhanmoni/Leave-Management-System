@@ -19,10 +19,10 @@ export default function Landing() {
           </Typography>
           
           <MenuItem>
-            <Typography textAlign="center" sx={{ fontWeight: 400 }}>Help</Typography>
+            <Typography variant="h6" textAlign="center" sx={{ fontWeight: 600 }}>Help</Typography>
           </MenuItem>
           <MenuItem>
-            <Typography textAlign="center" sx={{ fontWeight: 400 }}>About Us</Typography>
+            <Typography variant="h6" textAlign="center" sx={{ fontWeight: 600 }}>About Us</Typography>
           </MenuItem>
             
         </Toolbar>

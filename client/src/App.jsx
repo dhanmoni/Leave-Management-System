@@ -23,6 +23,7 @@ const theme = createTheme({
       fontFamily: "Syne"
     }
   }
+  
 })
 
 

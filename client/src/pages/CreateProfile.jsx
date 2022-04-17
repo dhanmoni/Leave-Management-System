@@ -8,7 +8,8 @@ import {Avatar,
     Container, 
     Card, 
     MenuItem,
-    AppBar, Toolbar
+    AppBar, 
+    Toolbar
 } from '@mui/material'
 import { AssignmentIndOutlined } from '@mui/icons-material';
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -85,17 +86,17 @@ export default function CreateProfile() {
             sx={{flexGrow: 1, height:'auto', minHeight: '100vh',
                 display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column'
                 }}>
-                    <AppBar position="static" color="transparent" elevation={0} >
+                   <AppBar position="static" color="transparent" elevation={0} >
         <Toolbar sx={{width: '80%', margin: '0 auto'}}>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1,fontWeight: 600 }} onClick={() => navigate('/')}>
+          <Typography onClick={()=> navigate('/')} variant="h6" component="div" sx={{ flexGrow: 1,fontWeight: 600 }}>
             Leave Management System
           </Typography>
           
           <MenuItem>
-            <Typography textAlign="center" sx={{ fontWeight: 400 }}>Help</Typography>
+            <Typography variant="h6" textAlign="center" sx={{ fontWeight: 600 }}>Help</Typography>
           </MenuItem>
           <MenuItem>
-            <Typography textAlign="center" sx={{ fontWeight: 400 }}>About Us</Typography>
+            <Typography variant="h6" textAlign="center" sx={{ fontWeight: 600 }}>About Us</Typography>
           </MenuItem>
             
         </Toolbar>
@@ -108,7 +109,7 @@ export default function CreateProfile() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            background:'white',
+            backgroundColor: 'white',
             padding: 5,
             borderRadius:2,
             margin: 2
@@ -121,10 +122,9 @@ export default function CreateProfile() {
           <Typography component="h1" variant="h5">
             Complete your profile
           </Typography>
-          <Box component="form" onSubmit={handleSubmit}>
+          <Box onSubmit={handleSubmit}>
           <TextField
-              variant="standard"
-              size="small"
+              variant="outlined"
               margin="normal"
               required
               fullWidth
@@ -133,8 +133,7 @@ export default function CreateProfile() {
               id="name"
             />
             <TextField
-              variant="standard"
-              size="small"
+              variant="outlined"
               margin="normal"
               required
               fullWidth
@@ -143,8 +142,7 @@ export default function CreateProfile() {
               name="email"
             />
             <TextField
-              variant="standard"
-              size="small"
+              variant="outlined"
               margin="normal"
               required
               fullWidth
@@ -153,7 +151,7 @@ export default function CreateProfile() {
               name="phone"
             />
             <TextField
-                id="standard-select-dept"
+                id="select-dept"
                 select
                 margin="normal"
                 required
@@ -161,8 +159,7 @@ export default function CreateProfile() {
                 label="Select Department"
                 value={dept}
                 onChange={handleDeptChange}
-                helperText="Please select your department"
-                variant="standard"
+                variant="outlined"
             >
             {depts.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
@@ -171,7 +168,7 @@ export default function CreateProfile() {
             ))}
             </TextField>
             <TextField
-                id="standard-select-hostel"
+                id="select-hostel"
                 select
                 margin="normal"
                 required
@@ -179,8 +176,7 @@ export default function CreateProfile() {
                 label="Select Hostel"
                 value={hostel}
                 onChange={handleHostelChange}
-                helperText="Please select your hostel"
-                variant="standard"
+                variant="outlined"
             >
             {hostels.map((option) => (
                 <MenuItem key={option.value} value={option.value}>

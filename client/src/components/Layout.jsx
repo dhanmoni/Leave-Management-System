@@ -1,54 +1,58 @@
-import React from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import Drawer from '@mui/material/Drawer';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Avatar from '@mui/material/Avatar';
-import avatar from '../assets/me.jpeg'
+import {
+  Chip,
+  Avatar,
+  Drawer,
+  AppBar,
+  Box,
+  CssBaseline,
+  Toolbar,
+  List,
+  Typography,
+  Divider,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
+import avatar from "../assets/me.jpeg";
 
-import '../App.css'
-import { AccountCircleOutlined, AddOutlined, LogoutOutlined } from '@mui/icons-material';
+import "../App.css";
+import {
+  AccountCircleOutlined,
+  AddOutlined,
+  LogoutOutlined,
+} from "@mui/icons-material";
 
-const drawerWidth = 240
-
+const drawerWidth = 240;
 
 export default function Layout({ children }) {
-
-  const navigate = useNavigate()
-  const location = useLocation()
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const menuItems = [
-    { 
-      text: 'Dashboard', 
-      icon: <AccountCircleOutlined />, 
-      path: '/dashboard' 
+    {
+      text: "Dashboard",
+      icon: <AccountCircleOutlined />,
+      path: "/dashboard",
     },
-    { 
-      text: 'Apply leave', 
-      icon: <AddOutlined />, 
-      path: '/apply' 
-    }
+    {
+      text: "Apply Leave",
+      icon: <AddOutlined />,
+      path: "/apply",
+    },
   ];
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <AppBar
+        position="fixed"
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
         <Toolbar>
-          <Typography 
-          variant="h6" 
-          noWrap
-          onClick={() => navigate('/')} 
-          >
+          <Typography variant="h6" noWrap onClick={() => navigate("/")}>
             Leave Management System
           </Typography>
         </Toolbar>
@@ -58,58 +62,86 @@ export default function Layout({ children }) {
         sx={{
           width: drawerWidth,
           flexShrink: 0,
-          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+          [`& .MuiDrawer-paper`]: {
+            width: drawerWidth,
+            boxSizing: "border-box",
+          },
         }}
       >
         <Toolbar />
-        <Box sx={{ overflow: 'auto' }}>
-          <Box sx={{display:'flex', mt: '20px', flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
-            <Avatar sx={{ height: '100px',width: '100px' }} src={avatar} alt="user"/>
+        <Box sx={{ overflow: "auto" }}>
+          <Box
+            sx={{
+              display: "flex",
+              mt: "20px",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Avatar
+              sx={{ height: "100px", width: "100px" }}
+              src={avatar}
+              alt="user"
+            />
             <Typography variant="h6" noWrap>
-            Dhanmoni Nath
+              Dhanmoni Nath
+            </Typography>
+            <Typography variant="subtitle2" noWrap sx={{padding:1}}>
+              Profile status:<span style={{color:'green', border: '1px solid green', borderRadius:'10px', padding:'0px 10px 0px 10px'}}>Approved</span>
             </Typography>
           </Box>
-          <List>
+          <List>, 
             {menuItems.map((item) => (
-              <ListItem 
-              button
-              onClick={() => navigate(item.path)} 
-              sx={location.pathname == item.path ? {
-                background: '#f4f4f4',
-                color: 'primary.main'
-              } : null}
-              key={item.text}>
-                <ListItemIcon 
-                sx={location.pathname == item.path ? {
-                color: 'primary.main'
-              } : null}>
+              <ListItem
+                button
+                onClick={() => navigate(item.path)}
+                sx={
+                  location.pathname == item.path
+                    ? {
+                        background: "#F5F6FA",
+                        color: "primary.main",
+                      }
+                    : null
+                }
+                key={item.text}
+              >
+                <ListItemIcon
+                  sx={
+                    location.pathname == item.path
+                      ? {
+                          color: "primary.main",
+                        }
+                      : null
+                  }
+                >
                   {item.icon}
                 </ListItemIcon>
-                <ListItemText primary={item.text}/>
+                <ListItemText
+                  primary={<Typography variant="h6">{item.text}</Typography>}
+                />
               </ListItem>
             ))}
           </List>
           <Divider />
           <List>
-            
-              <ListItem 
-              button 
-              onClick={() => navigate('/')}
-              >
-                <ListItemIcon>
-                  <LogoutOutlined />
-                </ListItemIcon>
-                <ListItemText primary="Sign out" />
-              </ListItem>
+            <ListItem button onClick={() => navigate("/")}>
+              <ListItemIcon>
+                <LogoutOutlined />
+              </ListItemIcon>
+              <ListItemText
+                primary={<Typography variant="h6">Sign Out</Typography>}
+              />
+            </ListItem>
           </List>
         </Box>
       </Drawer>
 
       {/* main content */}
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Toolbar/>
+      <Box component="main" sx={{ flexGrow: 1 }}>
+        <Toolbar />
         {children}
       </Box>
     </Box>
-  )
+  );
 }
