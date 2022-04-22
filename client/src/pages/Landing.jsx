@@ -1,14 +1,112 @@
-import * as React from 'react';
+import React, {useState} from 'react';
+import {ethers} from 'ethers'
 import {AppBar, Box, Toolbar, Typography, Container, MenuItem, Grid, Button} from '@mui/material/';
 import {AddOutlined} from '@mui/icons-material'
 import blockchain from '../assets/blockchain.png'
 import '../App.css'
-
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux';
+import { registerStudent, getStudent } from '../redux/authSlice';
+
+const {ethereum} = window
 
 export default function Landing() {
 
+  const [address, setAddress] = React.useState('')
+
+  const {isLoading, isError, user, isLoggedIn} = useSelector((state) => state.auth)
+  const dispatch = useDispatch()
+
   const navigate = useNavigate()
+
+  let provider;
+
+
+  const handleAuthenticate = async ({publicKey,signature}) =>{
+		const res = await fetch(`http://localhost:5000/api/auth/auth-student`, {
+			body: JSON.stringify({ publicKey, signature }),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			method: 'POST',
+		})
+
+    return res.json()
+  }
+
+  const handleSignup = async (publicKey) =>{
+		const res = await fetch(`http://localhost:5000/api/auth/student-reg`, {
+			body: JSON.stringify({ publicKey }),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			method: 'POST',
+		})
+    return res.json();
+}
+  
+  const handleSignMessage = async ({publicKey,nonce}) => {
+		try {
+      const signer = provider.getSigner()
+			const signature = await signer.signMessage(`I am signing my one-time nonce: ${nonce}`);
+      console.log({publicKey, nonce, signature})
+			return { publicKey, signature };
+		} catch (err) {
+			throw new Error(
+				'You need to sign the message to be able to log in.'
+			);
+		}
+	};
+
+
+  const saveAndRedirect = (data)=> {
+    console.log({data})
+  }
+
+
+  const connectWallet = async ()=> {
+      if(!ethereum) return alert('Please install metamask!');
+      // const accounts = await ethereum.request({method:'eth_requestAccounts'});
+
+      provider = new ethers.providers.Web3Provider(window.ethereum)
+
+      // MetaMask requires requesting permission to connect users accounts
+      const accounts = await provider.send("eth_requestAccounts", []);
+
+      console.log({accounts})
+      if(!accounts.length){
+        return alert('No account found!')
+      } 
+      setAddress(accounts[0])
+
+     
+      fetch(`http://localhost:5000/api/auth/get-student/${accounts[0]}`)
+        .then((response) => response.json())
+        // If yes, retrieve it. If no, create it.
+        .then((user) => {
+          console.log(user)
+          return (user ? user : handleSignup(accounts[0]))
+        }
+        )
+        // Popup MetaMask confirmation modal to sign message
+        .then(handleSignMessage)
+        // // Send signature to backend on the /auth route
+        .then(handleAuthenticate)
+        // // Pass accessToken back to parent component (to save it in localStorage)
+        .then(saveAndRedirect)
+        .catch((err) => {
+          console.log({err})
+        });
+
+     
+   
+  }
+
+  const callGetStudent = () => {
+    dispatch(getStudent(address))
+  }
+
+  
 
   return (
     <Box className='landing' sx={{ flexGrow: 1, height: '100vh', width: '100vw' }}>
@@ -46,15 +144,27 @@ export default function Landing() {
           <Typography variant="subtitle1">
             Connect Metamask wallet to continue...
           </Typography>
-          <Button
+          {address ? (
+            <Button
+            variant="outlined"
+            color="primary"
+            sx={{mt:2, fontWeight: 'bold'}}
+            onClick={connectWallet}
+          >
+            Wallet Connected
+          </Button>
+          ) : (
+            <Button
             variant="contained"
             color="primary"
             sx={{mt:2, fontWeight: 'bold'}}
             endIcon={<AddOutlined />}
-            onClick={() => navigate('/create-profile')}
+            onClick={connectWallet}
           >
             Connect Wallet
           </Button>
+          )} 
+          {address}
         </Grid>
         <img item src={blockchain} alt="Blockchain" style={{
             width: '100%',

@@ -74,6 +74,7 @@ export default function CreateProfile() {
 
     const handleSubmit = (event) => {
     event.preventDefault();
+    console.log("hello")
     const data = new FormData(event.currentTarget);
     console.log({
         data
@@ -122,7 +123,7 @@ export default function CreateProfile() {
           <Typography component="h1" variant="h5">
             Complete your profile
           </Typography>
-          <Box onSubmit={handleSubmit}>
+          <Box component="form" onSubmit={handleSubmit}>
           <TextField
               variant="outlined"
               margin="normal"
