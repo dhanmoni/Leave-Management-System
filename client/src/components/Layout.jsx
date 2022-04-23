@@ -34,7 +34,7 @@ export default function Layout({ children }) {
   const location = useLocation();
   const dispatch = useDispatch()
 
-  const {publicKey, jwt_token, isLoggedIn} = useSelector((state) => state.auth)
+  const {publicKey, jwt_token, isLoggedIn, user} = useSelector((state) => state.auth)
 
   const menuItems = [
     {
@@ -96,7 +96,7 @@ export default function Layout({ children }) {
               alt="user"
             />
             <Typography variant="h6" noWrap>
-              Dhanmoni Nath
+              {user.name}
             </Typography>
             <Typography variant="subtitle2" noWrap sx={{padding:1}}>
               Profile status:<span style={{color:'green', border: '1px solid green', borderRadius:'10px', padding:'0px 10px 0px 10px'}}>Approved</span>

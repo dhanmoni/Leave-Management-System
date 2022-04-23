@@ -66,7 +66,7 @@ exports.userAuth = async (req, res) => {
             jwt.sign(
                 payload,
                 'jwt-secret-token',
-                { expiresIn: '7 days' },
+                { expiresIn: '24h' },
                 (err, token) => {
                 if (err) throw err;
                 return res.json({ token });

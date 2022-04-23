@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Layout from "../components/Layout";
 
 import {
@@ -16,10 +16,14 @@ import {
 import {Send} from '@mui/icons-material'
 
 function ApplyLeave() {
-  const [value, setValue] = React.useState(new Date("2014-08-18T21:11:54"));
+  const [fromDate, setFromDate] = useState(new Date(""));
+  const [toDate, setToDate] = useState(new Date(""));
 
-  const handleChange = (newValue) => {
-    setValue(newValue);
+  const handleFromChange = (newValue) => {
+    setFromDate(newValue);
+  };
+  const handleToChange = (newValue) => {
+    setToDate(newValue);
   };
   return (
     <Layout>
@@ -83,24 +87,26 @@ function ApplyLeave() {
 
 
                     <TextField
-                      id="date"
+                      id="from_date"
                       sx={{width: '200px', mt: 2}}
                       label="From"
                       type="date"
                       required
-                      defaultValue={value}
+                      defaultValue={fromDate}
+                      onChange={handleFromChange}
                       InputLabelProps={{
                         shrink: true,
                       }}
                       />
                 
                     <TextField
-                      id="date"
+                      id="to_date"
                       label="To"
                       type="date"
                       required
                       sx={{width: '200px', mt:2}}
-                      defaultValue={value}
+                      defaultValue={toDate}
+                      onChange={handleToChange}
                       InputLabelProps={{
                         shrink: true,
                       }}

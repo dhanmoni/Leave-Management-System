@@ -24,7 +24,8 @@ import {
 import React from "react";
 import Layout from "../components/Layout";
 import avatar from "../assets/me.jpeg";
-import { useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
+import {useDispatch, useSelector} from 'react-redux'
 
 const Row = (props) => {
   const { row } = props;
@@ -64,7 +65,11 @@ const Row = (props) => {
 };
 
 function Dashboard() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const {publicKey, jwt_token,user, isLoggedIn} = useSelector((state) => state.auth)
+
+
   function createData(subject, apply_date, from, to, status, desc) {
     return { subject, apply_date, from, to, status, desc };
   }
@@ -151,16 +156,19 @@ function Dashboard() {
                     }}
                   >
                     <Typography sx={{ fontWeight: "bold" }} noWrap>
-                      Name: Dhanmoni Nath
+                      Name: {user.name}
                     </Typography>
                     <Typography sx={{ fontWeight: "bold" }} noWrap>
-                      Department: Computer Science
+                      Email: {user.email}
                     </Typography>
                     <Typography sx={{ fontWeight: "bold" }} noWrap>
-                      Hostel: Hostel 1
+                      Department: {user.department}
                     </Typography>
                     <Typography sx={{ fontWeight: "bold" }} noWrap>
-                      Profile status: Approved
+                      Hostel: {user.hostel}
+                    </Typography>
+                    <Typography sx={{ fontWeight: "bold" }} noWrap>
+                      Profile status: {user.isApproved ? 'Approved' : 'Pending'}
                     </Typography>
                   </Box>
                 </Box>
