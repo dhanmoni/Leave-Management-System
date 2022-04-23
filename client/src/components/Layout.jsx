@@ -125,7 +125,7 @@ export default function Layout({ children }) {
           </List>
           <Divider />
           <List>
-            <ListItem button onClick={() => navigate("/")}>
+            <ListItem button onClick={() => navigate("/create-profile")}>
               <ListItemIcon>
                 <LogoutOutlined />
               </ListItemIcon>

@@ -6,24 +6,23 @@ import blockchain from '../assets/blockchain.png'
 import '../App.css'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
-import { registerStudent, getStudent } from '../redux/authSlice';
+import  {setUserProfile, setUserPublicKey} from '../redux/authSlice';
 
 const {ethereum} = window
 
 export default function Landing() {
 
-  const [address, setAddress] = React.useState('')
-
   const {isLoading, isError, user, isLoggedIn} = useSelector((state) => state.auth)
   const dispatch = useDispatch()
-
   const navigate = useNavigate()
 
   let provider;
+  let userProfile;
+  let userPublicKey;
 
 
   const handleAuthenticate = async ({publicKey,signature}) =>{
-		const res = await fetch(`http://localhost:5000/api/auth/auth-student`, {
+		const res = await fetch(`http://localhost:5000/api/auth/`, {
 			body: JSON.stringify({ publicKey, signature }),
 			headers: {
 				'Content-Type': 'application/json',
@@ -35,7 +34,7 @@ export default function Landing() {
   }
 
   const handleSignup = async (publicKey) =>{
-		const res = await fetch(`http://localhost:5000/api/auth/student-reg`, {
+		const res = await fetch(`http://localhost:5000/api/auth/register`, {
 			body: JSON.stringify({ publicKey }),
 			headers: {
 				'Content-Type': 'application/json',
@@ -60,7 +59,18 @@ export default function Landing() {
 
 
   const saveAndRedirect = (data)=> {
-    console.log({data})
+    localStorage.setItem('auth-token', data.token)
+    console.log({userProfile})
+    console.log({userPublicKey})
+    dispatch(setUserPublicKey(userPublicKey))
+    if(userProfile && userProfile.email){
+      dispatch(setUserProfile(userProfile))
+      console.log('profile exists', userProfile)
+      navigate('/dashboard')
+    } else {
+      console.log('user profile doesnot exists')
+      navigate('/create-profile')
+    }
   }
 
 
@@ -77,14 +87,16 @@ export default function Landing() {
       if(!accounts.length){
         return alert('No account found!')
       } 
-      setAddress(accounts[0])
+      
+      userPublicKey = accounts[0]
 
-     
-      fetch(`http://localhost:5000/api/auth/get-student/${accounts[0]}`)
+      fetch(`http://localhost:5000/api/auth/get-user/${accounts[0]}`)
         .then((response) => response.json())
         // If yes, retrieve it. If no, create it.
         .then((user) => {
-          console.log(user)
+          if(user){
+            userProfile = user;
+          }
           return (user ? user : handleSignup(accounts[0]))
         }
         )
@@ -102,9 +114,6 @@ export default function Landing() {
    
   }
 
-  const callGetStudent = () => {
-    dispatch(getStudent(address))
-  }
 
   
 
@@ -144,7 +153,7 @@ export default function Landing() {
           <Typography variant="subtitle1">
             Connect Metamask wallet to continue...
           </Typography>
-          {address ? (
+          {userPublicKey ? (
             <Button
             variant="outlined"
             color="primary"
@@ -164,7 +173,7 @@ export default function Landing() {
             Connect Wallet
           </Button>
           )} 
-          {address}
+          {userPublicKey}
         </Grid>
         <img item src={blockchain} alt="Blockchain" style={{
             width: '100%',
@@ -177,4 +186,3 @@ export default function Landing() {
     </Box>
   );
 }
-{/* <a href='https://pngtree.com/so/Network'>Network png from pngtree.com/</a> */}

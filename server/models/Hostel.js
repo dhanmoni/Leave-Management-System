@@ -9,12 +9,12 @@ const schema = new mongoose.Schema(
     },
     admin: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "admin",
+        ref: "user",
     },
     students: [{
         student: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "student",
+            ref: "user",
         }
     },
     ]

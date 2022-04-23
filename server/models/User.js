@@ -13,7 +13,6 @@ const schema = new mongoose.Schema(
     },
     name: {
         type: String,
-        required: true,
     },
     email:{
         type: String,
@@ -21,16 +20,16 @@ const schema = new mongoose.Schema(
     phone:{
         type: String,
     },
-    roles: {
-        type: [{
-            type: String,
-            enum: ['HOD', 'WARDEN', 'SYSTEM_ADMIN']
-        }],
-        default: ['WARDEN']
-    },
     isApproved: {
         type: Boolean,
         default: false,
+    },
+    roles: {
+        type: [{
+            type: String,
+            enum: ['STUDENT', 'HOD', 'WARDEN', 'SYSTEM_ADMIN']
+        }],
+        default: ['STUDENT']
     },
     department: {
         type: mongoose.Schema.Types.ObjectId,
@@ -44,4 +43,4 @@ const schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = Admin = mongoose.model("admin", schema);
+module.exports = User = mongoose.model("user", schema);

@@ -13,14 +13,21 @@ import {Avatar,
 } from '@mui/material'
 import { AssignmentIndOutlined } from '@mui/icons-material';
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux';
+import  {createUserProfile} from '../redux/authService';
 
 
 export default function CreateProfile() {
 
+    const [name, setName] = useState("")
+    const [email, setEmail] = useState("")
+    const [phone, setPhone] = useState("")
     const [hostel, setHostel] = useState("");
     const [dept, setDept] = useState("");
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const {publicKey} = useSelector((state) => state.auth)
     const depts = [
         {
           value: 'Computer Science Engineering',
@@ -75,11 +82,18 @@ export default function CreateProfile() {
     const handleSubmit = (event) => {
     event.preventDefault();
     console.log("hello")
-    const data = new FormData(event.currentTarget);
-    console.log({
-        data
-    });
-    navigate('/dashboard')
+    // const data = new FormData(event.currentTarget);
+    // console.log({
+    //     data
+    // });
+    // navigate('/dashboard')
+    const userData = {
+      name,
+      phone,
+      email,
+      publicKey
+    }
+    dispatch(createUserProfile(userData))
     };
 
   return (
@@ -132,6 +146,8 @@ export default function CreateProfile() {
               name="name"
               label="Name"
               id="name"
+              value={name}
+              onChange={e => setName(e.target.value)}
             />
             <TextField
               variant="outlined"
@@ -141,6 +157,8 @@ export default function CreateProfile() {
               id="email"
               label="Email Address"
               name="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
             />
             <TextField
               variant="outlined"
@@ -150,6 +168,8 @@ export default function CreateProfile() {
               id="phone"
               label="Phone number"
               name="phone"
+              value={phone}
+              onChange={e => setPhone(e.target.value)}
             />
             <TextField
                 id="select-dept"

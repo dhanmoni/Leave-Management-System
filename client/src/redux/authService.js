@@ -1,22 +1,18 @@
 import axios from 'axios'
 
-const API_URL = "http://localhost:5000"
 
-export const register = async (publicKey)=> {
-    console.log('register user called', publicKey)
-    const res = await axios.post(`${API_URL}/api/auth/student-reg`, {publicKey})
-    return res;   
-}
+export const createUserProfile = async (userData)=> {
+    console.log(userData)
+    const response = await axios.post(`http://localhost:5000/api/auth/create-profile`, userData)
 
-export const getStudent = async (publicKey)=> {
-    console.log('getting student...', publicKey)
-    const res = await axios.get(`${API_URL}/api/auth/get-student/${publicKey}`)
-    return res
+    if (response.data) {
+        console.log(response.data)
+    }
+    return response.data
 }
 
 const authService = {
-    register,
-    getStudent
+    createUserProfile
 }
 
 export default authService;

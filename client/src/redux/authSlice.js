@@ -1,66 +1,59 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 import authService from './authService'
 
-
-export const registerStudent = createAsyncThunk(
-    'auth/student-reg',
-    async (publicKey, thunkAPI) => {
-     try {
-        const response = await authService.register(publicKey)
-        return response.data
-     } catch (error) {
-         console.log('in slice...')
-         console.log(error)
-         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
-         return thunkAPI.rejectWithValue(message)
-     }
+export const createUserProfile = createAsyncThunk(
+    'auth/create-user-profile',
+    async (user, thunkAPI) => {
+      try {
+        return await authService.createUserProfile(user)
+      } catch (error) {
+        const message =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString()
+        return thunkAPI.rejectWithValue(message)
+      }
     }
   )
-export const getStudent = createAsyncThunk(
-'auth/get-student',
-async (publicKey, thunkAPI) => {
-    try {
-    const response = await authService.getStudent(publicKey)
-    console.log(response.data)
-    return response.data
-    } catch (error) {
-        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
-        return thunkAPI.rejectWithValue(message)
-    }
-}
-)
-
 const initialState = {
     isLoading: false,
     isError: false,
     isLoggedIn: false,
-    user: null
+    user: null,
+    publicKey:''
 }
 
 export const authSlice = createSlice({
     name:"auth",
     initialState,
+    reducers: {
+        setUserPublicKey: (state, action) => {
+            state.publicKey = action.payload
+        },
+        setUserProfile: (state, action)=> {
+            state.user = action.payload
+        }
+    },
     extraReducers: (builder) => {
-        builder.addCase(registerStudent.pending, (state, action)=> {
+        builder.addCase(createUserProfile.pending, (state, action)=> {
             state.isLoading = true
         })
-        builder.addCase(registerStudent.fulfilled, (state, action) => {
+        builder.addCase(createUserProfile.fulfilled, (state, action) => {
           state.isLoading = false,
-          state.isLoggedIn = true,
           state.user = action.payload
         })
-        builder.addCase(registerStudent.rejected, (state, action) => {
+        builder.addCase(createUserProfile.rejected, (state, action) => {
             state.isLoading = false,
             state.isLoggedIn = false,
             state.user = null,
             state.isError = true
           })
-        builder.addCase(getStudent.fulfilled, (state, action)=> {
-            state.user = action.payload
-        })
       },
 })
 
-
+// Action creators are generated for each case reducer function
+export const { setUserProfile, setUserPublicKey} = authSlice.actions
 
 export default authSlice.reducer

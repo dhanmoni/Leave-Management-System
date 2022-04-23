@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const studentAuthController = require("../../controller/studentAuthController");
+const authController = require("../../controller/authController");
 
-router.post("/auth-student",studentAuthController.studentAuth);
-router.post("/student-reg",studentAuthController.createStudent);
-router.post("/student-create-profile",studentAuthController.createStudentProfile);
-router.get("/get-student/:publicKey",studentAuthController.getStudentByPublicKey);
+router.post("/",authController.userAuth);
+router.post("/register",authController.createUser);
+router.post("/create-profile",authController.createUserProfile);
+router.get("/get-user/:publicKey",authController.getUserByPublicKey);
 
 
 module.exports = router;

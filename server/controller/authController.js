@@ -1,12 +1,10 @@
-const {recoverPersonalSignature} = require('@metamask/eth-sig-util')
-const {bufferToHex} = require('ethereumjs-util')
 const {ethers} =  require('ethers')
 const jwt = require('jsonwebtoken');
 
-const Student = require('../models/Student');
+const User = require('../models/User');
 
-exports.studentAuth = async (req, res) => {
-    console.log('In student auth backend')
+exports.userAuth = async (req, res) => {
+    console.log('In user auth backend')
     const { signature, publicKey } = req.body;
     if (!signature || !publicKey){
         return res.status(400).json({ error: 'Request should have signature and publicKey' });
@@ -14,29 +12,30 @@ exports.studentAuth = async (req, res) => {
     console.log({signature, publicKey});
 
     return (
-        Student.findOne({ publicKey })
-        .then((student) => {
-            if (!student) {
-                throw new Error('404');            }
-            return student;
+        User.findOne({ publicKey })
+        .then((user) => {
+            if (!user) {
+                throw new Error('404');            
+            }
+            return user;
         })
         ////////////////////////////////////////////////////
         // Step 2: Verify digital signature
         ////////////////////////////////////////////////////
-        .then((student) => {
-            console.log("2nd then=> ",student)
-            if (!student) {
+        .then((user) => {
+            console.log("2nd then=> ",user)
+            if (!user) {
                 throw new Error('404');   
             }
 
-            const msg = `I am signing my one-time nonce: ${student.nonce}`;
+            const msg = `I am signing my one-time nonce: ${user.nonce}`;
 
             const address = ethers.utils.verifyMessage(msg, signature)
            
             // The signature verification is successful if the address found with
             // ethers.utils.verifyMessage matches the initial publicKey
             if (address.toLowerCase() == publicKey) {
-                return student;
+                return user;
             } else {
                 return null;
             }
@@ -44,22 +43,23 @@ exports.studentAuth = async (req, res) => {
         ////////////////////////////////////////////////////
         // Step 3: Generate a new nonce for the user
         ////////////////////////////////////////////////////
-        .then((student) => {
-            console.log("3rd then=> ",student)
+        .then((user) => {
+            console.log("3rd then=> ",user)
 
-            if (!student) {
+            if (!user) {
                 throw new Error('401');   
             }
             console.log('hello')
-            student.nonce = Math.floor(Math.random() * 10000);
-            return student.save();
+            user.nonce = Math.floor(Math.random() * 10000);
+            return user.save();
         })
         ////////////////////////////////////////////////////
         // Step 4: Create JWT
         ////////////////////////////////////////////////////
-        .then(() => {
+        .then((user) => {
             const payload = {
                 publicKey,
+                id: user.id
             };
             jwt.sign(
                 payload,
@@ -74,12 +74,12 @@ exports.studentAuth = async (req, res) => {
         .catch( (err) => {
             if (err.message === '404') {
                 res.status(404).json({
-                    message: `student with publicKey ${publicKey} doesnot exists`
+                    message: `user with publicKey ${publicKey} doesnot exists`
                 })
             } 
             else if (err.message === '401') {
                 res.status(404).json({
-                    message: `student verification failed`
+                    message: `user verification failed`
                 })
             } else {
                 res.status(500).json({
@@ -91,7 +91,7 @@ exports.studentAuth = async (req, res) => {
 };
 
 
-exports.createStudent = async (req,res)=> {
+exports.createUser = async (req,res)=> {
     console.log('registering...', req.body.publicKey)
     const { publicKey } = req.body;
     if (!publicKey){
@@ -100,15 +100,15 @@ exports.createStudent = async (req,res)=> {
     // console.log({publicKey});
     console.log("hello", publicKey);
     return (
-        Student.findOne({publicKey})
-        .then(async student=> {
+        User.findOne({publicKey})
+        .then(async user=> {
             console.log('found');
-            if(student) {
-                return res.status(400).json({ error:  'Student already exists' });
+            if(user) {
+                return res.status(400).json({ error:  'user already exists' });
             }
             console.log('creating...')
-            const newStudent = await Student.create({publicKey});
-            return res.status(200).json(newStudent);
+            const newUser = await User.create({publicKey});
+            return res.status(200).json(newUser);
         }).catch(err=>{
             console.log({err})
             res.status(500).json({err})  
@@ -116,7 +116,7 @@ exports.createStudent = async (req,res)=> {
     )
 }
 
-exports.getStudentByPublicKey = async (req, res)=> {
+exports.getUserByPublicKey = async (req, res)=> {
     console.log('public key param:', req.params)
     const { publicKey } = req.params;
     if (!publicKey){
@@ -124,11 +124,11 @@ exports.getStudentByPublicKey = async (req, res)=> {
     }
 
     return (
-        Student.findOne({publicKey})
-        .then(async student=> {
+        User.findOne({publicKey})
+        .then(async user=> {
             
-            if(student) {
-                return res.json(student);
+            if(user) {
+                return res.json(user);
             } else {
                 return res.json(null);
             }
@@ -141,20 +141,20 @@ exports.getStudentByPublicKey = async (req, res)=> {
 }
 
 
-exports.createStudentProfile = async (req,res)=> {
+exports.createUserProfile = async (req,res)=> {
     const { name, email, phone, publicKey } = req.body;
     if (!publicKey){
         return res.status(400).json({ error: 'Request should have publicKey' });
     }
     console.log({publicKey, name, email, phone});
     return (
-        Student.findOne({publicKey})
-        .then(student=> {
-            if(!student) {
-                res.status(400).json({ errors:  'Student doesnot exists' });
+        User.findOne({publicKey})
+        .then(user=> {
+            if(!user) {
+                res.status(400).json({ errors:  'user doesnot exists' });
                 return null;
             }
-            Student.findOneAndUpdate(
+            User.findOneAndUpdate(
                 { publicKey: publicKey },
                 { $set: {
                     name,
