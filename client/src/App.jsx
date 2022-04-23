@@ -5,15 +5,10 @@ import Dashboard from './pages/Dashbaord'
 import ApplyLeave from './pages/ApplyLeave'
 import './App.css'
 import CreateProfile from './pages/CreateProfile'
+import PrivateRoute from './components/PrivateRoute'
+
 const theme = createTheme({
   
-  // typography: {
-  //   fontFamily: 'Quicksand',
-  //   fontWeightLight: 400,
-  //   fontWeightRegular: 500,
-  //   fontWeightMedium: 600,
-  //   fontWeightBold: 700,
-  // }
   typography: {
     fontFamily: "Quicksand",
     h3: {
@@ -28,7 +23,7 @@ const theme = createTheme({
 
 
 function App() {
-  
+
   return (
     <ThemeProvider theme={theme}>
 
@@ -39,21 +34,27 @@ function App() {
               exact
               path="/create-profile"
               element={
+                <PrivateRoute>
                   <CreateProfile />
+                </PrivateRoute>
               }
             />
             <Route
               exact
               path="/dashboard"
               element={
+                <PrivateRoute>
                   <Dashboard />
+                </PrivateRoute>
               }
             />
             <Route
               exact
               path="/apply"
               element={
+                <PrivateRoute>
                   <ApplyLeave />
+                </PrivateRoute>
               }
             />
         </Routes>

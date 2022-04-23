@@ -2,10 +2,10 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
 import authService from './authService'
 
 export const createUserProfile = createAsyncThunk(
-    'auth/create-user-profile',
-    async (user, thunkAPI) => {
+    'profile/create-profile',
+    async (userData, thunkAPI) => {
       try {
-        return await authService.createUserProfile(user)
+        return await authService.createUserProfile(userData)
       } catch (error) {
         const message =
           (error.response &&
@@ -22,7 +22,8 @@ const initialState = {
     isError: false,
     isLoggedIn: false,
     user: null,
-    publicKey:''
+    publicKey:'',
+    jwt_token:''
 }
 
 export const authSlice = createSlice({
@@ -33,7 +34,19 @@ export const authSlice = createSlice({
             state.publicKey = action.payload
         },
         setUserProfile: (state, action)=> {
-            state.user = action.payload
+            state.user = action.payload,
+            state.isLoggedIn = true
+        },
+        setJwtToken: (state, action)=> {
+          state.jwt_token = action.payload
+        },
+        signOutUser: (state)=> {
+          state.isLoading= false,
+          state.isError= false,
+          state.isLoggedIn= false,
+          state.user= null,
+          state.publicKey='',
+          state.jwt_token=''
         }
     },
     extraReducers: (builder) => {
@@ -42,18 +55,19 @@ export const authSlice = createSlice({
         })
         builder.addCase(createUserProfile.fulfilled, (state, action) => {
           state.isLoading = false,
-          state.user = action.payload
+          state.user = action.payload,
+          state.isLoggedIn = true
         })
         builder.addCase(createUserProfile.rejected, (state, action) => {
             state.isLoading = false,
-            state.isLoggedIn = false,
             state.user = null,
+            state.isLoggedIn = false,
             state.isError = true
           })
       },
 })
 
 // Action creators are generated for each case reducer function
-export const { setUserProfile, setUserPublicKey} = authSlice.actions
+export const { setUserProfile, setUserPublicKey, setJwtToken, signOutUser} = authSlice.actions
 
 export default authSlice.reducer

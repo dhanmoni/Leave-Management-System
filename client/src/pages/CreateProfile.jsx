@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Avatar, 
     Button, 
     CssBaseline, 
@@ -12,9 +12,9 @@ import {Avatar,
     Toolbar
 } from '@mui/material'
 import { AssignmentIndOutlined } from '@mui/icons-material';
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
-import  {createUserProfile} from '../redux/authService';
+import  {createUserProfile} from '../redux/authSlice';
 
 
 export default function CreateProfile() {
@@ -23,55 +23,28 @@ export default function CreateProfile() {
     const [email, setEmail] = useState("")
     const [phone, setPhone] = useState("")
     const [hostel, setHostel] = useState("");
-    const [dept, setDept] = useState("");
+    const [department, setDept] = useState("");
+    const [availableHostels, setAvailableHostels] = useState([])
+    const [availableDepts, setAvailableDepts] = useState([])
+
+    useEffect(()=> {
+      fetch(`http://localhost:5000/api/profile/get-hostels`)
+        .then(res=> res.json())
+        .then(data=> setAvailableHostels(data))
+    }, [])
+
+    useEffect(()=> {
+      fetch(`http://localhost:5000/api/profile/get-departments`)
+        .then(res=> res.json())
+        .then(data=> setAvailableDepts(data))
+    }, [])
+
+    // console.log({availableHostels, availableDepts})
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const {publicKey} = useSelector((state) => state.auth)
-    const depts = [
-        {
-          value: 'Computer Science Engineering',
-          label: 'Computer Science Engineering',
-        },
-        {
-          value: 'Electrical & Telecommunication Engineering',
-          label: 'Electrical & Telecommunication Engineering',
-        },
-        {
-          value: 'Masters of Computer Application',
-          label: 'Masters of Computer Application',
-        },
-        {
-          value: 'Mechanical Engineering',
-          label: 'Mechanical Engineering',
-        },
-      ];
-    const hostels = [
-        {
-            value: 'Hostel 1',
-            label: 'Hostel 1',
-        },
-        {
-            value: 'Hostel 2',
-            label: 'Hostel 2',
-        },
-        {
-            value: 'Hostel 3',
-            label: 'Hostel 3',
-        },
-        {
-            value: 'Hostel 4',
-            label: 'Hostel 4',
-        },
-        {
-            value: 'Hostel 5',
-            label: 'Hostel 5',
-        },
-        {
-            value: 'Hostel 6',
-            label: 'Hostel 6',
-        },
-    ];
+    const {publicKey, jwt_token, isLoggedIn} = useSelector((state) => state.auth)
+    
     const handleHostelChange = (event) => {
         setHostel(event.target.value);
     };
@@ -80,21 +53,32 @@ export default function CreateProfile() {
     };
 
     const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log("hello")
-    // const data = new FormData(event.currentTarget);
-    // console.log({
-    //     data
-    // });
-    // navigate('/dashboard')
-    const userData = {
-      name,
-      phone,
-      email,
-      publicKey
-    }
-    dispatch(createUserProfile(userData))
+      event.preventDefault();
+
+      const userData = {
+        name,
+        phone,
+        email,
+        hostel,
+        department,
+        publicKey,
+        jwt_token
+      }
+      
+      dispatch(createUserProfile(userData))
+      
+      // navigate('/dashboard')
     };
+    useEffect(() => {
+     
+      if (isLoggedIn) { 
+        navigate('/dashboard')
+      } else if(jwt_token){
+        navigate('/create-profile')
+      } else {
+        navigate('/')
+      }
+    }, [isLoggedIn]);
 
   return (
       <Box  className="create-profile" 
@@ -178,13 +162,13 @@ export default function CreateProfile() {
                 required
                 fullWidth
                 label="Select Department"
-                value={dept}
+                value={department}
                 onChange={handleDeptChange}
                 variant="outlined"
             >
-            {depts.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                {option.label}
+            {availableDepts.map((option) => (
+                <MenuItem key={option.name} value={option._id}>
+                {option.name}
                 </MenuItem>
             ))}
             </TextField>
@@ -199,9 +183,9 @@ export default function CreateProfile() {
                 onChange={handleHostelChange}
                 variant="outlined"
             >
-            {hostels.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                {option.label}
+            {availableHostels.map((option) => (
+                <MenuItem key={option.name} value={option._id}>
+                {option.name}
                 </MenuItem>
             ))}
             </TextField>

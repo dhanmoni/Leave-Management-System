@@ -6,13 +6,13 @@ import blockchain from '../assets/blockchain.png'
 import '../App.css'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
-import  {setUserProfile, setUserPublicKey} from '../redux/authSlice';
+import  {setJwtToken, setUserProfile, setUserPublicKey} from '../redux/authSlice';
 
 const {ethereum} = window
 
 export default function Landing() {
 
-  const {isLoading, isError, user, isLoggedIn} = useSelector((state) => state.auth)
+  const {isLoading, isError, user, isLoggedIn, publicKey} = useSelector((state) => state.auth)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -57,12 +57,18 @@ export default function Landing() {
 		}
 	};
 
+  const redirectUser = ()=> {
+    if(isLoggedIn) {
+      navigate('/dashboard')
+    } else {
+      navigate('/create-profile')
+    }
+  }
 
   const saveAndRedirect = (data)=> {
-    localStorage.setItem('auth-token', data.token)
-    console.log({userProfile})
-    console.log({userPublicKey})
+   
     dispatch(setUserPublicKey(userPublicKey))
+    dispatch(setJwtToken(data.token))
     if(userProfile && userProfile.email){
       dispatch(setUserProfile(userProfile))
       console.log('profile exists', userProfile)
@@ -153,14 +159,14 @@ export default function Landing() {
           <Typography variant="subtitle1">
             Connect Metamask wallet to continue...
           </Typography>
-          {userPublicKey ? (
+          {publicKey ? (
             <Button
             variant="outlined"
             color="primary"
             sx={{mt:2, fontWeight: 'bold'}}
-            onClick={connectWallet}
+            onClick={redirectUser}
           >
-            Wallet Connected
+            Go to Dashboard
           </Button>
           ) : (
             <Button
@@ -173,7 +179,6 @@ export default function Landing() {
             Connect Wallet
           </Button>
           )} 
-          {userPublicKey}
         </Grid>
         <img item src={blockchain} alt="Blockchain" style={{
             width: '100%',

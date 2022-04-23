@@ -8,8 +8,8 @@ const schema = new mongoose.Schema(
         required: true,
     },
     isActive: {
-      type: Boolean,
-      default: false,
+        type: Boolean,
+        default: false,
     },
     admin: {
         type: mongoose.Schema.Types.ObjectId,
@@ -26,4 +26,4 @@ const schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = Hostel = mongoose.model("hostel", schema);
+module.exports = Department = mongoose.model("department", schema);

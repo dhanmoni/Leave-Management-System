@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import {
@@ -24,12 +24,17 @@ import {
   AddOutlined,
   LogoutOutlined,
 } from "@mui/icons-material";
+import { useDispatch, useSelector } from 'react-redux';
+import  {signOutUser} from '../redux/authSlice';
 
 const drawerWidth = 240;
 
 export default function Layout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch()
+
+  const {publicKey, jwt_token, isLoggedIn} = useSelector((state) => state.auth)
 
   const menuItems = [
     {
@@ -43,6 +48,12 @@ export default function Layout({ children }) {
       path: "/apply",
     },
   ];
+
+  const handleSignOut = ()=> {
+    dispatch(signOutUser())
+    navigate('/')
+  }
+
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -125,7 +136,7 @@ export default function Layout({ children }) {
           </List>
           <Divider />
           <List>
-            <ListItem button onClick={() => navigate("/create-profile")}>
+            <ListItem button onClick={handleSignOut}>
               <ListItemIcon>
                 <LogoutOutlined />
               </ListItemIcon>

@@ -58,12 +58,14 @@ exports.userAuth = async (req, res) => {
         ////////////////////////////////////////////////////
         .then((user) => {
             const payload = {
-                publicKey,
-                id: user.id
+                user: {
+                    publicKey,
+                    id: user.id
+                }
             };
             jwt.sign(
                 payload,
-                'shhhh',
+                'jwt-secret-token',
                 { expiresIn: '7 days' },
                 (err, token) => {
                 if (err) throw err;
@@ -141,28 +143,3 @@ exports.getUserByPublicKey = async (req, res)=> {
 }
 
 
-exports.createUserProfile = async (req,res)=> {
-    const { name, email, phone, publicKey } = req.body;
-    if (!publicKey){
-        return res.status(400).json({ error: 'Request should have publicKey' });
-    }
-    console.log({publicKey, name, email, phone});
-    return (
-        User.findOne({publicKey})
-        .then(user=> {
-            if(!user) {
-                res.status(400).json({ errors:  'user doesnot exists' });
-                return null;
-            }
-            User.findOneAndUpdate(
-                { publicKey: publicKey },
-                { $set: {
-                    name,
-                    email, 
-                    phone
-                } },
-                { new: true }
-              ).then(s=> res.json(s));
-        }).catch(err=> res.status(500).json(err))
-    )
-}
