@@ -20,12 +20,12 @@ module.exports = function (req, res, next) {
         console.log("decoded.user =", decoded.user);
         const user = await User.findOne({ _id: decoded.user.id })
         console.log("user=", user);
-        if(user.roles[0] == 'HOD' || user.roles[0] == 'WARDEN' || user.roles[0] == 'SYSTEM_ADMIN'){
-            console.log('normal admin and system admin...')
+        if(user.roles[0] == 'SYSTEM_ADMIN'){
+            console.log('system admin...')
             req.user = user;
             next();
         } else {
-            return res.status(401).json({ msg: 'Admin only route' });
+            return res.status(401).json({ msg: 'System Admin only route' });
         }
       }
     });

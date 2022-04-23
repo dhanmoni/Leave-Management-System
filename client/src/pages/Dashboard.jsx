@@ -144,10 +144,8 @@ function Dashboard() {
                   }}
                 >
                   <Avatar
-                    sx={{ height: "100px", width: "100px" }}
-                    src={avatar}
-                    alt="user"
-                  />
+                    sx={{ height: "100px", width: "100px",bgcolor: "primary.main", fontSize: 48 }}
+                  >{user.name[0]}</Avatar>
                   <Box
                     sx={{
                       display: "flex",
@@ -161,12 +159,12 @@ function Dashboard() {
                     <Typography sx={{ fontWeight: "bold" }} noWrap>
                       Email: {user.email}
                     </Typography>
-                    <Typography sx={{ fontWeight: "bold" }} noWrap>
-                      Department: {user.department}
+                    {/* <Typography sx={{ fontWeight: "bold" }} noWrap>
+                      Department: {user.department.name}
                     </Typography>
                     <Typography sx={{ fontWeight: "bold" }} noWrap>
-                      Hostel: {user.hostel}
-                    </Typography>
+                      Hostel: {user.hostel.name}
+                    </Typography> */}
                     <Typography sx={{ fontWeight: "bold" }} noWrap>
                       Profile status: {user.isApproved ? 'Approved' : 'Pending'}
                     </Typography>

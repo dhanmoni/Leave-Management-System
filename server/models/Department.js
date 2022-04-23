@@ -12,13 +12,21 @@ const schema = new mongoose.Schema(
         default: false,
     },
     admin: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
-    },
+        adminId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "user",
+        },
+        adminName: {
+          type: String
+        }
+      },
     students: [{
-        student: {
+        studentId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "user",
+        },
+        studentName: {
+          type: String,
         }
     },
     ]

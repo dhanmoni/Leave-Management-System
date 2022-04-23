@@ -12,15 +12,22 @@ const schema = new mongoose.Schema(
       default: false,
     },
     admin: {
+      adminId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
+      },
+      adminName: {
+        type: String
+      }
     },
     students: [{
-        student: {
+        studentId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "user",
-        }
-    },
+        },
+        studentName: {
+          type: String,
+        }},
     ]
   },
   { timestamps: true }

@@ -17,6 +17,23 @@ export const createUserProfile = createAsyncThunk(
       }
     }
   )
+
+export const createAdminProfile = createAsyncThunk(
+  'profile/create-admin-profile',
+  async (adminData, thunkAPI) => {
+    try {
+      return await authService.createAdminProfile(adminData)
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString()
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
 const initialState = {
     isLoading: false,
     isError: false,
@@ -59,6 +76,20 @@ export const authSlice = createSlice({
           state.isLoggedIn = true
         })
         builder.addCase(createUserProfile.rejected, (state, action) => {
+            state.isLoading = false,
+            state.user = null,
+            state.isLoggedIn = false,
+            state.isError = true
+          })
+        builder.addCase(createAdminProfile.pending, (state, action)=> {
+            state.isLoading = true
+        })
+        builder.addCase(createAdminProfile.fulfilled, (state, action) => {
+          state.isLoading = false,
+          state.user = action.payload,
+          state.isLoggedIn = true
+        })
+        builder.addCase(createAdminProfile.rejected, (state, action) => {
             state.isLoading = false,
             state.user = null,
             state.isLoggedIn = false,

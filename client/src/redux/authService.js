@@ -15,8 +15,27 @@ export const createUserProfile = async (userData)=> {
             })
 }
 
+export const createAdminProfile = async (adminData)=> {
+    console.log(adminData)
+    
+    return fetch(`http://localhost:5000/api/profile/create-admin-profile`, {
+                body: JSON.stringify(adminData),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-auth-token': adminData.jwt_token
+                },
+                method: 'POST',
+            }).then(res=> res.json())
+            .then(data=> {
+                console.log({data})
+                return data;
+            })
+}
+
+
 const authService = {
-    createUserProfile
+    createUserProfile,
+    createAdminProfile
 }
 
 export default authService;

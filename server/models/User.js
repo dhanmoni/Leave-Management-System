@@ -32,12 +32,22 @@ const schema = new mongoose.Schema(
         default: ['STUDENT']
     },
     department: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "department",
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "department",
+        },
+        name: {
+            type: String
+        }
     },
     hostel: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "hostel",
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "hostel",
+        },
+        name: {
+            type: String
+        }
     },
   },
   { timestamps: true }

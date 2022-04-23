@@ -72,6 +72,7 @@ export default function Landing() {
     if(userProfile && userProfile.email){
       dispatch(setUserProfile(userProfile))
       console.log('profile exists', userProfile)
+      userProfile = null;
       navigate('/dashboard')
     } else {
       console.log('user profile doesnot exists')

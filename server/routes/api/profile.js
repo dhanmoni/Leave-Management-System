@@ -5,6 +5,7 @@ const auth = require('../../middleware/authMiddleware')
 const profileController = require("../../controller/profileController");
 
 router.post("/create-profile",auth, profileController.createUserProfile);
+router.post("/create-admin-profile",auth, profileController.createAdminProfile);
 router.get("/get-hostels", profileController.getHostels);
 router.get("/get-departments", profileController.getDepartments);
 

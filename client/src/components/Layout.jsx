@@ -90,11 +90,7 @@ export default function Layout({ children }) {
               justifyContent: "center",
             }}
           >
-            <Avatar
-              sx={{ height: "100px", width: "100px" }}
-              src={avatar}
-              alt="user"
-            />
+            <Avatar sx={{ height: "100px", width: "100px",bgcolor: "primary.main", fontSize: 48 }}>{user.name[0]}</Avatar>
             <Typography variant="h6" noWrap>
               {user.name}
             </Typography>
