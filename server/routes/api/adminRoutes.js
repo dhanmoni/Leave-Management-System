@@ -11,6 +11,7 @@ router.post("/add-hostel", systemAdminAuth, adminController.addHostel);
 router.post("/add-department", systemAdminAuth, adminController.addDepartment);
 router.post("/approve-user-admin", systemAdminAuth, adminController.approveUserAdmin);
 router.post("/reject-user-admin", systemAdminAuth, adminController.rejectUserAdmin);
+router.get("/admins", systemAdminAuth, adminController.getAllAdmins);
 
 //routes accessed by normal admin as well as system admin
 router.post("/approve-user-student", adminAuth, adminController.approveUserStudent);

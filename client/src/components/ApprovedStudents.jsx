@@ -97,7 +97,7 @@ function ApprovedStudents() {
               </>
             ) : (
               <>
-                <Typography>No Data Available...</Typography>
+                <Typography align="center">No Data Available...</Typography>
               </>
             )}
           </List>

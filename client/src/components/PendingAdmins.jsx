@@ -15,44 +15,47 @@ import {
 import { CloseRounded, DoneRounded } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getStudentsByHostel,
-  getStudentsByDepartment,
-  approveStudent,
-  rejectStudent,
-} from "../redux/studentsSlice";
+  getAllAdmins, approveAdmin, rejectAdmin
+} from "../redux/adminSlice";
 
-function PendingStudents() {
+function PendingAdmins() {
   const dispatch = useDispatch();
   const [status, setStatus] = useState('')
   const { user, jwt_token } = useSelector((state) => state.auth);
-  const { students } = useSelector((state) => state.students);
+  const { admins } = useSelector((state) => state.admins);
 
-  const handleApproveStudent = (s) => {
-    const userData = {
-      jwt_token,
-      hostel_id: s.hostel.id,
-      dept_id: s.department.id,
-      publicKey: s.publicKey
-    };
+  const handleApproveAdmin = (s) => {
+    let userData;
+    if(s.roles[0] == 'HOD'){
+        userData = {
+            jwt_token,
+            id: s.department.id,
+            role: 'HOD',
+            publicKey: s.publicKey
+          };
+    } else if(s.roles[0] == 'WARDEN') {
+        userData = {
+            jwt_token,
+            id: s.hostel.id,
+            role: 'WARDEN',
+            publicKey: s.publicKey
+          };
+    }
     console.log({ userData });
-    dispatch(approveStudent(userData))
+    dispatch(approveAdmin(userData))
     setStatus('approve')
   };
-  const handleRejectStudent = (s) => {
+  const handleRejectAdmin = (s) => {
     const userData = {
       jwt_token,
       publicKey: s.publicKey
     };
     console.log({ userData });
-    dispatch(rejectStudent(userData))
+    dispatch(rejectAdmin(userData))
     setStatus('reject')
   };
   useEffect(() => {
-    if (user.roles[0] == "WARDEN") {
-      dispatch(getStudentsByHostel({ id: user.hostel.id, jwt_token }));
-    } else if (user.roles[0] == "HOD") {
-      dispatch(getStudentsByDepartment({ id: user.department.id, jwt_token }));
-    }
+    dispatch(getAllAdmins({ jwt_token }));
   }, []);
 
   return (
@@ -62,7 +65,7 @@ function PendingStudents() {
         sx={{ p: 2, display: "flex", flexDirection: "column", borderRadius: 3 }}
       >
         <Typography variant="h6" sx={{ fontWeight: 600, padding: 2 }}>
-          Pending Students
+          Pending Admins
         </Typography>
         <Divider variant="middle" />
         <Box
@@ -74,10 +77,10 @@ function PendingStudents() {
           }}
         >
           <List sx={{ width: "100%" }}>
-            {(students && students.length) ? (
+            {(admins && admins.length) ? (
               <>
-                {students.map((student) => {
-                  return !student.isApproved && (
+                {admins.map((admin) => {
+                  return !admin.isApproved && (
                     <>
                       <ListItem
                         alignItems="flex-start"
@@ -90,7 +93,7 @@ function PendingStudents() {
                                 edge="end"
                                 variant="outlined"
                                 startIcon={<DoneRounded />}
-                                //onClick={() => handleApproveStudent(student)}
+                                //onClick={() => handleApproveAdmin(admin)}
                               >
                                 Approved
                               </Button>
@@ -101,7 +104,7 @@ function PendingStudents() {
                                   variant="outlined"
                                   color="danger"
                                   startIcon={<CloseRounded />}
-                                  //onClick={() => handleRejectStudent(student)}
+                                  //onClick={() => handleRejectAdmin(admin)}
                                 >
                                   Rejected
                                 </Button>
@@ -113,7 +116,7 @@ function PendingStudents() {
                                   edge="end"
                                   variant="outlined"
                                   startIcon={<DoneRounded />}
-                                  onClick={() => handleApproveStudent(student)}
+                                  onClick={() => handleApproveAdmin(admin)}
                                 >
                                   Approve
                                 </Button>
@@ -123,7 +126,7 @@ function PendingStudents() {
                                   variant="outlined"
                                   color="danger"
                                   startIcon={<CloseRounded />}
-                                  onClick={() => handleRejectStudent(student)}
+                                  onClick={() => handleRejectAdmin(admin)}
                                 >
                                   Reject
                                 </Button>
@@ -142,22 +145,22 @@ function PendingStudents() {
                               variant="body2"
                               sx={{ fontWeight: "bold" }}
                             >
-                              {student.name}
+                              {admin.name}
                             </Typography>
                           }
                           secondary={
                             <Box>
-                              <Typography variant="body2" color="text.primary">
-                                Department: {student.department.name}
+                              {/* <Typography variant="body2" color="text.primary">
+                                Department: {admin.department.name}
                               </Typography>
                               <Typography variant="body2" color="text.primary">
-                                Hostel: {student.hostel.name}
+                                Hostel: {admin.hostel.name}
+                              </Typography> */}
+                              <Typography variant="body2" color="text.primary">
+                                Email: {admin.email}
                               </Typography>
                               <Typography variant="body2" color="text.primary">
-                                Email: {student.email}
-                              </Typography>
-                              <Typography variant="body2" color="text.primary">
-                                Phone: {student.phone}
+                                Phone: {admin.phone}
                               </Typography>
                             </Box>
                           }
@@ -180,4 +183,4 @@ function PendingStudents() {
   );
 }
 
-export default PendingStudents;
+export default PendingAdmins;
