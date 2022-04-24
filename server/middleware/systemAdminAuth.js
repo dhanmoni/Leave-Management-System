@@ -17,9 +17,9 @@ module.exports = function (req, res, next) {
       if (error) {
         return res.status(401).json({ msg: 'Invalid Token' });
       } else {
-        console.log("decoded.user =", decoded.user);
+        //console.log("decoded.user =", decoded.user);
         const user = await User.findOne({ _id: decoded.user.id })
-        console.log("user=", user);
+        //console.log("user=", user);
         if(user.roles[0] == 'SYSTEM_ADMIN'){
             console.log('system admin...')
             req.user = user;

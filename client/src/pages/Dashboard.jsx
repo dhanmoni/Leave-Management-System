@@ -23,9 +23,10 @@ import {
 } from "@mui/icons-material";
 import React from "react";
 import Layout from "../components/Layout";
-import avatar from "../assets/me.jpeg";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {useDispatch, useSelector} from 'react-redux'
+import PendingStudents from "../components/PendingStudents";
+import ApprovedStudents from "../components/ApprovedStudents";
 
 const Row = (props) => {
   const { row } = props;
@@ -131,8 +132,9 @@ function Dashboard() {
                 }}
                 elevation={4}
               >
+                
                 <Typography variant="h6" sx={{ fontWeight: 600, padding: 2 }}>
-                  Student Profile
+                  My Profile
                 </Typography>
                 <Divider variant="middle" />
                 <Box
@@ -159,12 +161,45 @@ function Dashboard() {
                     <Typography sx={{ fontWeight: "bold" }} noWrap>
                       Email: {user.email}
                     </Typography>
-                    {/* <Typography sx={{ fontWeight: "bold" }} noWrap>
-                      Department: {user.department.name}
-                    </Typography>
                     <Typography sx={{ fontWeight: "bold" }} noWrap>
-                      Hostel: {user.hostel.name}
-                    </Typography> */}
+                      Phone: {user.phone}
+                    </Typography>
+                   
+                    {
+                      user.roles[0] == 'STUDENT' ? (
+                        <>
+                        <Typography sx={{ fontWeight: "bold" }} noWrap>
+                          Department: {user.department.name}
+                          </Typography>
+                          <Typography sx={{ fontWeight: "bold" }} noWrap>
+                            Hostel: {user.hostel.name}
+                          </Typography>
+                        </>
+                      ) : user.roles[0] == 'HOD' ? (
+                        <>
+                        <Typography sx={{ fontWeight: "bold" }} noWrap>
+                          Role: Admin (HoD)
+                          </Typography>
+                        <Typography sx={{ fontWeight: "bold" }} noWrap>
+                          Department: {user.department.name}
+                          </Typography>
+                        </>
+                      ) : (user.roles[0] == 'WARDEN') ? (
+                        <>
+                        <Typography sx={{ fontWeight: "bold" }} noWrap>
+                          Role: Admin (Warden)
+                          </Typography>
+                        <Typography sx={{ fontWeight: "bold" }} noWrap>
+                            Hostel: {user.hostel.name}
+                          </Typography>
+                        </>
+                      ) : <>
+                      <Typography sx={{ fontWeight: "bold" }} noWrap>
+                        Role: System Admin
+                        </Typography>
+                      </> 
+                    }
+                    
                     <Typography sx={{ fontWeight: "bold" }} noWrap>
                       Profile status: {user.isApproved ? 'Approved' : 'Pending'}
                     </Typography>
@@ -173,7 +208,14 @@ function Dashboard() {
               </Paper>
             </Grid>
 
-            {/* Active Leave applications */}
+            {
+              (user.roles[0] == 'HOD' || user.roles[0] == 'WARDEN') ? (
+                <>
+                <PendingStudents/>
+                <ApprovedStudents/>
+                </>
+              ) : (
+              <>
             <Grid item xs={12}>
               <Paper elevation={4} sx={{ p: 2, display: "flex", flexDirection: "column",borderRadius: 3 }} >
                 <Typography variant="h6" sx={{ fontWeight: 600, padding: 2 }}>
@@ -252,6 +294,9 @@ function Dashboard() {
                 </Box>
               </Paper>
             </Grid>
+            </>
+             )
+            }
           </Grid>
         </Container>
       </Box>

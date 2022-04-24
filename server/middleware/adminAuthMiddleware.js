@@ -13,13 +13,16 @@ module.exports = function (req, res, next) {
   // Verify token
   try {
     jwt.verify(token, 'jwt-secret-token', async (error, decoded) => {
-        console.log({error, decoded})
+        //console.log({error, decoded})
       if (error) {
         return res.status(401).json({ msg: 'Invalid Token' });
       } else {
-        console.log("decoded.user =", decoded.user);
+        //console.log("decoded.user =", decoded.user);
         const user = await User.findOne({ _id: decoded.user.id })
-        console.log("user=", user);
+        if(!user.isApproved){
+          return res.status(401).json({ msg: 'Only approved admins can access' });
+        }
+        //console.log("user=", user);
         if(user.roles[0] == 'HOD' || user.roles[0] == 'WARDEN' || user.roles[0] == 'SYSTEM_ADMIN'){
             console.log('normal admin and system admin...')
             req.user = user;

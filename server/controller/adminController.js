@@ -118,11 +118,13 @@ exports.rejectUserAdmin = async (req,res)=> {
 }
 
 exports.approveUserStudent = async (req,res)=> {
+    console.log(req.body)
     const { publicKey, dept_id, hostel_id } = req.body;
+    console.log({publicKey, dept_id, hostel_id})
     if (!publicKey){
         return res.status(400).json({ error: 'Request should have publicKey' });
     }
-    console.log({publicKey, dept_id, hostel_id})
+    console.log('approving student...')
     // here student = user
     return (
         User.findOne({publicKey})
@@ -158,7 +160,7 @@ exports.approveUserStudent = async (req,res)=> {
                 .then(()=> {
                     student.isApproved = true;
                     student.save();
-                    return res.status(200).send({msg: 'success'})
+                    return res.status(200).json(student)
                   })
                 .catch(err=> res.status(500).send(err))
             }).catch(err=> res.status(500).send(err))

@@ -4,6 +4,8 @@ const systemAdminAuth = require('../../middleware/systemAdminAuth')
 const adminAuth = require('../../middleware/adminAuthMiddleware')
 const adminController = require("../../controller/adminController");
 
+
+// :5000/api/admin/...
 // routes only accessed by system admin
 router.post("/add-hostel", systemAdminAuth, adminController.addHostel);
 router.post("/add-department", systemAdminAuth, adminController.addDepartment);

@@ -10,6 +10,9 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import jwt_decode from 'jwt-decode'
 import { signOutUser } from './redux/authSlice'
+const { palette } = createTheme();
+const { augmentColor } = palette;
+const createColor = (mainColor) => augmentColor({ color: { main: mainColor } });
 const theme = createTheme({
   
   typography: {
@@ -20,7 +23,12 @@ const theme = createTheme({
     h6: {
       fontFamily: "Syne"
     }
-  }
+  },
+  palette: {
+    danger: createColor('#F40B27'),
+    success: createColor('#5DBA40'),
+  },
+  
   
 })
 

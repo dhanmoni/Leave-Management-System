@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import {
@@ -24,17 +24,19 @@ import {
   AddOutlined,
   LogoutOutlined,
 } from "@mui/icons-material";
-import { useDispatch, useSelector } from 'react-redux';
-import  {signOutUser} from '../redux/authSlice';
+import { useDispatch, useSelector } from "react-redux";
+import { signOutUser } from "../redux/authSlice";
 
 const drawerWidth = 240;
 
 export default function Layout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const {publicKey, jwt_token, isLoggedIn, user} = useSelector((state) => state.auth)
+  const { publicKey, jwt_token, isLoggedIn, user } = useSelector(
+    (state) => state.auth
+  );
 
   const menuItems = [
     {
@@ -49,11 +51,10 @@ export default function Layout({ children }) {
     },
   ];
 
-  const handleSignOut = ()=> {
-    dispatch(signOutUser())
-    navigate('/')
-  }
-
+  const handleSignOut = () => {
+    dispatch(signOutUser());
+    navigate("/");
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -90,15 +91,35 @@ export default function Layout({ children }) {
               justifyContent: "center",
             }}
           >
-            <Avatar sx={{ height: "100px", width: "100px",bgcolor: "primary.main", fontSize: 48 }}>{user.name[0]}</Avatar>
+            <Avatar
+              sx={{
+                height: "100px",
+                width: "100px",
+                bgcolor: "primary.main",
+                fontSize: 48,
+              }}
+            >
+              {user.name[0]}
+            </Avatar>
             <Typography variant="h6" noWrap>
               {user.name}
             </Typography>
-            <Typography variant="subtitle2" noWrap sx={{padding:1}}>
-              Profile status:<span style={{color:'green', border: '1px solid green', borderRadius:'10px', padding:'0px 10px 0px 10px'}}>Approved</span>
+            <Typography variant="subtitle2" noWrap sx={{ padding: 1 }}>
+              Profile status:
+              <span
+                style={{
+                  color: "green",
+                  border: "1px solid green",
+                  borderRadius: "10px",
+                  padding: "0px 10px 0px 10px",
+                }}
+              >
+                {user.isApproved ? 'Approved' : 'Pending'}
+              </span>
             </Typography>
           </Box>
-          <List>, 
+          <List>
+            ,
             {menuItems.map((item) => (
               <ListItem
                 button
