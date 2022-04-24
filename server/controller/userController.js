@@ -17,3 +17,10 @@ exports.getStudentsByDepartments = async (req,res)=> {
         .catch(err=> res.status(404).json({error: 'No students found'}))
 }
 
+exports.getAllStudents = async (req,res)=> {
+    User.find({ roles: 'STUDENT'})
+        .sort({createdAt: -1})
+        .then(students=> res.json(students))
+        .catch(err=> res.status(404).json({error: 'No students found'}))
+}
+

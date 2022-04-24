@@ -19,7 +19,7 @@ export const getStudentsByHostel = createAsyncThunk(
   )
 
 export const getStudentsByDepartment = createAsyncThunk(
-  'students/create-admin-profile',
+  'students/get-students-dept',
   async (userData, thunkAPI) => {
     try {
       return await studentsService.getStudentsByDept(userData)
@@ -34,6 +34,23 @@ export const getStudentsByDepartment = createAsyncThunk(
     }
   }
 )
+
+export const getAllStudents = createAsyncThunk(
+    'students/get-students',
+    async (userData, thunkAPI) => {
+      try {
+        return await studentsService.getAllStudents(userData)
+      } catch (error) {
+        const message =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString()
+        return thunkAPI.rejectWithValue(message)
+      }
+    }
+  )
 
 export const approveStudent = createAsyncThunk(
     'students/approve-student',
@@ -82,6 +99,18 @@ export const studentSlice = createSlice({
         
     },
     extraReducers: (builder) => {
+        builder.addCase(getAllStudents.pending, (state, action)=> {
+            state.isLoading = true
+        })
+        builder.addCase(getAllStudents.fulfilled, (state, action) => {
+          state.isLoading = false,
+          state.students = action.payload
+        })
+        builder.addCase(getAllStudents.rejected, (state, action) => {
+            state.isLoading = false,
+            state.students = null,
+            state.isError = true
+          })
         builder.addCase(getStudentsByHostel.pending, (state, action)=> {
             state.isLoading = true
         })

@@ -19,6 +19,7 @@ import {
   getStudentsByDepartment,
   approveStudent,
   rejectStudent,
+  getAllStudents,
 } from "../redux/studentsSlice";
 
 function PendingStudents() {
@@ -52,6 +53,8 @@ function PendingStudents() {
       dispatch(getStudentsByHostel({ id: user.hostel.id, jwt_token }));
     } else if (user.roles[0] == "HOD") {
       dispatch(getStudentsByDepartment({ id: user.department.id, jwt_token }));
+    } else if (user.roles[0] == "SYSTEM_ADMIN") {
+      dispatch(getAllStudents({jwt_token}))
     }
   }, []);
 
