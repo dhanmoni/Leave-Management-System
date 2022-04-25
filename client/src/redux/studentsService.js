@@ -27,16 +27,15 @@ export const getStudentsByDept = async (userData)=> {
 }
 
 export const getAllStudents = async (userData)=> {
-    console.log(userData)
     
     return fetch(`http://localhost:5000/api/users/get-students`, {
                 headers: {
                     'x-auth-token': userData.jwt_token
                 }
             }).then(res=> res.json())
-            .then(data=> {
-                console.log({data})
-                return data;
+            .then(students=> {
+                console.log({students})
+                return students;
             })
 }
 

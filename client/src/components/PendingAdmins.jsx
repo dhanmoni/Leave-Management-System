@@ -54,9 +54,9 @@ function PendingAdmins() {
     dispatch(rejectAdmin(userData))
     setStatus('reject')
   };
-  useEffect(() => {
-    dispatch(getAllAdmins({ jwt_token }));
-  }, []);
+  // useEffect(() => {
+  //   dispatch(getAllAdmins({ jwt_token }));
+  // }, []);
 
   return (
     <Grid item xs={12}>

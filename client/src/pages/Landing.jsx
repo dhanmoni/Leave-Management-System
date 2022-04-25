@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect} from 'react';
 import {ethers} from 'ethers'
 import {AppBar, Box, Toolbar, Typography, Container, MenuItem, Grid, Button} from '@mui/material/';
 import {AddOutlined} from '@mui/icons-material'
@@ -7,7 +7,7 @@ import '../App.css'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import  {setJwtToken, setUserProfile, setUserPublicKey} from '../redux/authSlice';
-
+import {getDepartment, getHostel} from '../redux/dataSlice'
 const {ethereum} = window
 
 export default function Landing() {
@@ -20,6 +20,10 @@ export default function Landing() {
   let userProfile;
   let userPublicKey;
 
+  useEffect(() => {
+    dispatch(getHostel())
+    dispatch(getDepartment())
+  }, []);
 
   const handleAuthenticate = async ({publicKey,signature}) =>{
 		const res = await fetch(`http://localhost:5000/api/auth/`, {

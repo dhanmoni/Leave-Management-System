@@ -12,6 +12,7 @@ import storage from 'redux-persist/lib/storage'
 import authReducer from './authSlice'
 import studentReducer from './studentsSlice'
 import adminReducer from './adminSlice'
+import dataReducer from './dataSlice'
 
 const persistConfig = {
     key: 'root',
@@ -22,7 +23,8 @@ const persistConfig = {
 const reducers = combineReducers({
     auth: authReducer,
     students: studentReducer,
-    admins: adminReducer
+    admins: adminReducer,
+    info: dataReducer
 });
   
 const persistedReducer = persistReducer(persistConfig, reducers)

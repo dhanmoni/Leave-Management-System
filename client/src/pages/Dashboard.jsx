@@ -8,13 +8,15 @@ import {
   Divider,
   Button,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import Layout from "../components/Layout";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import AdminDashboard from "../components/AdminDashboard";
 import StudentDashboard from "../components/StudentDashboard";
 import SystemAdminDashboard from "../components/SystemAdminDashboard";
+import {getDepartment, getHostel} from '../redux/dataSlice'
+
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -22,6 +24,11 @@ function Dashboard() {
   const { publicKey, jwt_token, user, isLoggedIn } = useSelector(
     (state) => state.auth
   );
+
+  useEffect(() => {
+    dispatch(getHostel())
+    dispatch(getDepartment())
+  }, [])
 
   return (
     <Layout>

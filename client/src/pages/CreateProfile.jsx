@@ -23,8 +23,6 @@ export default function CreateProfile() {
   const [phone, setPhone] = useState("");
   const [hostel, setHostel] = useState("");
   const [department, setDept] = useState("");
-  const [availableHostels, setAvailableHostels] = useState([]);
-  const [availableDepts, setAvailableDepts] = useState([]);
   const [role, setRole] = useState("student");
   const [adminRole, setAdminRole] = useState("");
   const roles = [
@@ -38,17 +36,9 @@ export default function CreateProfile() {
     (state) => state.auth
   );
 
-  useEffect(() => {
-    fetch(`http://localhost:5000/api/profile/get-hostels`)
-      .then((res) => res.json())
-      .then((data) => setAvailableHostels(data));
-  }, []);
+  const {hostels, departments} = useSelector(state=> state.data)
 
-  useEffect(() => {
-    fetch(`http://localhost:5000/api/profile/get-departments`)
-      .then((res) => res.json())
-      .then((data) => setAvailableDepts(data));
-  }, []);
+
 
   const handleRoleChange = (e) => {
     setAdminRole(e.target.value);
@@ -277,7 +267,7 @@ export default function CreateProfile() {
                     variant="outlined"
                     value={department}
                   >
-                    {availableDepts.map((option) => (
+                    {departments && departments.map((option) => (
                       <MenuItem
                         key={option.name}
                         value={`${option._id}&&&${option.name}`}
@@ -299,7 +289,7 @@ export default function CreateProfile() {
                     variant="outlined"
                     value={hostel}
                   >
-                    {availableHostels.map((option, index) => (
+                    {hostels && hostels.map((option, index) => (
                       <MenuItem
                         key={index}
                         value={`${option._id}&&&${option.name}`}
@@ -326,7 +316,7 @@ export default function CreateProfile() {
                   variant="outlined"
                   value={department}
                 >
-                  {availableDepts.map((option) => (
+                  {departments && departments.map((option) => (
                     <MenuItem
                       key={option.name}
                       value={`${option._id}&&&${option.name}`}
@@ -346,7 +336,7 @@ export default function CreateProfile() {
                   variant="outlined"
                   value={hostel}
                 >
-                  {availableHostels.map((option, index) => (
+                  {hostels && hostels.map((option, index) => (
                     <MenuItem
                       key={index}
                       value={`${option._id}&&&${option.name}`}

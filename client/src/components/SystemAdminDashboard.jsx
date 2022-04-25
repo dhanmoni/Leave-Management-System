@@ -1,14 +1,18 @@
-import React from 'react'
-import PendingAdmins from './PendingAdmins'
-import PendingStudents from './PendingStudents'
+import React from "react";
+import Departments from "./Departments";
+import Hostels from "./Hostels";
+import PendingAdmins from "./PendingAdmins";
+import PendingStudents from "./PendingStudents";
 
 function SystemAdminDashboard() {
   return (
     <>
-      <PendingStudents/>
-      <PendingAdmins/>
+      <Departments />
+      <Hostels />
+      <PendingStudents />
+      <PendingAdmins />
     </>
-  )
+  );
 }
 
-export default SystemAdminDashboard
+export default SystemAdminDashboard;
