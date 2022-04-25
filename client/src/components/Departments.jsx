@@ -24,9 +24,11 @@ import {
 import { ArrowForward, AddOutlined, HelpOutline } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { getDepartment } from "../redux/dataSlice";
+import { useNavigate } from "react-router-dom";
 
 function Departments() {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false);
   const [deptName, setDeptName] = useState("")
   const [error, setError] = useState("")
@@ -64,6 +66,12 @@ function Departments() {
         })
         .catch(err=> console.log({err}))
       }
+  }
+
+  const handleNavigate = (department)=> {
+    const {name, _id} = department
+    const newName = name.split(' ').join('-')
+    navigate(`/department/${newName}/${_id}`)    
   }
 
 
@@ -120,6 +128,7 @@ function Departments() {
                         variant="outlined"
                         endIcon={<ArrowForward />}
                         size="small"
+                        onClick={()=> handleNavigate(dept)}
                       >
                         More
                       </Button>

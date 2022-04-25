@@ -22,6 +22,9 @@ import "../App.css";
 import {
   AccountCircleOutlined,
   AddOutlined,
+  AssignmentInd,
+  Difference,
+  Flaky,
   LogoutOutlined,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,18 +41,67 @@ export default function Layout({ children }) {
     (state) => state.auth
   );
 
-  const menuItems = [
-    {
-      text: "Dashboard",
-      icon: <AccountCircleOutlined />,
-      path: "/dashboard",
-    },
-    {
-      text: "Apply Leave",
-      icon: <AddOutlined />,
-      path: "/apply",
-    },
-  ];
+
+  // const menuItemsStudent = [
+  //   {
+  //     text: "Dashboard",
+  //     icon: <AccountCircleOutlined />,
+  //     path: "/dashboard",
+  //   },
+  //   {
+  //     text: "Apply Leave",
+  //     icon: <AddOutlined />,
+  //     path: "/apply",
+  //   },
+  // ];
+
+  let menuItems = []
+
+  if(user.roles[0] == 'SYSTEM_ADMIN'){
+    menuItems = [
+      {
+        text: "Dashboard",
+        icon: <AccountCircleOutlined />,
+        path: "/dashboard",
+      },
+      {
+        text: "Pending Profiles",
+        icon: <Flaky />,
+        path: "/pending-profiles",
+      },
+      {
+        text: "Leave Request",
+        icon: <Difference />,
+        path: "/leave-request",
+      }
+    ];
+  } else if(user.roles[0] == 'STUDENT'){
+    menuItems = [
+      {
+        text: "Dashboard",
+        icon: <AccountCircleOutlined />,
+        path: "/dashboard",
+      },
+      {
+        text: "Apply Leave",
+        icon: <AddOutlined/>,
+        path: "/apply",
+      },
+    ];
+  } else if(user.roles[0] == 'WARDEN' || user.roles[0] == 'HOD'){
+    menuItems = [
+      {
+        text: "Dashboard",
+        icon: <AccountCircleOutlined />,
+        path: "/dashboard",
+      },
+      {
+        text: "Students",
+        icon: <AssignmentInd/>,
+        path: "/students",
+      },
+    ];
+  }
 
   const handleSignOut = () => {
     dispatch(signOutUser());
@@ -119,7 +171,6 @@ export default function Layout({ children }) {
             </Typography>
           </Box>
           <List>
-            ,
             {menuItems.map((item) => (
               <ListItem
                 button

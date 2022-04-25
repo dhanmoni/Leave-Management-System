@@ -24,9 +24,11 @@ import {
 import { ArrowForward, AddOutlined, HelpOutline } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { getHostel } from "../redux/dataSlice";
+import { useNavigate } from "react-router-dom";
 
 function Hostels() {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false);
   const [hostelName, setHostelName] = useState("");
   const [error, setError] = useState("");
@@ -64,6 +66,12 @@ function Hostels() {
         .catch((err) => console.log({ err }));
     }
   };
+
+  const handleNavigate = (hostel)=> {
+    const {name, _id} = hostel
+    const newName = name.split(' ').join('-')
+    navigate(`/hostel/${newName}/${_id}`)    
+  }
 
   return (
     <Grid item xs={12}>
@@ -118,6 +126,7 @@ function Hostels() {
                         variant="outlined"
                         endIcon={<ArrowForward />}
                         size="small"
+                        onClick={()=> handleNavigate(hostel)}
                       >
                         More
                       </Button>

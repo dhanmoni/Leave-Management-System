@@ -48,15 +48,15 @@ function PendingStudents() {
     dispatch(rejectStudent(userData))
     setStatus('reject')
   };
-  // useEffect(() => {
-  //   if (user.roles[0] == "WARDEN") {
-  //     dispatch(getStudentsByHostel({ id: user.hostel.id, jwt_token }));
-  //   } else if (user.roles[0] == "HOD") {
-  //     dispatch(getStudentsByDepartment({ id: user.department.id, jwt_token }));
-  //   } else if (user.roles[0] == "SYSTEM_ADMIN") {
-  //     dispatch(getAllStudents({jwt_token}))
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (user.roles[0] == "WARDEN") {
+      dispatch(getStudentsByHostel({ id: user.hostel.id, jwt_token }));
+    } else if (user.roles[0] == "HOD") {
+      dispatch(getStudentsByDepartment({ id: user.department.id, jwt_token }));
+    } else if (user.roles[0] == "SYSTEM_ADMIN") {
+      dispatch(getAllStudents({jwt_token}))
+    }
+  }, []);
 
   return (
     <Grid item xs={12}>

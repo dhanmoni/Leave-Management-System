@@ -10,6 +10,11 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import jwt_decode from 'jwt-decode'
 import { signOutUser } from './redux/authSlice'
+import Hostel from './pages/Hostel'
+import Department from './pages/Department'
+import User from './pages/User'
+import PendingUserRequest from './pages/PendingUserRequests'
+import AllStudents from './pages/AllStudents'
 const { palette } = createTheme();
 const { augmentColor } = palette;
 const createColor = (mainColor) => augmentColor({ color: { main: mainColor } });
@@ -88,6 +93,51 @@ if(jwt_token){
               element={
                 <PrivateRoute>
                   <ApplyLeave />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/pending-profiles"
+              element={
+                <PrivateRoute>
+                  <PendingUserRequest />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/students"
+              element={
+                <PrivateRoute>
+                  <AllStudents />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/hostel/:name/:id"
+              element={
+                <PrivateRoute>
+                  <Hostel />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/department/:name/:id"
+              element={
+                <PrivateRoute>
+                  <Department />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/user/:name/:id"
+              element={
+                <PrivateRoute>
+                  <User />
                 </PrivateRoute>
               }
             />
