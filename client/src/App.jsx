@@ -15,6 +15,7 @@ import Department from './pages/Department'
 import User from './pages/User'
 import PendingUserRequest from './pages/PendingUserRequests'
 import AllStudents from './pages/AllStudents'
+import LeaveRequests from './pages/LeaveRequests'
 const { palette } = createTheme();
 const { augmentColor } = palette;
 const createColor = (mainColor) => augmentColor({ color: { main: mainColor } });
@@ -36,7 +37,6 @@ const theme = createTheme({
   
   
 })
-
 
 function App() {
 
@@ -102,6 +102,15 @@ if(jwt_token){
               element={
                 <PrivateRoute>
                   <PendingUserRequest />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/leave-request"
+              element={
+                <PrivateRoute>
+                  <LeaveRequests />
                 </PrivateRoute>
               }
             />

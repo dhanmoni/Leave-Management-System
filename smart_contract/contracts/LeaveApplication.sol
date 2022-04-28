@@ -68,6 +68,10 @@ contract LeaveApplication {
         emit ApplicationRejected(_key, msg.sender, ApplicationRegistry[_key][applicationIndex], block.timestamp);
     }
 
+    function getApplicationsByStudentId(address key) public view returns (Application[] memory) {
+        return (ApplicationRegistry[key]);
+    }
+
     function _getTotalApplicationOfStudent(address key) private view returns (uint){
         return ApplicationRegistry[key].length;
     }

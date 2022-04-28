@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import  {setJwtToken, setUserProfile, setUserPublicKey} from '../redux/authSlice';
 import {getDepartment, getHostel} from '../redux/dataSlice'
 const {ethereum} = window
+import {provider, signer} from '../utils/blockchain'
 
 export default function Landing() {
 
@@ -16,7 +17,6 @@ export default function Landing() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  let provider;
   let userProfile;
   let userPublicKey;
 
@@ -50,7 +50,6 @@ export default function Landing() {
   
   const handleSignMessage = async ({publicKey,nonce}) => {
 		try {
-      const signer = provider.getSigner()
 			const signature = await signer.signMessage(`I am signing my one-time nonce: ${nonce}`);
       console.log({publicKey, nonce, signature})
 			return { publicKey, signature };
@@ -87,10 +86,7 @@ export default function Landing() {
 
   const connectWallet = async ()=> {
       if(!ethereum) return alert('Please install metamask!');
-      // const accounts = await ethereum.request({method:'eth_requestAccounts'});
-
-      provider = new ethers.providers.Web3Provider(window.ethereum)
-
+      
       // MetaMask requires requesting permission to connect users accounts
       const accounts = await provider.send("eth_requestAccounts", []);
 

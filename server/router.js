@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-
 const auth = require('./routes/api/auth')
 const adminRoute = require('./routes/api/adminRoutes')
 const profile = require('./routes/api/profile')

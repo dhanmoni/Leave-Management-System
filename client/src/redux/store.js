@@ -13,6 +13,7 @@ import authReducer from './authSlice'
 import studentReducer from './studentsSlice'
 import adminReducer from './adminSlice'
 import dataReducer from './dataSlice'
+import applicationReducer from './applicationSlice'
 
 const persistConfig = {
     key: 'root',
@@ -24,7 +25,8 @@ const reducers = combineReducers({
     auth: authReducer,
     students: studentReducer,
     admins: adminReducer,
-    info: dataReducer
+    info: dataReducer,
+    applications: applicationReducer
 });
   
 const persistedReducer = persistReducer(persistConfig, reducers)

@@ -17,7 +17,6 @@ import StudentDashboard from "../components/StudentDashboard";
 import SystemAdminDashboard from "../components/SystemAdminDashboard";
 import {getDepartment, getHostel} from '../redux/dataSlice'
 
-
 function Dashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -28,6 +27,7 @@ function Dashboard() {
   useEffect(() => {
     dispatch(getHostel())
     dispatch(getDepartment())
+    
   }, [])
 
   return (
@@ -60,74 +60,78 @@ function Dashboard() {
                 <Box
                   sx={{
                     display: "flex",
-                    flexDirection: "row",
+                    flexDirection:'column',
                     alignItems: "center",
+                    justifyContent:'center',
                     padding: 2,
                   }}
                 >
                   <Avatar
                     sx={{
-                      height: "100px",
-                      width: "100px",
+                      height: "150px",
+                      width: "150px",
                       bgcolor: "primary.main",
                       fontSize: 48,
                     }}
                   >
                     {user.name[0]}
                   </Avatar>
+                  <Typography sx={{ fontWeight: "bold", fontSize: 28, padding: 2 }} noWrap>
+                      {user.name}
+                    </Typography>
                   <Box
                     sx={{
                       display: "flex",
-                      flexDirection: "column",
-                      paddingLeft: 3,
+                      flexDirection:'column',
+                      width: '100%'
                     }}
                   >
-                    <Typography sx={{ fontWeight: "bold" }} noWrap>
-                      Name: {user.name}
+                    <Typography noWrap>
+                      Public Key: {user.publicKey}
                     </Typography>
-                    <Typography sx={{ fontWeight: "bold" }} noWrap>
+                    <Typography noWrap>
                       Email: {user.email}
                     </Typography>
-                    <Typography sx={{ fontWeight: "bold" }} noWrap>
+                    <Typography noWrap>
                       Phone: {user.phone}
                     </Typography>
 
                     {user.roles[0] == "STUDENT" ? (
                       <>
-                        <Typography sx={{ fontWeight: "bold" }} noWrap>
+                        <Typography noWrap>
                           Department: {user.department.name}
                         </Typography>
-                        <Typography sx={{ fontWeight: "bold" }} noWrap>
+                        <Typography noWrap>
                           Hostel: {user.hostel.name}
                         </Typography>
                       </>
                     ) : user.roles[0] == "HOD" ? (
                       <>
-                        <Typography sx={{ fontWeight: "bold" }} noWrap>
+                        <Typography noWrap>
                           Role: Admin (HoD)
                         </Typography>
-                        <Typography sx={{ fontWeight: "bold" }} noWrap>
+                        <Typography noWrap>
                           Department: {user.department.name}
                         </Typography>
                       </>
                     ) : user.roles[0] == "WARDEN" ? (
                       <>
-                        <Typography sx={{ fontWeight: "bold" }} noWrap>
+                        <Typography noWrap>
                           Role: Admin (Warden)
                         </Typography>
-                        <Typography sx={{ fontWeight: "bold" }} noWrap>
+                        <Typography noWrap>
                           Hostel: {user.hostel.name}
                         </Typography>
                       </>
                     ) : (
                       <>
-                        <Typography sx={{ fontWeight: "bold" }} noWrap>
+                        <Typography noWrap>
                           Role: System Admin
                         </Typography>
                       </>
                     )}
 
-                    <Typography sx={{ fontWeight: "bold" }} noWrap>
+                    <Typography noWrap>
                       Profile status: {user.isApproved ? "Approved" : "Pending"}
                     </Typography>
                   </Box>

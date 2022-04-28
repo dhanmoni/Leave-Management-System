@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Layout from "../components/Layout";
 
 import {
@@ -14,17 +14,32 @@ import {
   Stack,
 } from "@mui/material";
 import {Send} from '@mui/icons-material'
+import {useSelector, useDispatch} from 'react-redux'
+import {getApplications, applyApplication} from '../redux/applicationSlice'
 
 function ApplyLeave() {
   const [fromDate, setFromDate] = useState(new Date(""));
   const [toDate, setToDate] = useState(new Date(""));
+  const [subject, setSubject] = useState("");
+  const [reason, setReason] = useState("");
 
-  const handleFromChange = (newValue) => {
-    setFromDate(newValue);
+  const dispatch = useDispatch();
+  const { departments } = useSelector((state) => state.info);
+  const { publicKey } = useSelector((state) => state.auth);
+  const handleFromChange = (e) => {
+    setFromDate(e.target.value);
   };
-  const handleToChange = (newValue) => {
-    setToDate(newValue);
+  const handleToChange = (e) => {
+    setToDate(e.target.value);
   };
+
+  
+  const handleApply = (e)=> {
+    e.preventDefault()
+    const start_date = new Date(fromDate).getTime() / 1000
+    const end_date = new Date(toDate).getTime() / 1000
+    dispatch(applyApplication({subject, reason, start_date, end_date}))
+  }
   return (
     <Layout>
       <Box
@@ -60,7 +75,7 @@ function ApplyLeave() {
                 <Typography variant="body1">
                   Provide the required information:
                 </Typography>
-                <Box onSubmit={() => {}}>
+                <Box >
                   <TextField
                     variant="outlined"
                     size="small"
@@ -70,6 +85,8 @@ function ApplyLeave() {
                     name="subject"
                     label="Subject (state the reason of applying for leave)"
                     id="subject"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
                   />
                   <TextField
                     variant="outlined"
@@ -82,6 +99,8 @@ function ApplyLeave() {
                     id="desc"
                     label="Give a detailed description of the reason"
                     name="desc"
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
                   />
                  <Box sx={{display:'flex', flexDirection:'column'}}>
 
@@ -118,6 +137,7 @@ function ApplyLeave() {
                       type="submit"
                       variant="contained"
                       endIcon={<Send/>}
+                      onClick={handleApply}
                       sx={{ mt: 3, mb: 1, paddingLeft: 6, paddingRight: 6 }}
                     >
                       Submit
