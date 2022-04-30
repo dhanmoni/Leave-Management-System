@@ -18,8 +18,8 @@ import {useSelector, useDispatch} from 'react-redux'
 import {getApplications, applyApplication} from '../redux/applicationSlice'
 
 function ApplyLeave() {
-  const [fromDate, setFromDate] = useState(new Date(""));
-  const [toDate, setToDate] = useState(new Date(""));
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [subject, setSubject] = useState("");
   const [reason, setReason] = useState("");
 
@@ -39,6 +39,9 @@ function ApplyLeave() {
     const start_date = new Date(fromDate).getTime() / 1000
     const end_date = new Date(toDate).getTime() / 1000
     dispatch(applyApplication({subject, reason, start_date, end_date}))
+    setSubject("")
+    setFromDate("")
+    setToDate("")
   }
   return (
     <Layout>

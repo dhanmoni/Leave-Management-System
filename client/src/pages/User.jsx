@@ -98,7 +98,7 @@ function User() {
     );
   }
   if (currentUser) {
-    const { name, email, phone, department, hostel, publicKey, isApproved } =
+    const { name, email, phone, department, hostel, publicKey, isApproved, roles} =
       currentUser;
     return (
       <Layout>
@@ -128,45 +128,84 @@ function User() {
                   </Typography>
                   <Divider variant="middle" />
                   <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection:'column',
+                    alignItems: "center",
+                    justifyContent:'center',
+                    padding: 2,
+                  }}
+                >
+                  <Avatar
                     sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      padding: 2,
+                      height: "150px",
+                      width: "150px",
+                      bgcolor: "primary.main",
+                      fontSize: 48,
                     }}
                   >
-                    <Avatar
-                      sx={{
-                        height: "100px",
-                        width: "100px",
-                        bgcolor: "primary.main",
-                        fontSize: 48,
-                      }}
-                    >
-                      {name[0]}
-                    </Avatar>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        paddingLeft: 3,
-                      }}
-                    >
-                      <Typography sx={{ fontWeight: "bold" }} noWrap>
-                        Name: {name}
-                      </Typography>
-                      <Typography sx={{ fontWeight: "bold" }} noWrap>
-                        Email: {email}
-                      </Typography>
-                      <Typography sx={{ fontWeight: "bold" }} noWrap>
-                        Phone: {phone}
-                      </Typography>
+                    {name[0]}
+                  </Avatar>
+                  <Typography sx={{ fontWeight: "bold", fontSize: 28, padding: 2 }} noWrap>
+                      {name}
+                    </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection:'column',
+                      width: '100%'
+                    }}
+                  >
+                    <Typography noWrap>
+                      Public Key: {publicKey}
+                    </Typography>
+                    <Typography noWrap>
+                      Email: {email}
+                    </Typography>
+                    <Typography noWrap>
+                      Phone: {phone}
+                    </Typography>
 
-                      <Typography sx={{ fontWeight: "bold" }} noWrap>
-                        Profile status: {isApproved ? "Approved" : "Pending"}
-                      </Typography>
-                    </Box>
+                    {roles[0] == "STUDENT" ? (
+                      <>
+                        <Typography noWrap>
+                          Department: {department.name}
+                        </Typography>
+                        <Typography noWrap>
+                          Hostel: {hostel.name}
+                        </Typography>
+                      </>
+                    ) : roles[0] == "HOD" ? (
+                      <>
+                        <Typography noWrap>
+                          Role: Admin (HoD)
+                        </Typography>
+                        <Typography noWrap>
+                          Department: {department.name}
+                        </Typography>
+                      </>
+                    ) : roles[0] == "WARDEN" ? (
+                      <>
+                        <Typography noWrap>
+                          Role: Admin (Warden)
+                        </Typography>
+                        <Typography noWrap>
+                          Hostel: {hostel.name}
+                        </Typography>
+                      </>
+                    ) : (
+                      <>
+                        <Typography noWrap>
+                          Role: System Admin
+                        </Typography>
+                      </>
+                    )}
+
+                    <Typography noWrap>
+                      Profile status: {isApproved ? "Approved" : "Pending"}
+                    </Typography>
                   </Box>
+                </Box>
                   <Box sx={{pt: 1, display:'flex', justifyContent:'center'}}>
                     {isApproved ? (
                       <Button

@@ -26,13 +26,15 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getApplications } from "../redux/applicationSlice";
 
-const Row = (props) => {
-  const { row } = props;
+const Row = ({application}) => {
+  const { subject, reason, startDate, endDate, approveLevel, approvels } = application;
+  const s_date = new Date(startDate * 1000).toLocaleDateString('en-GB');
+  const e_date = new Date(endDate * 1000).toLocaleDateString('en-GB');
   const [open, setOpen] = React.useState(false);
   return (
     <React.Fragment>
       <TableRow
-        key={row.subject}
+        key={subject}
         onClick={() => setOpen(!open)}
         sx={{
           "& > *": { borderBottom: "unset" },
@@ -44,17 +46,16 @@ const Row = (props) => {
             {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
         </TableCell>
-        <TableCell>{row.subject}</TableCell>
-        <TableCell align="right">{row.apply_date}</TableCell>
-        <TableCell align="right">{row.from}</TableCell>
-        <TableCell align="right">{row.to}</TableCell>
-        <TableCell align="right">{row.status}</TableCell>
+        <TableCell>{subject}</TableCell>
+        <TableCell align="right">{s_date}</TableCell>
+        <TableCell align="right">{e_date}</TableCell>
+        <TableCell align="right">{approveLevel > 2 ? 'Approved' : approveLevel == 0 ? 'Rejected' : 'Pending'}</TableCell>
       </TableRow>
       <TableRow sx={{ borderBottom: 1 }}>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ paddingBottom: 2 }}>
-              <Typography>{row.desc}</Typography>
+              <Typography>{reason}</Typography>
             </Box>
           </Collapse>
         </TableCell>
@@ -73,57 +74,7 @@ function StudentDashboard() {
     dispatch(getApplications(publicKey));
   }, []);
 
-  function createData(subject, apply_date, from, to, status, desc) {
-    return { subject, apply_date, from, to, status, desc };
-  }
-
-  if(applications) {
-    applications.map(app=> {
-      console.log({
-        reason: app.reason,
-        subject: app.subject,
-        start_date: app.startDate.toNumber(),
-        end_date: app.endDate.toNumber(),
-        approve_level: app.approveLevel.toNumber(),
-        approvels: app.approvels,
-    })
-  })
-  }
-
-  const rows = [
-    createData(
-      "Stomach Pain",
-      "17/01/2022",
-      "20/01/2022",
-      "27/01/2022",
-      "Accepted",
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."
-    ),
-    createData(
-      "Brother's Wedding",
-      "22/08/2021",
-      "25/08/2021",
-      "30/08/2021",
-      "Accepted",
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
-    ),
-    createData(
-      "Stomach Pain",
-      "20/07/2021",
-      "22/07/2021",
-      "23/07/2021",
-      "Rejected",
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s."
-    ),
-    createData(
-      "Head Ache",
-      "09/04/2021",
-      "10/04/2021",
-      "12/04/2021",
-      "Accepted",
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries."
-    ),
-  ];
+  
   return (
     <>
       <Grid item xs={12}>
@@ -195,9 +146,6 @@ function StudentDashboard() {
                     <TableCell />
                     <TableCell sx={{ fontWeight: "bold" }}>Subject</TableCell>
                     <TableCell sx={{ fontWeight: "bold" }} align="right">
-                      Apply Date
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }} align="right">
                       From Date
                     </TableCell>
                     <TableCell sx={{ fontWeight: "bold" }} align="right">
@@ -209,8 +157,8 @@ function StudentDashboard() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row) => (
-                    <Row key={row.name} row={row} />
+                  {applications && applications.map((app, index) => (
+                    <Row key={index} application={app} />
                   ))}
                 </TableBody>
               </Table>

@@ -40,7 +40,7 @@ export const applyApplication = createAsyncThunk(
 const initialState = {
     isLoading: false,
     isError: false,
-    applications: null
+    applications: {}
 }
 
 export const applicationSlice = createSlice({
@@ -54,13 +54,24 @@ export const applicationSlice = createSlice({
             state.isLoading = true
         })
         builder.addCase(getApplications.fulfilled, (state, action) => {
-          state.isLoading = false,
-          state.applications = action.payload,
-          state.isError = false
+            const key = Object.keys(action.payload)
+            if(!state.applications.hasOwnProperty(key[0])){
+
+                console.log('action,',action.payload)
+                const {payload} = action
+                console.log({payload})
+                console.log("key", key[0])
+                // console.log("app", state.applications)
+                state.applications = {...state.applications, ...payload},
+                state.isLoading = false,
+                state.isError = false
+            } else {
+                console.log('already exists')
+            }
         })
         builder.addCase(getApplications.rejected, (state, action) => {
             state.isLoading = false,
-            state.applications = null,
+            state.applications ={},
             state.isError = true
           })
         builder.addCase(applyApplication.pending, (state, action)=> {

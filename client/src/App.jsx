@@ -56,7 +56,12 @@ if(jwt_token){
   if(decoded.exp < currentTime){
    console.log('expired')
    dispatch(signOutUser())
-   window.location.href= '/'
+   if(window.location.pathname != '/'){
+     console.log('not eqaul')
+     window.location.href= '/'
+    } else {
+      console.log('equal')
+   }
   } else {
     console.log('not expired')
   }

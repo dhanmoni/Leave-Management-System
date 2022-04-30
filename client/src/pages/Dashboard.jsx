@@ -139,12 +139,12 @@ function Dashboard() {
               </Paper>
             </Grid>
 
-            {user.roles[0] == "STUDENT" ? (
-              <StudentDashboard />
+            {user.roles[0] == "ADMIN" || user.roles[0] == "WARDEN" ? (
+              <AdminDashboard />
             ) : user.roles[0] == "SYSTEM_ADMIN" ? (
               <SystemAdminDashboard />
             ) : (
-              <AdminDashboard />
+              <StudentDashboard />
             )}
           </Grid>
         </Container>
