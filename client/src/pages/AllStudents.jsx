@@ -19,9 +19,11 @@ import {
   ListItemAvatar,
 } from "@mui/material";
 
-import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { ErrorOutline } from "@mui/icons-material";
 function AllStudents() {
+  const { user } = useSelector((state) => state.auth);
+
   return (
     <Layout>
       <Box
@@ -34,8 +36,60 @@ function AllStudents() {
       >
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <Grid container spacing={6}>
-            <PendingStudents />
-            <ApprovedStudents />
+            {/* {
+                !user.isApproved ? ( <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent:'center',
+                    padding: 2
+                  }}
+                >
+                    <Typography>
+                        Your profile needs to be approved first before you can view perform any action
+                    </Typography>
+                </Box>
+                ) : (
+                    <>
+                    
+                    </>
+                )
+              } */}
+            {user.isApproved ? (
+              <>
+                <PendingStudents />
+                <ApprovedStudents />
+              </>
+            ) : (
+              <Grid item xs={12}>
+                <Paper
+                  elevation={4}
+                  sx={{
+                    p: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    borderRadius: 3,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      margin: 2,
+                      color: "red",
+                    }}
+                  >
+                    <ErrorOutline />
+                    <Typography sx={{ marginLeft: 2 }}>
+                      Your profile needs to be approved first by the system admin before you can
+                      perform any action!
+                    </Typography>
+                  </Box>
+                </Paper>
+              </Grid>
+            )}
           </Grid>
         </Container>
       </Box>

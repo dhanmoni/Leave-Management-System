@@ -139,7 +139,7 @@ function Dashboard() {
               </Paper>
             </Grid>
 
-            {user.roles[0] == "ADMIN" || user.roles[0] == "WARDEN" ? (
+            {user.roles[0] == "HOD" || user.roles[0] == "WARDEN" ? (
               <AdminDashboard />
             ) : user.roles[0] == "SYSTEM_ADMIN" ? (
               <SystemAdminDashboard />

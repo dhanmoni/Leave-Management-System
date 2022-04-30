@@ -36,7 +36,7 @@ export default function CreateProfile() {
     (state) => state.auth
   );
 
-  const {hostels, departments} = useSelector(state=> state.data)
+  const {hostels, departments} = useSelector(state=> state.info)
 
 
 

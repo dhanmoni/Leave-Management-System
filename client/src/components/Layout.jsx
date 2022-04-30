@@ -29,6 +29,7 @@ import {
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { signOutUser } from "../redux/authSlice";
+import { refeshApplicationState } from "../redux/applicationSlice";
 
 const drawerWidth = 240;
 
@@ -40,20 +41,6 @@ export default function Layout({ children }) {
   const { publicKey, jwt_token, isLoggedIn, user } = useSelector(
     (state) => state.auth
   );
-
-
-  // const menuItemsStudent = [
-  //   {
-  //     text: "Dashboard",
-  //     icon: <AccountCircleOutlined />,
-  //     path: "/dashboard",
-  //   },
-  //   {
-  //     text: "Apply Leave",
-  //     icon: <AddOutlined />,
-  //     path: "/apply",
-  //   },
-  // ];
 
   let menuItems = []
 
@@ -105,6 +92,7 @@ export default function Layout({ children }) {
 
   const handleSignOut = () => {
     dispatch(signOutUser());
+    dispatch(refeshApplicationState())
     navigate("/");
   };
 

@@ -22,6 +22,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import PendingLeaves from "../components/PendingLeaves";
+import RecentLeaves from "../components/RecenctLeaves";
 function LeaveRequests() {
   return (
     <Layout>
@@ -36,6 +37,7 @@ function LeaveRequests() {
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <Grid container spacing={6}>
             <PendingLeaves />
+            <RecentLeaves/>
           </Grid>
         </Container>
       </Box>

@@ -15,22 +15,76 @@ import {
   TableRow,
   Collapse,
   IconButton,
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions,
+  Stepper,
+  Step,
+  StepLabel,
 } from "@mui/material";
 import {
   AddOutlined,
   KeyboardArrowDown,
   KeyboardArrowUp,
 } from "@mui/icons-material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import PendingLeaveCard from './PendingLeaveCard'
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getApplications } from "../redux/applicationSlice";
 
-const Row = ({application}) => {
-  const { subject, reason, startDate, endDate, approveLevel, approvels } = application;
-  const s_date = new Date(startDate * 1000).toLocaleDateString('en-GB');
-  const e_date = new Date(endDate * 1000).toLocaleDateString('en-GB');
+const Row = ({ application }) => {
+  const { subject, reason, startDate, endDate, approveLevel, approvels } =
+    application;
+  const s_date = new Date(startDate * 1000).toLocaleDateString("en-GB");
+  const e_date = new Date(endDate * 1000).toLocaleDateString("en-GB");
   const [open, setOpen] = React.useState(false);
+  let diff = endDate - startDate;
+  let hoursDifference = Math.floor(diff / 60 / 60);
+  const steps = [
+    {
+      label: (
+        <Typography sx={{ fontWeight: "bold", color: "green" }}>
+          Application Submitted
+        </Typography>
+      ),
+    },
+    {
+      label:
+        approveLevel == 2 || approveLevel == 3 || approveLevel == 4 ? (
+          <Typography sx={{ fontWeight: "bold", color: "green" }}>
+            Approved by Warden
+          </Typography>
+        ) : approveLevel == 0 && approvels.length == 1 ? (
+          <Typography sx={{ fontWeight: "bold", color: "red" }}>
+            Rejected by Warden
+          </Typography>
+        ) : approveLevel == 0 && approvels.length > 1 ? (
+          <Typography sx={{ fontWeight: "bold", color: "green" }}>
+            Approved by Warden
+          </Typography>
+        ) : (
+          "Approval by Warden"
+        ),
+    },
+    {
+      label:
+        approveLevel == 3 ||
+        approveLevel == 4 ||
+        (approveLevel == 0 && approvels.length == 3) ? (
+          <Typography sx={{ fontWeight: "bold", color: "green" }}>
+            Approved by HoD
+          </Typography>
+        ) : approveLevel == 0 && approvels.length == 2 ? (
+          <Typography sx={{ fontWeight: "bold", color: "red" }}>
+            Rejected by HoD
+          </Typography>
+        ) : (
+          "Approval by HoD"
+        ),
+    },
+  ];
   return (
     <React.Fragment>
       <TableRow
@@ -49,13 +103,45 @@ const Row = ({application}) => {
         <TableCell>{subject}</TableCell>
         <TableCell align="right">{s_date}</TableCell>
         <TableCell align="right">{e_date}</TableCell>
-        <TableCell align="right">{approveLevel > 2 ? 'Approved' : approveLevel == 0 ? 'Rejected' : 'Pending'}</TableCell>
+        <TableCell align="right">
+          {approveLevel > 3
+            ? "Approved"
+            : approveLevel == 0
+            ? "Rejected"
+            : "Pending"}
+        </TableCell>
       </TableRow>
       <TableRow sx={{ borderBottom: 1 }}>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ paddingBottom: 2 }}>
               <Typography>{reason}</Typography>
+            </Box>
+            <Box>
+            <Stepper activeStep={approvels.length} orientation="vertical">
+            {steps.map((step, index) => (
+              <Step key={step.label}>
+                <StepLabel>{step.label}</StepLabel>
+              </Step>
+            ))}
+            {hoursDifference >= 72 && (
+              <Step>
+                <StepLabel>
+                  {approveLevel > 3 ? (
+                    <Typography sx={{ fontWeight: "bold", color: "green" }}>
+                      Approved by DSW
+                    </Typography>
+                  ) : approveLevel == 0 && approvels.length == 3 ? (
+                    <Typography sx={{ fontWeight: "bold", color: "red" }}>
+                      Rejected by DSW
+                    </Typography>
+                  ) : (
+                    "Approval by DSW"
+                  )}
+                </StepLabel>
+              </Step>
+            )}
+          </Stepper>
             </Box>
           </Collapse>
         </TableCell>
@@ -64,15 +150,18 @@ const Row = ({application}) => {
   );
 };
 
+
 function StudentDashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const {applications} = useSelector(state => state.applications)
-  const {publicKey} = useSelector(state => state.auth)
+  const { applications } = useSelector((state) => state.applications);
+  const { publicKey } = useSelector((state) => state.auth);
+  const showApplyBtn = useState(true)
   useEffect(() => {
     dispatch(getApplications(publicKey));
   }, []);
+
 
   
   return (
@@ -91,6 +180,19 @@ function StudentDashboard() {
             Active Leave Application
           </Typography>
           <Divider variant="middle" />
+          {
+            applications && 
+            Object.keys(applications).length != 0 &&
+            applications[publicKey] && applications[publicKey].map(app=> {
+              showApplyBtn[0] = false
+              if(app.approveLevel == 1){
+                return <PendingLeaveCard application={app} key={app.studentKey}/>
+              }
+            })
+          }
+          {
+            showApplyBtn[0] == true && (
+
           <Box
             sx={{
               p: 2,
@@ -113,6 +215,8 @@ function StudentDashboard() {
               Apply leave
             </Button>
           </Box>
+           )
+          }
         </Paper>
       </Grid>
 
@@ -126,6 +230,7 @@ function StudentDashboard() {
             borderRadius: 3,
           }}
         >
+          
           <Typography variant="h6" sx={{ fontWeight: 600, padding: 2 }}>
             Recent Leave Applications
           </Typography>
@@ -157,9 +262,14 @@ function StudentDashboard() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {applications && applications.map((app, index) => (
-                    <Row key={index} application={app} />
-                  ))}
+                  {applications &&
+                    Object.entries(applications).map((appObj, index) => {
+                      return appObj[1].map((app) => {
+                        if (app.approveLevel != 1) {
+                          return <Row key={index} application={app} />;
+                        }
+                      });
+                    })}
                 </TableBody>
               </Table>
             </TableContainer>

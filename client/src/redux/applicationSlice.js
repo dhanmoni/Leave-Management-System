@@ -36,6 +36,39 @@ export const applyApplication = createAsyncThunk(
     }
   )
 
+export const rejectApplication = createAsyncThunk(
+    'app/reject-application',
+    async (data, thunkAPI) => {
+      try {
+        return await applicationService.rejectApplication(data)
+      } catch (error) {
+        const message =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString()
+        return thunkAPI.rejectWithValue(message)
+      }
+    }
+  )
+
+export const approveApplication = createAsyncThunk(
+    'app/approve-application',
+    async (data, thunkAPI) => {
+      try {
+        return await applicationService.approveApplication(data)
+      } catch (error) {
+        const message =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString()
+        return thunkAPI.rejectWithValue(message)
+      }
+    }
+  )
 
 const initialState = {
     isLoading: false,
@@ -47,7 +80,11 @@ export const applicationSlice = createSlice({
     name:"applications",
     initialState,
     reducers: {
-        
+        refeshApplicationState: (state, action)=> {
+            state.applications = {}
+            state.isError = false,
+            state.isLoading = false
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(getApplications.pending, (state, action)=> {
@@ -90,6 +127,6 @@ export const applicationSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { } = applicationSlice.actions
+export const {refeshApplicationState } = applicationSlice.actions
 
 export default applicationSlice.reducer

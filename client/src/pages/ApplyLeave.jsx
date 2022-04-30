@@ -25,7 +25,7 @@ function ApplyLeave() {
 
   const dispatch = useDispatch();
   const { departments } = useSelector((state) => state.info);
-  const { publicKey } = useSelector((state) => state.auth);
+  const { publicKey, user } = useSelector((state) => state.auth);
   const handleFromChange = (e) => {
     setFromDate(e.target.value);
   };
@@ -140,12 +140,20 @@ function ApplyLeave() {
                       type="submit"
                       variant="contained"
                       endIcon={<Send/>}
+                      disabled={user.isApproved ? false : true}
                       onClick={handleApply}
                       sx={{ mt: 3, mb: 1, paddingLeft: 6, paddingRight: 6 }}
                     >
                       Submit
                     </Button>
                   </Box>
+                  {
+                    !user.isApproved && (
+                      <Typography sx={{color:'red'}}>
+                        Your profile needs to be verified first before you can apply for leave
+                      </Typography>
+                    )
+                  }
                 </Box>
               </Box>
             </Paper>
