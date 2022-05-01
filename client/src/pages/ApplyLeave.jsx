@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../components/Layout";
 
 import {
@@ -13,9 +13,9 @@ import {
   TextField,
   Stack,
 } from "@mui/material";
-import {Send} from '@mui/icons-material'
-import {useSelector, useDispatch} from 'react-redux'
-import {getApplications, applyApplication} from '../redux/applicationSlice'
+import { Send } from "@mui/icons-material";
+import { useSelector, useDispatch } from "react-redux";
+import { getApplications, applyApplication } from "../redux/applicationSlice";
 
 function ApplyLeave() {
   const [fromDate, setFromDate] = useState("");
@@ -26,6 +26,8 @@ function ApplyLeave() {
   const dispatch = useDispatch();
   const { departments } = useSelector((state) => state.info);
   const { publicKey, user } = useSelector((state) => state.auth);
+  const { applications } = useSelector((state) => state.applications);
+
   const handleFromChange = (e) => {
     setFromDate(e.target.value);
   };
@@ -33,16 +35,15 @@ function ApplyLeave() {
     setToDate(e.target.value);
   };
 
-  
-  const handleApply = (e)=> {
-    e.preventDefault()
-    const start_date = new Date(fromDate).getTime() / 1000
-    const end_date = new Date(toDate).getTime() / 1000
-    dispatch(applyApplication({subject, reason, start_date, end_date}))
-    setSubject("")
-    setFromDate("")
-    setToDate("")
-  }
+  const handleApply = (e) => {
+    e.preventDefault();
+    const start_date = new Date(fromDate).getTime() / 1000;
+    const end_date = new Date(toDate).getTime() / 1000;
+    dispatch(applyApplication({ subject, reason, start_date, end_date }));
+    setSubject("");
+    setFromDate("");
+    setToDate("");
+  };
   return (
     <Layout>
       <Box
@@ -78,7 +79,7 @@ function ApplyLeave() {
                 <Typography variant="body1">
                   Provide the required information:
                 </Typography>
-                <Box >
+                <Box>
                   <TextField
                     variant="outlined"
                     size="small"
@@ -105,12 +106,10 @@ function ApplyLeave() {
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
                   />
-                 <Box sx={{display:'flex', flexDirection:'column'}}>
-
-
+                  <Box sx={{ display: "flex", flexDirection: "column" }}>
                     <TextField
                       id="from_date"
-                      sx={{width: '200px', mt: 2}}
+                      sx={{ width: "200px", mt: 2 }}
                       label="From"
                       type="date"
                       required
@@ -119,41 +118,62 @@ function ApplyLeave() {
                       InputLabelProps={{
                         shrink: true,
                       }}
-                      />
-                
+                    />
+
                     <TextField
                       id="to_date"
                       label="To"
                       type="date"
                       required
-                      sx={{width: '200px', mt:2}}
+                      sx={{ width: "200px", mt: 2 }}
                       defaultValue={toDate}
                       onChange={handleToChange}
                       InputLabelProps={{
                         shrink: true,
                       }}
-                      />
-                 
-                      </Box>
-                  <Box textAlign="center">
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      endIcon={<Send/>}
-                      disabled={user.isApproved ? false : true}
-                      onClick={handleApply}
-                      sx={{ mt: 3, mb: 1, paddingLeft: 6, paddingRight: 6 }}
-                    >
-                      Submit
-                    </Button>
+                    />
                   </Box>
-                  {
-                    !user.isApproved && (
-                      <Typography sx={{color:'red'}}>
-                        Your profile needs to be verified first before you can apply for leave
-                      </Typography>
-                    )
-                  }
+
+                  {applications &&
+                    Object.keys(applications).length != 0 &&
+                    applications[publicKey] &&
+                    applications[publicKey].map((app) => {
+                      if (app.approveLevel == 1 || app.approveLevel == 2) {
+                        return (
+                          <Typography sx={{ color: "red", margin:2 }}>
+                            You already have an active leave application. You
+                            can only apply for another once the previous
+                            application gets approved/rejected!
+                          </Typography>
+                        );
+                      } else {
+                        return (
+                          <Box textAlign="center">
+                            <Button
+                              type="submit"
+                              variant="contained"
+                              endIcon={<Send />}
+                              disabled={user.isApproved ? false : true}
+                              onClick={handleApply}
+                              sx={{
+                                mt: 3,
+                                mb: 1,
+                                paddingLeft: 6,
+                                paddingRight: 6,
+                              }}
+                            >
+                              Submit
+                            </Button>
+                          </Box>
+                        );
+                      }
+                    })}
+                  {!user.isApproved && (
+                    <Typography sx={{ color: "red" }}>
+                      Your profile needs to be verified first before you can
+                      apply for leave
+                    </Typography>
+                  )}
                 </Box>
               </Box>
             </Paper>

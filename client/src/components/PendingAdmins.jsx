@@ -12,7 +12,7 @@ import {
   Paper,
   Button,
 } from "@mui/material";
-import { CloseRounded, DoneRounded } from "@mui/icons-material";
+import { AccessTimeOutlined, CloseRounded, DoneRounded } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllAdmins, approveAdmin, rejectAdmin
@@ -54,9 +54,9 @@ function PendingAdmins() {
     dispatch(rejectAdmin(userData))
     setStatus('reject')
   };
-  // useEffect(() => {
-  //   dispatch(getAllAdmins({ jwt_token }));
-  // }, []);
+  useEffect(() => {
+    dispatch(getAllAdmins({ jwt_token }));
+  }, []);
 
   return (
     <Grid item xs={12}>
@@ -92,10 +92,10 @@ function PendingAdmins() {
                                 color="success"
                                 edge="end"
                                 variant="outlined"
-                                startIcon={<DoneRounded />}
+                                startIcon={<AccessTimeOutlined />}
                                 //onClick={() => handleApproveAdmin(admin)}
                               >
-                                Approved
+                                Approving...
                               </Button>
                             ) : status == 'reject' ? (
                               <Button
@@ -103,10 +103,10 @@ function PendingAdmins() {
                                   edge="end"
                                   variant="outlined"
                                   color="danger"
-                                  startIcon={<CloseRounded />}
+                                  startIcon={<AccessTimeOutlined />}
                                   //onClick={() => handleRejectAdmin(admin)}
                                 >
-                                  Rejected
+                                  Rejecting...
                                 </Button>
                             ) : (
                               <>

@@ -1,3 +1,4 @@
+import {appContract} from '../utils/blockchain'
 export const getAllAdmins = async (userData)=> {
     console.log(userData)
     
@@ -13,9 +14,9 @@ export const getAllAdmins = async (userData)=> {
 }
 
 export const approveAdmin = async (userData)=> {
-    
-    console.log("approving...", userData)
-    return fetch(`http://localhost:5000/api/admin/approve-user-admin`, {
+        appContract.makeAdmin(userData.publicKey).then(async ()=> {
+        console.log("approving...", userData)
+        return fetch(`http://localhost:5000/api/admin/approve-user-admin`, {
                 body: JSON.stringify(userData),
                 headers: {
                     'Content-Type': 'application/json',
@@ -27,6 +28,7 @@ export const approveAdmin = async (userData)=> {
                 console.log({data})
                 return data;
             })
+    })
 }
 
 export const rejectAdmin = async (userData)=> {

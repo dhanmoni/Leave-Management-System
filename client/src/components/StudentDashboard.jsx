@@ -185,7 +185,7 @@ function StudentDashboard() {
             Object.keys(applications).length != 0 &&
             applications[publicKey] && applications[publicKey].map(app=> {
               showApplyBtn[0] = false
-              if(app.approveLevel == 1){
+              if(app.approveLevel == 1 || app.approveLevel == 2){
                 return <PendingLeaveCard application={app} key={app.studentKey}/>
               }
             })
@@ -265,7 +265,7 @@ function StudentDashboard() {
                   {applications &&
                     Object.entries(applications).map((appObj, index) => {
                       return appObj[1].map((app) => {
-                        if (app.approveLevel != 1) {
+                        if (app.approveLevel == 0 || app.approveLevel == 3) {
                           return <Row key={index} application={app} />;
                         }
                       });

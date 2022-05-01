@@ -16,6 +16,13 @@ import AdminDashboard from "../components/AdminDashboard";
 import StudentDashboard from "../components/StudentDashboard";
 import SystemAdminDashboard from "../components/SystemAdminDashboard";
 import {getDepartment, getHostel} from '../redux/dataSlice'
+import {
+  getStudentsByHostel,
+  getStudentsByDepartment,
+  approveStudent,
+  rejectStudent,
+  getAllStudents,
+} from "../redux/studentsSlice";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -23,12 +30,20 @@ function Dashboard() {
   const { publicKey, jwt_token, user, isLoggedIn } = useSelector(
     (state) => state.auth
   );
+  const { students } = useSelector((state) => state.students);
 
   useEffect(() => {
     dispatch(getHostel())
     dispatch(getDepartment())
-    
+    if (user.roles[0] == "WARDEN") {
+      dispatch(getStudentsByHostel({ id: user.hostel.id, jwt_token }));
+    } else if (user.roles[0] == "HOD") {
+      dispatch(getStudentsByDepartment({ id: user.department.id, jwt_token }));
+    } else if (user.roles[0] == "SYSTEM_ADMIN") {
+      dispatch(getAllStudents({jwt_token}))
+    }
   }, [])
+
 
   return (
     <Layout>

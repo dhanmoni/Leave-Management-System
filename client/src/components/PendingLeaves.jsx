@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   List,
   ListItem,
@@ -35,14 +35,18 @@ import {
 
 const ApplicationCard = ({ application, student, system_admin }) => {
   const dispatch = useDispatch();
-  const [actionClicked, setActionClicked] = useState("");
+  const btnClicked = useRef(1);
+  const [status, setStatus] = useState("")
   const handleRejectApplication = (key) => {
     dispatch(rejectApplication(key));
-    setActionClicked("rejected");
+    btnClicked.current--;
+    setStatus("reject")
   };
   const handleApproveApplication = (key) => {
     dispatch(approveApplication(key));
-    setActionClicked("approved");
+    btnClicked.current++;
+    setStatus("approve")
+
   };
   console.log({ student, application, system_admin });
   const {
@@ -91,29 +95,34 @@ const ApplicationCard = ({ application, student, system_admin }) => {
       {!system_admin && (
         <CardActions sx={{ margin: 1 }}>
           <Box>
-            {actionClicked != "rejected" && (
-              <Button
-                sx={{ fontSize: 12, marginRight: "6px" }}
-                edge="end"
-                variant="outlined"
-                color="success"
-                startIcon={<DoneRounded />}
-                onClick={() => handleApproveApplication(student.publicKey)}
-              >
-                {actionClicked == "approved" ? "Approved" : "Approve"}
-              </Button>
-            )}
-            {actionClicked != "approved" && (
-              <Button
-                sx={{ fontSize: 12 }}
-                edge="end"
-                variant="outlined"
-                color="danger"
-                startIcon={<CloseRounded />}
-                onClick={() => handleRejectApplication(student.publicKey)}
-              >
-                {actionClicked == "rejected" ? "Rejected" : "Reject"}
-              </Button>
+            {btnClicked.current == 1 ? (
+              <>
+                <Button
+                  sx={{ fontSize: 12, marginRight: "6px" }}
+                  edge="end"
+                  variant="outlined"
+                  color="success"
+                  startIcon={<DoneRounded />}
+                  onClick={() => handleApproveApplication(student.publicKey)}
+                >
+                  Approve
+                </Button>
+                <Button
+                  sx={{ fontSize: 12 }}
+                  edge="end"
+                  variant="outlined"
+                  color="danger"
+                  startIcon={<CloseRounded />}
+                  onClick={() => handleRejectApplication(student.publicKey)}
+                >
+                  "Reject"
+                </Button>
+              </>
+            ) : (
+              <Typography>
+                You have {status == 'approve' ? 'Approved' : 'Rejected'} this application. It might take a while to
+                reflect the changes on the website
+              </Typography>
             )}
           </Box>
         </CardActions>
@@ -133,7 +142,7 @@ function PendingLeaves() {
   const { publicKey } = useSelector((state) => state.auth);
   useEffect(() => {
     if (user.isApproved) {
-      students.map((s) => {
+      students && students.map((s) => {
         console.log("geting application for ", s.publicKey);
         dispatch(getApplications(s.publicKey));
       });
@@ -169,8 +178,8 @@ function PendingLeaves() {
           >
             <ErrorOutline />
             <Typography sx={{ marginLeft: 2 }}>
-              Your profile needs to be approved first by the system admin before you can perform any
-              action!
+              Your profile needs to be approved first by the system admin before
+              you can perform any action!
             </Typography>
           </Box>
         </Paper>
@@ -217,7 +226,16 @@ function PendingLeaves() {
                     (s) => s.publicKey == appObj[0]
                   );
                   console.log({ studentInfo });
-                  if (user.roles[0] == "WARDEN") {
+                  let studentHostelID = studentInfo.length
+                    ? studentInfo[0].hostel.id
+                    : 0;
+                  let studentDeptID = studentInfo.length
+                    ? studentInfo[0].department.id
+                    : 0;
+                  if (
+                    user.roles[0] == "WARDEN" &&
+                    user.hostel.id == studentHostelID
+                  ) {
                     if (app.approveLevel == 1) {
                       return (
                         <ApplicationCard
@@ -227,7 +245,10 @@ function PendingLeaves() {
                         />
                       );
                     }
-                  } else if (user.roles[0] == "HOD") {
+                  } else if (
+                    user.roles[0] == "HOD" &&
+                    user.department.id == studentDeptID
+                  ) {
                     if (app.approveLevel == 2) {
                       return (
                         <ApplicationCard
