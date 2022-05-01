@@ -95,7 +95,7 @@ const ApplicationCard = ({ application, student, system_admin }) => {
       {!system_admin && (
         <CardActions sx={{ margin: 1 }}>
           <Box>
-            {btnClicked.current == 1 ? (
+            {btnClicked.current == 1 && (
               <>
                 <Button
                   sx={{ fontSize: 12, marginRight: "6px" }}
@@ -118,11 +118,6 @@ const ApplicationCard = ({ application, student, system_admin }) => {
                   "Reject"
                 </Button>
               </>
-            ) : (
-              <Typography>
-                You have {status == 'approve' ? 'Approved' : 'Rejected'} this application. It might take a while to
-                reflect the changes on the website
-              </Typography>
             )}
           </Box>
         </CardActions>
@@ -133,13 +128,11 @@ const ApplicationCard = ({ application, student, system_admin }) => {
 
 function PendingLeaves() {
   const dispatch = useDispatch();
-  const [status, setStatus] = useState("");
   const [refresh, setRefresh] = useState(0);
   const { user, jwt_token } = useSelector((state) => state.auth);
   const { applications } = useSelector((state) => state.applications);
   const { students } = useSelector((state) => state.students);
 
-  const { publicKey } = useSelector((state) => state.auth);
   useEffect(() => {
     if (user.isApproved) {
       students && students.map((s) => {

@@ -36,25 +36,7 @@ function AllStudents() {
       >
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <Grid container spacing={6}>
-            {/* {
-                !user.isApproved ? ( <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent:'center',
-                    padding: 2
-                  }}
-                >
-                    <Typography>
-                        Your profile needs to be approved first before you can view perform any action
-                    </Typography>
-                </Box>
-                ) : (
-                    <>
-                    
-                    </>
-                )
-              } */}
+            
             {user.isApproved ? (
               <>
                 <PendingStudents />

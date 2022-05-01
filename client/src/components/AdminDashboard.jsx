@@ -3,6 +3,7 @@ import ApprovedStudents from "./ApprovedStudents";
 import PendingLeaves from "./PendingLeaves";
 
 function AdminDashboard() {
+  
   return (
     <>
       <PendingLeaves />

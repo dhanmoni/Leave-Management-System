@@ -33,8 +33,6 @@ function Dashboard() {
   const { students } = useSelector((state) => state.students);
 
   useEffect(() => {
-    dispatch(getHostel())
-    dispatch(getDepartment())
     if (user.roles[0] == "WARDEN") {
       dispatch(getStudentsByHostel({ id: user.hostel.id, jwt_token }));
     } else if (user.roles[0] == "HOD") {
