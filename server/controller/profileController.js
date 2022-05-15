@@ -120,6 +120,63 @@ exports.createAdminProfile = async (req, res) => {
   }
 };
 
+exports.addLocalGuardian = async (req, res)=> {
+    const { publicKey, localGuardianID, localGuardianName } = req.body;
+    if (!publicKey) {
+      return res.status(400).json({ error: "Request should have publicKey" });
+    }
+    
+    return User.findOne({ publicKey })
+      .then((user) => {
+        if (!user) {
+          res.status(400).json({ errors: "user doesnot exists" });
+          return null;
+        }
+        User.findOneAndUpdate(
+          { publicKey },
+          {
+            $set: {
+                localGuardian: {
+                    id: localGuardianID,
+                    name: localGuardianName
+                }
+            },
+          },
+          { new: true }
+        ).then((s) => res.json(s));
+      })
+      .catch((err) => res.status(500).json(err));
+}
+
+exports.addProjectGuide = async (req, res)=> {
+    const { publicKey, projectGuideID, projectGuideName } = req.body;
+    if (!publicKey) {
+      return res.status(400).json({ error: "Request should have publicKey" });
+    }
+    
+    return User.findOne({ publicKey })
+      .then((user) => {
+        if (!user) {
+          res.status(400).json({ errors: "user doesnot exists" });
+          return null;
+        }
+        User.findOneAndUpdate(
+          { publicKey },
+          {
+            $set: {
+                isApproved: false,
+                projectGuide: {
+                    id: projectGuideID,
+                    name: projectGuideName
+                }
+            },
+          },
+          { new: true }
+        ).then((s) => res.json(s));
+      })
+      .catch((err) => res.status(500).json(err));
+}
+
 exports.getHostels = async (req, res) => {
   Hostel.find()
     .sort({ createdAt: -1 })

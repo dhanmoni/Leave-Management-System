@@ -48,10 +48,6 @@ const schema = new mongoose.Schema(
         },
         name: {
             type: String
-        },
-        isApproved: {
-            type: Boolean,
-            default:false
         }
     },
     projectGuide: {
@@ -61,10 +57,6 @@ const schema = new mongoose.Schema(
         },
         name: {
             type: String
-        },
-        isApproved: {
-            type: Boolean,
-            default:false
         }
     },
     department: {

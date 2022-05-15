@@ -15,6 +15,7 @@ router.get("/admins", systemAdminAuth, adminController.getAllAdmins);
 
 //routes accessed by normal admin as well as system admin
 router.post("/approve-user-student", adminAuth, adminController.approveUserStudent);
+router.post("/approve-user-profile-update", adminAuth, adminController.approveUserProfileUpdate);
 router.post("/reject-user-student", adminAuth, adminController.rejectUserStudent);
 
 module.exports = router;

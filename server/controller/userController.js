@@ -24,3 +24,17 @@ exports.getAllStudents = async (req,res)=> {
         .catch(err=> res.status(404).json({error: 'No students found'}))
 }
 
+exports.getAllLocalGuardians = async (req,res)=> {
+    User.find({ roles: 'LOCAL_GUARDIAN'})
+        .sort({createdAt: -1})
+        .then(localGuardian=> res.json(localGuardian))
+        .catch(err=> res.status(404).json({error: 'No local guardian found'}))
+}
+
+exports.getAllProjectGuides = async (req,res)=> {
+    User.find({ roles: 'PROJECT_GUIDE'})
+        .sort({createdAt: -1})
+        .then(projectGuide=> res.json(projectGuide))
+        .catch(err=> res.status(404).json({error: 'No project guide found'}))
+}
+
