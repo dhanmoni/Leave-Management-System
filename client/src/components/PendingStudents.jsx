@@ -142,12 +142,12 @@ function PendingStudents() {
                           }
                           secondary={
                             <Box>
-                              <Typography variant="body2" color="text.primary">
+                              {/* <Typography variant="body2" color="text.primary">
                                 Department: {student.department.name}
                               </Typography>
                               <Typography variant="body2" color="text.primary">
                                 Hostel: {student.hostel.name}
-                              </Typography>
+                              </Typography> */}
                               <Typography variant="body2" color="text.primary">
                                 Email: {student.email}
                               </Typography>

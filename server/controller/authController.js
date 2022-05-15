@@ -99,12 +99,9 @@ exports.createUser = async (req,res)=> {
     if (!publicKey){
         return res.status(400).json({ error: 'Request should have publicKey' });
     }
-    // console.log({publicKey});
-    console.log("hello", publicKey);
     return (
         User.findOne({publicKey})
         .then(async user=> {
-            console.log('found');
             if(user) {
                 return res.status(400).json({ error:  'user already exists' });
             }

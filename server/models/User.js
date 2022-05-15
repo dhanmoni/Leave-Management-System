@@ -24,12 +24,48 @@ const schema = new mongoose.Schema(
         type: Boolean,
         default: false,
     },
+    idProof:{
+        type: String,
+    },
     roles: {
         type: [{
             type: String,
-            enum: ['STUDENT', 'HOD', 'WARDEN', 'SYSTEM_ADMIN']
+            enum: [
+                'STUDENT', 
+                'HOD', 
+                'WARDEN', 
+                'PROJECT_GUIDE', 
+                'LOCAL_GUARDIAN',
+                'DSW', 
+                'SYSTEM_ADMIN']
         }],
         default: ['STUDENT']
+    },
+    localGuardian: {
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user",
+        },
+        name: {
+            type: String
+        },
+        isApproved: {
+            type: Boolean,
+            default:false
+        }
+    },
+    projectGuide: {
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user",
+        },
+        name: {
+            type: String
+        },
+        isApproved: {
+            type: Boolean,
+            default:false
+        }
     },
     department: {
         id: {
@@ -49,6 +85,16 @@ const schema = new mongoose.Schema(
             type: String
         }
     },
+    // if user is project-guide or local-guardian the he/she will have a list
+    // of students under his/her name
+    students: [
+        {
+          student: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user",
+          }
+        }
+    ],
   },
   { timestamps: true }
 );
