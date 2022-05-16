@@ -125,11 +125,11 @@ exports.rejectUserAdmin = async (req, res) => {
 
 exports.approveUserStudent = async (req, res) => {
   console.log(req.body);
-  const { studentId, dept_id, hostel_id } = req.body;
+  const { publicKey, dept_id, hostel_id, guardian_id } = req.body;
 
   console.log("approving student...");
   // here student = user
-  return User.findById(studentId)
+  return User.findOne({publicKey})
     .then((student) => {
       if (!student) {
         res.status(400).json({ errors: "student doesnot exists" });
@@ -167,9 +167,10 @@ exports.approveUserStudent = async (req, res) => {
               // return res.status(200).json(student)
             })
             .then(() => {
-              User.findById(localGuardianId).then((user) => {
+              User.findById(guardian_id).then((user) => {
                 user.students.push({
-                  student: student.id,
+                  id: student.id,
+                  name: student.name
                 });
                 user.save();
                 return res.status(200).json({ msg: "sucess" });
@@ -183,11 +184,11 @@ exports.approveUserStudent = async (req, res) => {
 };
 
 exports.approveUserProfileUpdate = async (req, res) => {
-  const { studentId, projectGuideId } = req.body;
+  const { publicKey, projectGuideId } = req.body;
 
   console.log("approving student profile updation...");
 
-  return User.findById(studentId)
+  return User.findOne({publicKey})
     .then((student) => {
       if (!student) {
         res.status(400).json({ errors: "student doesnot exists" });
@@ -195,11 +196,10 @@ exports.approveUserProfileUpdate = async (req, res) => {
       }
       student.isApproved = true;
       student.save();
-    })
-    .then(() => {
       User.findById(projectGuideId).then((user) => {
         user.students.push({
-          student: studentId,
+          id: student.id,
+          name: student.name
         });
         user.save();
         return res.status(200).json({ msg: "sucess" });

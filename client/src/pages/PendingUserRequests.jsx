@@ -21,6 +21,7 @@ import {
 
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import PendingProfileUpdate from "../components/PendingProfileUpdate";
 function PendingUserRequest() {
   return (
     <Layout>
@@ -36,6 +37,7 @@ function PendingUserRequest() {
           <Grid container spacing={6}>
             <PendingStudents />
             <PendingAdmins />
+            <PendingProfileUpdate/>
           </Grid>
         </Container>
       </Box>

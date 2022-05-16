@@ -9,6 +9,6 @@ router.post("/create-profile",auth, upload.single('idProof'), profileController.
 router.post("/create-admin-profile",auth, upload.single('idProof'), profileController.createAdminProfile);
 router.get("/get-hostels", profileController.getHostels);
 router.get("/get-departments", profileController.getDepartments);
-// router.post("/add-id",upload.single('idProof'), profileController.addIDProof);
+router.post("/add-project-guide",auth, profileController.addProjectGuide);
 
 module.exports = router;

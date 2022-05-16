@@ -35,11 +35,64 @@ export const getDepartment = createAsyncThunk(
   }
 )
 
+export const getLocalGuardians = createAsyncThunk(
+  'students/get-local-guardians',
+  async (jwt_token, thunkAPI) => {
+    try {
+      return await dataService.getLocalGuardians(jwt_token)
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString()
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
+
+export const getProjectGuides = createAsyncThunk(
+  'students/get-project-guides',
+  async (jwt_token, thunkAPI) => {
+    try {
+      return await dataService.getProjectGuides(jwt_token)
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString()
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
+
+export const addProjectGuide = createAsyncThunk(
+  'students/add-project-guide',
+  async (userData, thunkAPI) => {
+    try {
+      return await dataService.addProjectGuide(userData)
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString()
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
+
 const initialState = {
     isLoading: false,
     isError: false,
     departments: null,
-    hostels: null
+    hostels: null,
+    localGuardians: null,
+    projectGuides: null
 }
 
 export const dataSlice = createSlice({
@@ -71,6 +124,40 @@ export const dataSlice = createSlice({
         builder.addCase(getHostel.rejected, (state, action) => {
             state.isLoading = false,
             state.hostels = null,
+            state.isError = true
+          })
+        builder.addCase(getLocalGuardians.pending, (state, action)=> {
+            state.isLoading = true
+        })
+        builder.addCase(getLocalGuardians.fulfilled, (state, action) => {
+          state.isLoading = false,
+          state.localGuardians = action.payload
+        })
+        builder.addCase(getLocalGuardians.rejected, (state, action) => {
+            state.isLoading = false,
+            state.localGuardians = null,
+            state.isError = true
+          })
+        builder.addCase(getProjectGuides.pending, (state, action)=> {
+            state.isLoading = true
+        })
+        builder.addCase(getProjectGuides.fulfilled, (state, action) => {
+          state.isLoading = false,
+          state.projectGuides = action.payload
+        })
+        builder.addCase(getProjectGuides.rejected, (state, action) => {
+            state.isLoading = false,
+            state.projectGuides = null,
+            state.isError = true
+          })
+        builder.addCase(addProjectGuide.pending, (state, action)=> {
+            state.isLoading = true
+        })
+        builder.addCase(addProjectGuide.fulfilled, (state, action) => {
+          state.isLoading = false
+        })
+        builder.addCase(addProjectGuide.rejected, (state, action) => {
+            state.isLoading = false,
             state.isError = true
           })
       },

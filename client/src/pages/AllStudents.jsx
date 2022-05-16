@@ -39,7 +39,12 @@ function AllStudents() {
             
             {user.isApproved ? (
               <>
-                <PendingStudents />
+              {
+                user.roles[0] === "HOD"
+                || user.roles[0] === "WARDEN" ? (
+                  <PendingStudents />
+                ) : null
+              }
                 <ApprovedStudents />
               </>
             ) : (

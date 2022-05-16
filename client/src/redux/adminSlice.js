@@ -52,6 +52,24 @@ export const rejectAdmin = createAsyncThunk(
     }
 )
 
+export const approveProfileUpdate = createAsyncThunk(
+  'admin/approve-admin',
+  async (userData, thunkAPI) => {
+    try {
+      return await adminService.approveProfileUpdate(userData)
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString()
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
+
+
 const initialState = {
     isLoading: false,
     isError: false,

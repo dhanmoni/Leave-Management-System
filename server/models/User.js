@@ -81,10 +81,13 @@ const schema = new mongoose.Schema(
     // of students under his/her name
     students: [
         {
-          student: {
+          id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "user",
-          }
+          },
+          name: {
+            type: String
+        }
         }
     ],
   },

@@ -27,7 +27,9 @@ exports.getAllStudents = async (req,res)=> {
 exports.getAllLocalGuardians = async (req,res)=> {
     User.find({ roles: 'LOCAL_GUARDIAN'})
         .sort({createdAt: -1})
-        .then(localGuardian=> res.json(localGuardian))
+        .then(localGuardian=>{
+            console.log('getting data', localGuardian)
+            return res.json(localGuardian)})
         .catch(err=> res.status(404).json({error: 'No local guardian found'}))
 }
 

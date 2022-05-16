@@ -8,7 +8,7 @@ exports.createUserProfile = async (req, res) => {
   console.log('creating profile..', req.file.path)
   try {
     const result = await cloudinary.uploader.upload(req.file.path);
-    const { name, email, phone, hostel, department, publicKey } = req.body;
+    const { name, email, phone, hostel, department, publicKey, localGuardian } = req.body;
     
     if (!publicKey) {
       return res.status(400).json({ error: "Request should have publicKey" });
@@ -31,6 +31,7 @@ exports.createUserProfile = async (req, res) => {
               phone,
               hostel: JSON.parse(hostel),
               department: JSON.parse(department),
+              localGuardian: JSON.parse(localGuardian),
               idProof: result.secure_url,
             },
           },
@@ -154,11 +155,11 @@ exports.addLocalGuardian = async (req, res)=> {
 }
 
 exports.addProjectGuide = async (req, res)=> {
-    const { publicKey, projectGuideID, projectGuideName } = req.body;
+    const { publicKey, projectGuide } = req.body;
     if (!publicKey) {
       return res.status(400).json({ error: "Request should have publicKey" });
     }
-    
+    console.log('adding project guide', projectGuide)
     return User.findOne({ publicKey })
       .then((user) => {
         if (!user) {
@@ -171,8 +172,8 @@ exports.addProjectGuide = async (req, res)=> {
             $set: {
                 isApproved: false,
                 projectGuide: {
-                    id: projectGuideID,
-                    name: projectGuideName
+                    id: projectGuide.id,
+                    name: projectGuide.name
                 }
             },
           },

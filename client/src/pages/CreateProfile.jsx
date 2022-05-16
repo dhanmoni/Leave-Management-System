@@ -17,7 +17,7 @@ import { AssignmentIndOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createAdminProfile, createUserProfile } from "../redux/authSlice";
-import {getDepartment, getHostel} from '../redux/dataSlice'
+import {getDepartment, getHostel, getLocalGuardians} from '../redux/dataSlice'
 
 
 export default function CreateProfile() {
@@ -26,6 +26,7 @@ export default function CreateProfile() {
   const [phone, setPhone] = useState("");
   const [hostel, setHostel] = useState("");
   const [department, setDept] = useState("");
+  const [guardian, setGuardian] = useState("");
   const [idProofFile, setIdProofFile] = useState("");
   const [role, setRole] = useState("student");
   const [adminRole, setAdminRole] = useState("");
@@ -50,7 +51,7 @@ export default function CreateProfile() {
     (state) => state.auth
   );
 
-  const { hostels, departments } = useSelector((state) => state.info);
+  const { hostels, departments, localGuardians } = useSelector((state) => state.info);
 
   const handleRoleChange = (e) => {
     setAdminRole(e.target.value);
@@ -64,6 +65,9 @@ export default function CreateProfile() {
   const handleDeptChange = (e) => {
     setDept(e.target.value);
   };
+  const handleGuardianChange = (e)=> {
+    setGuardian(e.target.value)
+  }
 
   const parseHostelData = () => {
     const hostelInfo = hostel.split("&&&");
@@ -87,6 +91,16 @@ export default function CreateProfile() {
     return deptData;
   };
 
+  const parseGuardianData = () => {
+    const guardianInfo = guardian.split("&&&");
+    const guardianID = guardianInfo[0];
+    const guardianName = guardianInfo[1];
+    const guardianData = {
+      id: guardianID,
+      name: guardianName,
+    };
+    return guardianData;
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     setOpenSnackbar(true)
@@ -96,13 +110,14 @@ export default function CreateProfile() {
       console.log('role', role)
       const hostelData = parseHostelData();
       const deptData = parseDeptData();
-
+      const guardianData = parseGuardianData()
       data.append("name", name);
       data.append("phone", phone);
       data.append("email", email);
       data.append("hostel", JSON.stringify(hostelData));
-      data.append("publicKey", publicKey);
       data.append("department", JSON.stringify(deptData));
+      data.append("localGuardian", JSON.stringify(guardianData));
+      data.append("publicKey", publicKey);
       data.append("idProof", idProofFile);
       data.append("jwt_token", jwt_token);
       
@@ -153,6 +168,7 @@ export default function CreateProfile() {
   useEffect(() => {
     dispatch(getHostel())
     dispatch(getDepartment())
+    dispatch(getLocalGuardians(jwt_token))
     if (isLoggedIn) {
       navigate("/dashboard");
     } else if (jwt_token) {
@@ -396,6 +412,28 @@ export default function CreateProfile() {
                         value={`${option._id}&&&${option.name}`}
                       >
                         {option.name}
+                      </MenuItem>
+                    ))}
+                </TextField>
+
+                <TextField
+                  id="select-guardian"
+                  select
+                  margin="normal"
+                  //required
+                  fullWidth
+                  label="Select Local Guardian"
+                  onChange={handleGuardianChange}
+                  variant="outlined"
+                  value={guardian}
+                >
+                  {localGuardians &&
+                    localGuardians.map((option) => (
+                      <MenuItem
+                        key={option.name}
+                        value={`${option._id}&&&${option.name}`}
+                      >
+                        {option.name} : {option.email}
                       </MenuItem>
                     ))}
                 </TextField>

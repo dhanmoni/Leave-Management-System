@@ -13,8 +13,9 @@ export const getAllAdmins = async (userData)=> {
             })
 }
 
+
 export const approveAdmin = async (userData)=> {
-        appContract.makeAdmin(userData.publicKey).then(async ()=> {
+        // appContract.makeAdmin(userData.publicKey).then(async ()=> {
         console.log("approving...", userData)
         return fetch(`http://localhost:5000/api/admin/approve-user-admin`, {
                 body: JSON.stringify(userData),
@@ -28,7 +29,7 @@ export const approveAdmin = async (userData)=> {
                 console.log({data})
                 return data;
             })
-    })
+    // })
 }
 
 export const rejectAdmin = async (userData)=> {
@@ -49,10 +50,29 @@ export const rejectAdmin = async (userData)=> {
 }
 
 
+export const approveProfileUpdate = async (userData)=> {
+    
+    console.log("approvig update...", userData)
+    return fetch(`http://localhost:5000/api/admin/approve-user-profile-update`, {
+                body: JSON.stringify(userData),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-auth-token': userData.jwt_token
+                },
+                method: 'POST'
+            }).then(res=> res.json())
+            .then(data=> {
+                console.log({data})
+                return data;
+            })
+}
+
+
 const adminService = {
     getAllAdmins,
     approveAdmin,
-    rejectAdmin
+    rejectAdmin,
+    approveProfileUpdate
 }
 
 export default adminService;

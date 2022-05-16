@@ -41,7 +41,9 @@ export default function Layout({ children }) {
   const { publicKey, jwt_token, isLoggedIn, user } = useSelector(
     (state) => state.auth
   );
+  
 
+  console.log({user, publicKey})
   let menuItems = []
 
   if(user.roles[0] == 'SYSTEM_ADMIN'){
@@ -143,7 +145,7 @@ export default function Layout({ children }) {
                 fontSize: 48,
               }}
             >
-              {user.name[0]}
+              {/* {user.name[0]} */}
             </Avatar>
             <Typography variant="h6" noWrap>
               {user.name}

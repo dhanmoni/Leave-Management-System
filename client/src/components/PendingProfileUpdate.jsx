@@ -16,16 +16,12 @@ import {
 import { CloseRounded, DoneRounded } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getStudentsByHostel,
-  getStudentsByDepartment,
-  approveStudent,
-  rejectStudent,
-  getAllStudents,
-} from "../redux/studentsSlice";
+  approveProfileUpdate
+} from "../redux/adminSlice";
 import { Link, useNavigate } from "react-router-dom";
 
 
-function PendingStudents() {
+function PendingProfileUpdate() {
   const dispatch = useDispatch();
   const navigate = useNavigate()
   const [status, setStatus] = useState('')
@@ -43,24 +39,22 @@ function PendingStudents() {
     setOpenSnackbar(true)
     const userData = {
       jwt_token,
-      hostel_id: s.hostel.id,
-      dept_id: s.department.id,
       publicKey: s.publicKey,
-      guardian_id: s.localGuardian.id
+      projectGuideId: s.projectGuide.id
     };
     console.log({ userData });
-    dispatch(approveStudent(userData))
+    dispatch(approveProfileUpdate(userData))
     setStatus('approve')
   };
   const handleRejectStudent = (s) => {
-    setOpenSnackbar(true)
-    const userData = {
-      jwt_token,
-      publicKey: s.publicKey
-    };
-    console.log({ userData });
-    dispatch(rejectStudent(userData))
-    setStatus('reject')
+    // setOpenSnackbar(true)
+    // const userData = {
+    //   jwt_token,
+    //   publicKey: s.publicKey
+    // };
+    // console.log({ userData });
+    // dispatch(rejectStudent(userData))
+    // setStatus('reject')
   };
   
   return (
@@ -70,7 +64,7 @@ function PendingStudents() {
         sx={{ p: 2, display: "flex", flexDirection: "column", borderRadius: 3 }}
       >
         <Typography variant="h6" sx={{ fontWeight: 600, padding: 2 }}>
-          Pending Students
+          Pending Profile Update
         </Typography>
         <Divider variant="middle" />
         <Box
@@ -86,7 +80,7 @@ function PendingStudents() {
               <>
                 {students.map((student) => {
                   console.log('pending students', student)
-                  return (!student.isApproved && !student.projectGuide.id) && (
+                  return (!student.isApproved && student.projectGuide.id) && (
                     <>
                       <ListItem
                       key={student.publicKey}
@@ -213,4 +207,4 @@ function PendingStudents() {
   );
 }
 
-export default PendingStudents;
+export default PendingProfileUpdate;

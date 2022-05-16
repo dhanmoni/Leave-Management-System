@@ -7,15 +7,22 @@ import {
   Avatar,
   Divider,
   Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  MenuItem,
 } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import AdminDashboard from "../components/AdminDashboard";
 import StudentDashboard from "../components/StudentDashboard";
 import SystemAdminDashboard from "../components/SystemAdminDashboard";
-import { getDepartment, getHostel } from "../redux/dataSlice";
+import { getDepartment, getHostel, getProjectGuides, addProjectGuide } from "../redux/dataSlice";
 import {
   getStudentsByHostel,
   getStudentsByDepartment,
@@ -27,12 +34,15 @@ import {
 function Dashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [open, setOpen] = useState(false)
+  const [projectGuide, setProjectGuide] = useState("")
   const { publicKey, jwt_token, user, isLoggedIn } = useSelector(
     (state) => state.auth
   );
-  const { students } = useSelector((state) => state.students);
+  const { projectGuides } = useSelector((state) => state.info);
 
   useEffect(() => {
+    dispatch(getProjectGuides(jwt_token))
     if (user.roles[0] == "WARDEN") {
       dispatch(getStudentsByHostel({ id: user.hostel.id, jwt_token }));
     } else if (user.roles[0] == "HOD") {
@@ -41,6 +51,41 @@ function Dashboard() {
       dispatch(getAllStudents({ jwt_token }));
     }
   }, []);
+
+
+  const handleProjectGuideChange = (e)=> {
+    setProjectGuide(e.target.value)
+  }
+
+  const parseProjectGuideData = () => {
+    const projectGuideInfo = projectGuide.split("&&&");
+    const projectGuideID = projectGuideInfo[0];
+    const projectGuideName = projectGuideInfo[1];
+    const projectGuideData = {
+      id: projectGuideID,
+      name: projectGuideName,
+    };
+    return projectGuideData;
+  };
+
+
+  const handleProjectGuideUpdate = ()=> {
+    const projectGuideData = parseProjectGuideData()
+    console.log('helo', projectGuideData)
+    const userData = {
+      projectGuide: projectGuideData,
+      publicKey,
+      jwt_token,
+    }
+    dispatch(addProjectGuide(userData))
+    setOpen(false)
+  }
+
+ if(!user){
+   return <Layout>
+     <Typography>Loading...</Typography>
+   </Layout>
+ }
 
   return (
     <Layout>
@@ -86,7 +131,7 @@ function Dashboard() {
                       fontSize: 48,
                     }}
                   >
-                    {user.name[0]}
+                    {/* {user.name[0]} */}
                   </Avatar>
                   <Typography
                     sx={{ fontWeight: "bold", fontSize: 28, padding: 2 }}
@@ -104,7 +149,9 @@ function Dashboard() {
                     <Typography noWrap>Public Key: {user.publicKey}</Typography>
                     <Typography noWrap>Email: {user.email}</Typography>
                     <Typography noWrap>Phone: {user.phone}</Typography>
-
+                    <Typography noWrap>
+                      Profile status: {user.isApproved ? "Approved" : "Pending"}
+                    </Typography>
                     {user.roles[0] == "STUDENT" ? (
                       <>
                         <Typography noWrap>
@@ -113,6 +160,15 @@ function Dashboard() {
                         <Typography noWrap>
                           Hostel: {user.hostel.name}
                         </Typography>
+                        <Typography noWrap>
+                          Local Guardian: {user.localGuardian.name}
+                        </Typography>
+                        <Button 
+                        onClick={()=> setOpen(true)}
+                        variant="outlined" 
+                        sx={{fontSize:'10px', marginTop:'10px', padding:'4px', maxWidth:'20%'}}>
+                        Add/Change Project Guide
+                        </Button>
                       </>
                     ) : user.roles[0] == "HOD" ? (
                       <>
@@ -144,10 +200,6 @@ function Dashboard() {
                         <Typography noWrap>Role: System Admin</Typography>
                       </>
                     )}
-
-                    <Typography noWrap>
-                      Profile status: {user.isApproved ? "Approved" : "Pending"}
-                    </Typography>
                   </Box>
                 </Box>
               </Paper>
@@ -163,6 +215,52 @@ function Dashboard() {
           </Grid>
         </Container>
       </Box>
+      <Dialog open={open} onClose={()=> setOpen(false)}>
+        <DialogTitle>Add/Change Project Guide:</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Select a project guide from the dropdown.
+          </DialogContentText>
+          <TextField
+                  id="select-project-guide"
+                  select
+                  margin="normal"
+                  //required
+                  fullWidth
+                  label="Select Project Guide"
+                  onChange={handleProjectGuideChange}
+                  variant="outlined"
+                  value={projectGuide}
+                >
+                  {projectGuides &&
+                    projectGuides.map((option) => (
+                      <MenuItem
+                      style={{whiteSpace: 'normal'}}
+                        key={option.name}
+                        value={`${option._id}&&&${option.name}`}
+                      >
+                        <>
+                        <Typography>{option.name} : {option.email} :</Typography>
+                        <Typography> Department: {option.department.name}</Typography>
+                        </>
+                      </MenuItem>
+                    ))}
+                </TextField>
+          <Typography variant="body2" sx={{ fontSize: "0.8rem" }}>
+            (Your profile will be inactivated until your HOD or system admin approves the update!)
+          </Typography>
+          <DialogActions>
+            <Button onClick={()=> setOpen(false)}>Cancel</Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleProjectGuideUpdate}
+            >
+              Add
+            </Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 }
