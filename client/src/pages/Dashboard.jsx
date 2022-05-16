@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AdminDashboard from "../components/AdminDashboard";
 import StudentDashboard from "../components/StudentDashboard";
 import SystemAdminDashboard from "../components/SystemAdminDashboard";
-import {getDepartment, getHostel} from '../redux/dataSlice'
+import { getDepartment, getHostel } from "../redux/dataSlice";
 import {
   getStudentsByHostel,
   getStudentsByDepartment,
@@ -38,10 +38,9 @@ function Dashboard() {
     } else if (user.roles[0] == "HOD") {
       dispatch(getStudentsByDepartment({ id: user.department.id, jwt_token }));
     } else if (user.roles[0] == "SYSTEM_ADMIN") {
-      dispatch(getAllStudents({jwt_token}))
+      dispatch(getAllStudents({ jwt_token }));
     }
-  }, [])
-
+  }, []);
 
   return (
     <Layout>
@@ -73,9 +72,9 @@ function Dashboard() {
                 <Box
                   sx={{
                     display: "flex",
-                    flexDirection:'column',
+                    flexDirection: "column",
                     alignItems: "center",
-                    justifyContent:'center',
+                    justifyContent: "center",
                     padding: 2,
                   }}
                 >
@@ -89,25 +88,22 @@ function Dashboard() {
                   >
                     {user.name[0]}
                   </Avatar>
-                  <Typography sx={{ fontWeight: "bold", fontSize: 28, padding: 2 }} noWrap>
-                      {user.name}
-                    </Typography>
+                  <Typography
+                    sx={{ fontWeight: "bold", fontSize: 28, padding: 2 }}
+                    noWrap
+                  >
+                    {user.name}
+                  </Typography>
                   <Box
                     sx={{
                       display: "flex",
-                      flexDirection:'column',
-                      width: '100%'
+                      flexDirection: "column",
+                      width: "100%",
                     }}
                   >
-                    <Typography noWrap>
-                      Public Key: {user.publicKey}
-                    </Typography>
-                    <Typography noWrap>
-                      Email: {user.email}
-                    </Typography>
-                    <Typography noWrap>
-                      Phone: {user.phone}
-                    </Typography>
+                    <Typography noWrap>Public Key: {user.publicKey}</Typography>
+                    <Typography noWrap>Email: {user.email}</Typography>
+                    <Typography noWrap>Phone: {user.phone}</Typography>
 
                     {user.roles[0] == "STUDENT" ? (
                       <>
@@ -120,27 +116,32 @@ function Dashboard() {
                       </>
                     ) : user.roles[0] == "HOD" ? (
                       <>
-                        <Typography noWrap>
-                          Role: Admin (HoD)
-                        </Typography>
+                        <Typography noWrap>Role: Admin (HoD)</Typography>
                         <Typography noWrap>
                           Department: {user.department.name}
                         </Typography>
                       </>
                     ) : user.roles[0] == "WARDEN" ? (
                       <>
-                        <Typography noWrap>
-                          Role: Admin (Warden)
-                        </Typography>
+                        <Typography noWrap>Role: Admin (Warden)</Typography>
                         <Typography noWrap>
                           Hostel: {user.hostel.name}
                         </Typography>
                       </>
+                    ) : user.roles[0] == "LOCAL_GUARDIAN" ? (
+                      <>
+                        <Typography noWrap>Role: Admin (Local Guardian)</Typography>
+                      </>
+                    ) : user.roles[0] == "PROJECT_GUIDE" ? (
+                      <>
+                        <Typography noWrap>Role: Admin (Project Guide)</Typography>
+                        <Typography noWrap>
+                          Department: {user.department.name}
+                        </Typography>
+                      </>
                     ) : (
                       <>
-                        <Typography noWrap>
-                          Role: System Admin
-                        </Typography>
+                        <Typography noWrap>Role: System Admin</Typography>
                       </>
                     )}
 
@@ -152,12 +153,12 @@ function Dashboard() {
               </Paper>
             </Grid>
 
-            {user.roles[0] == "HOD" || user.roles[0] == "WARDEN" ? (
-              <AdminDashboard />
+            {user.roles[0] == "STUDENT" ? (
+              <StudentDashboard />
             ) : user.roles[0] == "SYSTEM_ADMIN" ? (
               <SystemAdminDashboard />
             ) : (
-              <StudentDashboard />
+              <AdminDashboard />
             )}
           </Grid>
         </Container>

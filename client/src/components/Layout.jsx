@@ -75,7 +75,11 @@ export default function Layout({ children }) {
         path: "/apply",
       },
     ];
-  } else if(user.roles[0] == 'WARDEN' || user.roles[0] == 'HOD'){
+  } else if(user.roles[0] == 'WARDEN' 
+          || user.roles[0] == 'HOD'
+          || user.roles[0] == 'PROJECT_GUIDE'
+          || user.roles[0] == 'LOCAL_GUARDIAN'
+          ){
     menuItems = [
       {
         text: "Dashboard",

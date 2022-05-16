@@ -50,6 +50,7 @@ exports.createUserProfile = async (req, res) => {
 };
 
 exports.createAdminProfile = async (req, res) => {
+  console.log('creating amdin profile')
   try {
     const result = await cloudinary.uploader.upload(req.file.path);
 
@@ -73,7 +74,7 @@ exports.createAdminProfile = async (req, res) => {
             email,
             phone,
             roles: role,
-            department: req.body.department,
+            department: JSON.parse(req.body.department),
             idProof: result.secure_url,
           };
         } else if (role === "WARDEN") {
@@ -83,7 +84,7 @@ exports.createAdminProfile = async (req, res) => {
             email,
             phone,
             roles: role,
-            hostel: req.body.hostel,
+            hostel: JSON.parse(req.body.hostel),
             idProof: result.secure_url,
           };
         } else if (role === "PROJECT_GUIDE") {
@@ -93,7 +94,7 @@ exports.createAdminProfile = async (req, res) => {
             email,
             phone,
             roles: role,
-            department: req.body.department,
+            department: JSON.parse(req.body.department),
             idProof: result.secure_url,
           };
         } else if (role === "LOCAL_GUARDIAN") {

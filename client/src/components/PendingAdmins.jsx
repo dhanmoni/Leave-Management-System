@@ -40,7 +40,19 @@ function PendingAdmins() {
             role: 'WARDEN',
             publicKey: s.publicKey
           };
-    }
+    } else if(s.roles[0] == 'LOCAL_GUARDIAN') {
+      userData = {
+        jwt_token,
+        role: 'LOCAL_GUARDIAN',
+        publicKey: s.publicKey
+      };
+    } else if(s.roles[0] == 'PROJECT_GUIDE') {
+      userData = {
+        jwt_token,
+        role: 'PROJECT_GUIDE',
+        publicKey: s.publicKey
+      };
+    } 
     console.log({ userData });
     dispatch(approveAdmin(userData))
     setStatus('approve')
@@ -162,6 +174,30 @@ function PendingAdmins() {
                               <Typography variant="body2" color="text.primary">
                                 Phone: {admin.phone}
                               </Typography>
+                              <Typography variant="body2" color="text.primary">
+                                Role: {(admin.roles[0]).toLowerCase().replace("_", " ")}
+                              </Typography>
+                              {
+                                admin.roles[0] === "WARDEN" && (
+                                  <Typography variant="body2" color="text.primary">
+                                    Hostel: {admin.hostel.name}
+                                  </Typography> 
+                                )
+                              }
+                              {
+                                (admin.roles[0] === "HOD" || admin.roles[0] === "PROJECT_GUIDE") && (
+                                  <Typography variant="body2" color="text.primary">
+                                    Department: {admin.department.name}
+                                  </Typography> 
+                                )
+                              }
+                              <Button
+                                sx = {{padding:0.5, fontSize:'12px', margin:'4px 0'}} 
+                                variant="outlined"
+                                onClick={()=> window.open(admin.idProof) }
+                                >
+                                View ID Proof
+                              </Button>
                             </Box>
                           }
                         />
@@ -182,5 +218,7 @@ function PendingAdmins() {
     </Grid>
   );
 }
+let str = "hello";
+
 
 export default PendingAdmins;

@@ -96,6 +96,11 @@ exports.approveUserAdmin = async (req, res) => {
             return res.status(200).send({ msg: "success" });
           })
           .catch((err) => res.status(500).json(err));
+      } else {
+        console.log("local guardian/project guide requesting...");
+        user.isApproved = true;
+        user.save();
+        return res.status(200).send({ msg: "success" });
       }
     })
     .catch((err) => res.status(500).json(err));
@@ -221,7 +226,7 @@ exports.rejectUserStudent = async (req, res) => {
 };
 
 exports.getAllAdmins = async (req, res) => {
-  User.find({ roles: { $in: ["HOD", "WARDEN"] } })
+  User.find({ roles: { $in: ["HOD", "WARDEN", "PROJECT_GUIDE", "LOCAL_GUARDIAN"] } })
     .sort({ createdAt: -1 })
     .then((admins) => res.json(admins))
     .catch((err) => res.status(404).json({ error: "No admins found" }));

@@ -10,6 +10,7 @@ import {
   Card,
   MenuItem,
   AppBar,
+  Snackbar,
   Toolbar,
 } from "@mui/material";
 import { AssignmentIndOutlined } from "@mui/icons-material";
@@ -31,7 +32,17 @@ export default function CreateProfile() {
   const roles = [
     { name: "Head Of Department(HoD)", value: "HOD" },
     { name: "Warden", value: "WARDEN" },
+    { name: "Project Guide", value: "PROJECT_GUIDE" },
   ];
+
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -78,9 +89,11 @@ export default function CreateProfile() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setOpenSnackbar(true)
     const data = new FormData();
     console.log({jwt_token, publicKey})
-    if (role == "student") {
+    if (role === "student") {
+      console.log('role', role)
       const hostelData = parseHostelData();
       const deptData = parseDeptData();
 
@@ -92,41 +105,49 @@ export default function CreateProfile() {
       data.append("department", JSON.stringify(deptData));
       data.append("idProof", idProofFile);
       data.append("jwt_token", jwt_token);
-      // console.log({ data });
-    //   for (let key of data.entries()) {
-    //     console.log(key[0] + ', ' + key[1]);
-    // }
+      
       dispatch(createUserProfile(data));
-    } else if (adminRole == "HOD") {
+    } else if (adminRole === "HOD" || adminRole === "PROJECT_GUIDE") {
       const deptData = parseDeptData();
-      const adminHodData = {
-        name,
-        phone,
-        email,
-        role: "HOD",
-        department: deptData,
-        publicKey,
-        jwt_token,
-      };
-      console.log({ adminHodData });
-      //call createAdminProfile for hod
-      //dispatch(createAdminProfile(adminHodData))
+      console.log('role', role)
+      
+      data.append("name", name);
+      data.append("phone", phone);
+      data.append("email", email);
+      data.append("publicKey", publicKey);
+      data.append("department", JSON.stringify(deptData));
+      data.append("idProof", idProofFile);
+      adminRole === "HOD" ? data.append("role", "HOD") : data.append("role", "PROJECT_GUIDE")
+      data.append("jwt_token", jwt_token);
+      
+      //call createAdminProfile for hod/project guide
+      dispatch(createAdminProfile(data))
     } else if (adminRole == "WARDEN") {
       const hostelData = parseHostelData();
 
-      const adminWardenData = {
-        name,
-        phone,
-        email,
-        role: "WARDEN",
-        hostel: hostelData,
-        publicKey,
-        jwt_token,
-      };
+      data.append("name", name);
+      data.append("phone", phone);
+      data.append("email", email);
+      data.append("hostel", JSON.stringify(hostelData));
+      data.append("publicKey", publicKey);
+      data.append("role", "WARDEN");
+      data.append("idProof", idProofFile);
+      data.append("jwt_token", jwt_token);
 
-      console.log({ adminWardenData });
-      //dispatch(createAdminProfile(adminWardenData))
+      dispatch(createAdminProfile(data))
       //call createAdminProfile for warden
+    }else if (role === "local_guardian") {
+      console.log('role', role)
+      data.append("name", name);
+      data.append("phone", phone);
+      data.append("email", email);
+      data.append("publicKey", publicKey);
+      data.append("role", "LOCAL_GUARDIAN");
+      data.append("idProof", idProofFile);
+      data.append("jwt_token", jwt_token);
+
+      dispatch(createAdminProfile(data))
+      //call createAdminProfile for local guardian
     }
   };
   useEffect(() => {
@@ -241,7 +262,7 @@ export default function CreateProfile() {
               onChange={(e) => setPhone(e.target.value)}
             />
 
-            {role == "admin" ? (
+            {role === "admin" && (
               <>
                 <TextField
                   id="select-role"
@@ -260,7 +281,7 @@ export default function CreateProfile() {
                     </MenuItem>
                   ))}
                 </TextField>
-                {adminRole == "HOD" && (
+                {adminRole === "HOD" && (
                   <TextField
                     id="select-dept"
                     select
@@ -283,7 +304,7 @@ export default function CreateProfile() {
                       ))}
                   </TextField>
                 )}
-                {adminRole == "WARDEN" && (
+                {adminRole === "WARDEN" && (
                   <TextField
                     id="select-hostel"
                     select
@@ -306,8 +327,35 @@ export default function CreateProfile() {
                       ))}
                   </TextField>
                 )}
+                {
+                  adminRole === 'PROJECT_GUIDE' && (
+                    <TextField
+                    id="select-dept"
+                    select
+                    margin="normal"
+                    required
+                    fullWidth
+                    label="Select Department"
+                    onChange={handleDeptChange}
+                    variant="outlined"
+                    value={department}
+                  >
+                    {departments &&
+                      departments.map((option) => (
+                        <MenuItem
+                          key={option.name}
+                          value={`${option._id}&&&${option.name}`}
+                        >
+                          {option.name}
+                        </MenuItem>
+                      ))}
+                  </TextField>
+                  )
+                }
               </>
-            ) : (
+            ) }
+            {
+              role === 'student' && (
               <>
                 <TextField
                   id="select-dept"
@@ -353,6 +401,7 @@ export default function CreateProfile() {
                 </TextField>
               </>
             )}
+            
             <Typography variant="body2">Upload an ID proof</Typography>
             <TextField
               name="idProof"
@@ -376,6 +425,7 @@ export default function CreateProfile() {
                   color: "primary.main",
                   textDecoration: "underline",
                   fontSize: 14,
+                  cursor:'pointer'
                 }}
                 onClick={() => setRole("student")}
               >
@@ -388,14 +438,37 @@ export default function CreateProfile() {
                   color: "primary.main",
                   textDecoration: "underline",
                   fontSize: 14,
+                  cursor:'pointer'
                 }}
                 onClick={() => setRole("admin")}
               >
-                Create profile as admin?
+                Create profile as admin(HoD/ Warden / Project Guide)?
               </Typography>
             )}
+            
+            {
+              role !== "local_guardian" && (
+                <Typography
+                sx={{
+                  color: "primary.main",
+                  textDecoration: "underline",
+                  fontSize: 14,
+                  cursor:'pointer'
+                }}
+                onClick={() => setRole("local_guardian")}
+              >
+                Create profile as local guardian?
+              </Typography>
+              )
+            }
           </Box>
         </Card>
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={3000}
+          onClose={handleSnackbarClose}
+          message="Creating Profile..."
+        />
       </Container>
     </Box>
   );
