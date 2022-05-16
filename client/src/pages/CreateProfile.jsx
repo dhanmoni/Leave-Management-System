@@ -16,6 +16,8 @@ import { AssignmentIndOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createAdminProfile, createUserProfile } from "../redux/authSlice";
+import {getDepartment, getHostel} from '../redux/dataSlice'
+
 
 export default function CreateProfile() {
   const [name, setName] = useState("");
@@ -23,6 +25,7 @@ export default function CreateProfile() {
   const [phone, setPhone] = useState("");
   const [hostel, setHostel] = useState("");
   const [department, setDept] = useState("");
+  const [idProofFile, setIdProofFile] = useState("");
   const [role, setRole] = useState("student");
   const [adminRole, setAdminRole] = useState("");
   const roles = [
@@ -36,9 +39,7 @@ export default function CreateProfile() {
     (state) => state.auth
   );
 
-  const {hostels, departments} = useSelector(state=> state.info)
-
-
+  const { hostels, departments } = useSelector((state) => state.info);
 
   const handleRoleChange = (e) => {
     setAdminRole(e.target.value);
@@ -53,80 +54,84 @@ export default function CreateProfile() {
     setDept(e.target.value);
   };
 
-  const parseHostelData = ()=> {
-      const hostelInfo = hostel.split("&&&");
-      const hostelID = hostelInfo[0];
-      const hostelName = hostelInfo[1];
-      const hostelData = {
-        id: hostelID,
-        name: hostelName,
-      };
-      return hostelData
-  }
+  const parseHostelData = () => {
+    const hostelInfo = hostel.split("&&&");
+    const hostelID = hostelInfo[0];
+    const hostelName = hostelInfo[1];
+    const hostelData = {
+      id: hostelID,
+      name: hostelName,
+    };
+    return hostelData;
+  };
 
-  const parseDeptData = ()=> {
-      const deptInfo = department.split("&&&");
-      const deptID = deptInfo[0];
-      const deptName = deptInfo[1];
-      const deptData = {
-        id: deptID,
-        name: deptName,
-      };
-      return deptData
-  }
+  const parseDeptData = () => {
+    const deptInfo = department.split("&&&");
+    const deptID = deptInfo[0];
+    const deptName = deptInfo[1];
+    const deptData = {
+      id: deptID,
+      name: deptName,
+    };
+    return deptData;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-   
-    if(role == 'student'){
-      const hostelData = parseHostelData()
-      const deptData = parseDeptData()
-      
-      const studentData = {
-        name,
-        phone,
-        email,
-        hostel: hostelData,
-        department: deptData,
-        publicKey,
-        jwt_token,
-      };
-      console.log({studentData})
-      dispatch(createUserProfile(studentData));
-    } else if(adminRole == 'HOD'){
-      const deptData = parseDeptData()
+    const data = new FormData();
+    console.log({jwt_token, publicKey})
+    if (role == "student") {
+      const hostelData = parseHostelData();
+      const deptData = parseDeptData();
+
+      data.append("name", name);
+      data.append("phone", phone);
+      data.append("email", email);
+      data.append("hostel", JSON.stringify(hostelData));
+      data.append("publicKey", publicKey);
+      data.append("department", JSON.stringify(deptData));
+      data.append("idProof", idProofFile);
+      data.append("jwt_token", jwt_token);
+      // console.log({ data });
+    //   for (let key of data.entries()) {
+    //     console.log(key[0] + ', ' + key[1]);
+    // }
+      dispatch(createUserProfile(data));
+    } else if (adminRole == "HOD") {
+      const deptData = parseDeptData();
       const adminHodData = {
         name,
         phone,
         email,
-        role: 'HOD',
+        role: "HOD",
         department: deptData,
         publicKey,
         jwt_token,
-      }
-      console.log({adminHodData})
+      };
+      console.log({ adminHodData });
       //call createAdminProfile for hod
-      dispatch(createAdminProfile(adminHodData))
-    } else if (adminRole == 'WARDEN'){
+      //dispatch(createAdminProfile(adminHodData))
+    } else if (adminRole == "WARDEN") {
+      const hostelData = parseHostelData();
 
-      const hostelData = parseHostelData()
-
-      const adminWardenData ={
+      const adminWardenData = {
         name,
         phone,
         email,
-        role: 'WARDEN',
+        role: "WARDEN",
         hostel: hostelData,
         publicKey,
         jwt_token,
-      }
+      };
 
-      console.log({adminWardenData})
-      dispatch(createAdminProfile(adminWardenData))
+      console.log({ adminWardenData });
+      //dispatch(createAdminProfile(adminWardenData))
       //call createAdminProfile for warden
     }
   };
   useEffect(() => {
+    dispatch(getHostel())
+    dispatch(getDepartment())
     if (isLoggedIn) {
       navigate("/dashboard");
     } else if (jwt_token) {
@@ -267,14 +272,15 @@ export default function CreateProfile() {
                     variant="outlined"
                     value={department}
                   >
-                    {departments && departments.map((option) => (
-                      <MenuItem
-                        key={option.name}
-                        value={`${option._id}&&&${option.name}`}
-                      >
-                        {option.name}
-                      </MenuItem>
-                    ))}
+                    {departments &&
+                      departments.map((option) => (
+                        <MenuItem
+                          key={option.name}
+                          value={`${option._id}&&&${option.name}`}
+                        >
+                          {option.name}
+                        </MenuItem>
+                      ))}
                   </TextField>
                 )}
                 {adminRole == "WARDEN" && (
@@ -289,19 +295,17 @@ export default function CreateProfile() {
                     variant="outlined"
                     value={hostel}
                   >
-                    {hostels && hostels.map((option, index) => (
-                      <MenuItem
-                        key={index}
-                        value={`${option._id}&&&${option.name}`}
-                      >
-                        {option.name}
-                      </MenuItem>
-                    ))}
+                    {hostels &&
+                      hostels.map((option, index) => (
+                        <MenuItem
+                          key={index}
+                          value={`${option._id}&&&${option.name}`}
+                        >
+                          {option.name}
+                        </MenuItem>
+                      ))}
                   </TextField>
                 )}
-                <Typography sx={{color:"primary.main", textDecoration:'underline', fontSize: 14}} onClick={() => setRole("student")}>
-                  Create profile as student?
-                </Typography>
               </>
             ) : (
               <>
@@ -309,49 +313,54 @@ export default function CreateProfile() {
                   id="select-dept"
                   select
                   margin="normal"
-                  required
+                  //required
                   fullWidth
                   label="Select Department"
                   onChange={handleDeptChange}
                   variant="outlined"
                   value={department}
                 >
-                  {departments && departments.map((option) => (
-                    <MenuItem
-                      key={option.name}
-                      value={`${option._id}&&&${option.name}`}
-                    >
-                      {option.name}
-                    </MenuItem>
-                  ))}
+                  {departments &&
+                    departments.map((option) => (
+                      <MenuItem
+                        key={option.name}
+                        value={`${option._id}&&&${option.name}`}
+                      >
+                        {option.name}
+                      </MenuItem>
+                    ))}
                 </TextField>
                 <TextField
                   id="select-hostel"
                   select
                   margin="normal"
-                  required
+                  //required
                   fullWidth
                   label="Select Hostel"
                   onChange={handleHostelChange}
                   variant="outlined"
                   value={hostel}
                 >
-                  {hostels && hostels.map((option, index) => (
-                    <MenuItem
-                      key={index}
-                      value={`${option._id}&&&${option.name}`}
-                    >
-                      {option.name}
-                    </MenuItem>
-                  ))}
+                  {hostels &&
+                    hostels.map((option, index) => (
+                      <MenuItem
+                        key={index}
+                        value={`${option._id}&&&${option.name}`}
+                      >
+                        {option.name}
+                      </MenuItem>
+                    ))}
                 </TextField>
-
-                <Typography sx={{color:"primary.main", textDecoration:'underline', fontSize: 14}} onClick={() => setRole("admin")}>
-                  Create profile as admin?
-                </Typography>
               </>
             )}
-
+            <Typography variant="body2">Upload an ID proof</Typography>
+            <TextField
+              name="idProof"
+              type="file"
+              required
+              fullWidth
+              onChange={(e) => setIdProofFile(e.target.files[0])}
+            />
             <Box textAlign="center">
               <Button
                 type="submit"
@@ -361,6 +370,30 @@ export default function CreateProfile() {
                 Submit
               </Button>
             </Box>
+            {role !== "student" && (
+              <Typography
+                sx={{
+                  color: "primary.main",
+                  textDecoration: "underline",
+                  fontSize: 14,
+                }}
+                onClick={() => setRole("student")}
+              >
+                Create profile as student?
+              </Typography>
+            )}
+            {role !== "admin" && (
+              <Typography
+                sx={{
+                  color: "primary.main",
+                  textDecoration: "underline",
+                  fontSize: 14,
+                }}
+                onClick={() => setRole("admin")}
+              >
+                Create profile as admin?
+              </Typography>
+            )}
           </Box>
         </Card>
       </Container>

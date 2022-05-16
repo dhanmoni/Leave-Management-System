@@ -5,14 +5,17 @@ const cloudinary = require("cloudinary").v2;
 const { deleteFile } = require("../utils/cloudinary/cloudinary");
 
 exports.createUserProfile = async (req, res) => {
+  console.log('creating profile..', req.file.path)
   try {
     const result = await cloudinary.uploader.upload(req.file.path);
     const { name, email, phone, hostel, department, publicKey } = req.body;
+    
     if (!publicKey) {
       return res.status(400).json({ error: "Request should have publicKey" });
     }
-    console.log(req.user.publicKey);
-    console.log({ publicKey, name, email, phone, department, hostel });
+
+    // console.log(req.user.publicKey);
+    // console.log({ publicKey, name, email, phone, department, hostel });
     return User.findOne({ publicKey })
       .then((user) => {
         if (!user) {
@@ -26,8 +29,8 @@ exports.createUserProfile = async (req, res) => {
               name,
               email,
               phone,
-              hostel,
-              department,
+              hostel: JSON.parse(hostel),
+              department: JSON.parse(department),
               idProof: result.secure_url,
             },
           },
@@ -36,6 +39,7 @@ exports.createUserProfile = async (req, res) => {
           if (result.secure_url) {
             deleteFile(req.file.filename);
           }
+          console.log(s)
           res.json(s);
         });
       })

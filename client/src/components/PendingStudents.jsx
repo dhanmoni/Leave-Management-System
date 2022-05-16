@@ -142,18 +142,25 @@ function PendingStudents() {
                           }
                           secondary={
                             <Box>
-                              {/* <Typography variant="body2" color="text.primary">
+                              <Typography variant="body2" color="text.primary">
                                 Department: {student.department.name}
                               </Typography>
                               <Typography variant="body2" color="text.primary">
                                 Hostel: {student.hostel.name}
-                              </Typography> */}
+                              </Typography>
                               <Typography variant="body2" color="text.primary">
                                 Email: {student.email}
                               </Typography>
                               <Typography variant="body2" color="text.primary">
                                 Phone: {student.phone}
                               </Typography>
+                              <Button
+                                sx = {{padding:0.5, fontSize:'12px', margin:'4px 0'}} 
+                                variant="outlined"
+                                onClick={()=> window.open(student.idProof) }
+                                >
+                                View ID Proof
+                              </Button>
                             </Box>
                           }
                         />
