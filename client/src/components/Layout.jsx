@@ -41,9 +41,7 @@ export default function Layout({ children }) {
   const { publicKey, jwt_token, isLoggedIn, user } = useSelector(
     (state) => state.auth
   );
-  
 
-  console.log({user, publicKey})
   let menuItems = []
 
   if(user.roles[0] == 'SYSTEM_ADMIN'){

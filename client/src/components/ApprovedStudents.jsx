@@ -14,24 +14,24 @@ import {
 } from "@mui/material";
 import { CloseRounded, DoneRounded } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getStudentsByHostel,
-  getStudentsByDepartment,
-  approveStudent,
-} from "../redux/studentsSlice";
+
 
 function ApprovedStudents() {
   const dispatch = useDispatch();
   const { user, jwt_token } = useSelector((state) => state.auth);
   const { students } = useSelector((state) => state.students);
 
-  useEffect(() => {
-    if (user.roles[0] == "WARDEN") {
-      dispatch(getStudentsByHostel({ id: user.hostel.id, jwt_token }));
-    } else if (user.roles[0] == "HOD") {
-      dispatch(getStudentsByDepartment({ id: user.department.id, jwt_token }));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (user.roles[0] === "WARDEN") {
+  //     dispatch(getStudentsByHostel({ id: user.hostel.id, jwt_token }));
+  //   } else if (user.roles[0] === "HOD") {
+  //     dispatch(getStudentsByDepartment({ id: user.department.id, jwt_token }));
+  //   } else if(user.roles[0] === "LOCAL_GUARDIAN"){
+  //     dispatch(getStudentsByLocalGuardian({ id: user._id, jwt_token }))
+  //   } else if(user.roles[0] === "PROJECT_GUIDE"){
+  //     dispatch(getStudentsByProjectGuide({ id: user._id, jwt_token }))
+  //   }
+  // }, []);
 
   return (
     <Grid item xs={12}>

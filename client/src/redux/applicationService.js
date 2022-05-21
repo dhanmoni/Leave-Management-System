@@ -11,19 +11,22 @@ export const getApplications = async (_key)=> {
             endDate: d.endDate.toNumber(),
             approvels: d.approvels,
             approveLevel: d.approveLevel.toNumber(),
+            academicLeave: d.academicLeave,
+            dswReq: d.dswReq,
+            withDrawn: d.withDrawn
         })
     })
-    // console.log({returnValue})
+    console.log({returnValue})
     const returnData = {
         [_key] : returnValue
     }
-    // console.log({returnData})
+    console.log({returnData})
     return returnData
 }
 
 export const applyApplication = async (data)=> {
-    const {subject, reason, start_date, end_date} = data
-    return appContract.applyLeave(subject, reason, start_date, end_date).then(res=> console.log({res})).catch(err=> console.log({err}))
+    const {subject, reason, start_date, end_date, isAcademicLeave, dsw_req} = data
+    return appContract.applyLeave(subject, reason, start_date, end_date, isAcademicLeave, dsw_req).then(res=> console.log({res})).catch(err=> console.log({err}))
 }
 
 export const rejectApplication = async (key)=> {

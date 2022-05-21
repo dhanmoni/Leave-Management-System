@@ -12,6 +12,10 @@ import {
   Button,
   TextField,
   Stack,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  Snackbar,
 } from "@mui/material";
 import { Send } from "@mui/icons-material";
 import { useSelector, useDispatch } from "react-redux";
@@ -22,6 +26,16 @@ function ApplyLeave() {
   const [toDate, setToDate] = useState("");
   const [subject, setSubject] = useState("");
   const [reason, setReason] = useState("");
+  const [isAcademicLeave, setIsAcademicLeave] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const showApplyBtn = useState(true);
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
 
   const dispatch = useDispatch();
   const { departments } = useSelector((state) => state.info);
@@ -37,12 +51,38 @@ function ApplyLeave() {
 
   const handleApply = (e) => {
     e.preventDefault();
+    let dsw_req = false;
+
     const start_date = new Date(fromDate).getTime() / 1000;
     const end_date = new Date(toDate).getTime() / 1000;
-    dispatch(applyApplication({ subject, reason, start_date, end_date }));
-    setSubject("");
-    setFromDate("");
-    setToDate("");
+
+    const date1 = new Date(fromDate);
+    const date2 = new Date(toDate);
+    const diffInMS = Math.abs(date2 - date1);
+    const diffInHours = Math.ceil(diffInMS / (1000 * 60 * 60));
+    if (diffInHours >= 72) {
+      dsw_req = true;
+    }
+    console.log({
+      subject,
+      reason,
+      start_date,
+      end_date,
+      isAcademicLeave,
+      dsw_req,
+    });
+
+    dispatch(
+      applyApplication({
+        subject,
+        reason,
+        start_date,
+        end_date,
+        isAcademicLeave,
+        dsw_req,
+      })
+    );
+    setOpenSnackbar(true);
   };
   return (
     <Layout>
@@ -133,38 +173,59 @@ function ApplyLeave() {
                       }}
                     />
                   </Box>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="academic leave"
+                        value={isAcademicLeave}
+                        onChange={() => setIsAcademicLeave(!isAcademicLeave)}
+                      />
+                    }
+                    label="Apply for academic leave"
+                  />
 
                   {applications &&
                     Object.keys(applications).length != 0 &&
                     applications[publicKey] &&
                     applications[publicKey].map((app) => {
-                      if (app.approveLevel == 1 || app.approveLevel == 2) {
+                      if(app.academicLeave && app.approveLevel === 1){
+                        showApplyBtn[0] = false;
                         return (
-                          <Typography sx={{ color: "red", margin:2 }}>
+                          <Typography sx={{ color: "red", margin: 2 }}>
                             You already have an active leave application. You
                             can only apply for another once the previous
                             application gets approved/rejected!
                           </Typography>
                         );
-                      } else {
+                      } 
+                      if(user.projectGuide?.id && app.dswReq && app.approveLevel > 0 && app.approveLevel < 5){
+                        showApplyBtn[0] = false;
                         return (
-                          <Box textAlign="center">
-                            <Button
-                              type="submit"
-                              variant="contained"
-                              endIcon={<Send />}
-                              disabled={user.isApproved ? false : true}
-                              onClick={handleApply}
-                              sx={{
-                                mt: 3,
-                                mb: 1,
-                                paddingLeft: 6,
-                                paddingRight: 6,
-                              }}
-                            >
-                              Submit
-                            </Button>
-                          </Box>
+                          <Typography sx={{ color: "red", margin: 2 }}>
+                            You already have an active leave application. You
+                            can only apply for another once the previous
+                            application gets approved/rejected!
+                          </Typography>
+                        );
+                      }
+                      if(user.projectGuide?.id && !app.dswReq && !app.academicLeave && app.approveLevel > 0 && app.approveLevel < 4){
+                        showApplyBtn[0] = false;
+                        return (
+                          <Typography sx={{ color: "red", margin: 2 }}>
+                            You already have an active leave application. You
+                            can only apply for another once the previous
+                            application gets approved/rejected!!!
+                          </Typography>
+                        );
+                      }
+                      if(!user.projectGuide?.id && !app.dswReq && !app.academicLeave && app.approveLevel > 0 && app.approveLevel < 3){
+                        showApplyBtn[0] = false;
+                        return (
+                          <Typography sx={{ color: "red", margin: 2 }}>
+                            You already have an active leave application. You
+                            can only apply for another once the previous
+                            application gets approved/rejected!
+                          </Typography>
                         );
                       }
                     })}
@@ -174,11 +235,36 @@ function ApplyLeave() {
                       apply for leave
                     </Typography>
                   )}
+                  {showApplyBtn[0] && (
+                    <Box textAlign="center">
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        endIcon={<Send />}
+                        disabled={user.isApproved ? false : true}
+                        onClick={handleApply}
+                        sx={{
+                          mt: 3,
+                          mb: 1,
+                          paddingLeft: 6,
+                          paddingRight: 6,
+                        }}
+                      >
+                        Submit
+                      </Button>
+                    </Box>
+                  )}
                 </Box>
               </Box>
             </Paper>
           </Grid>
         </Container>
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={5000}
+          onClose={handleSnackbarClose}
+          message="Adding application to blockchain. This might take a minute..."
+        />
       </Box>
     </Layout>
   );

@@ -106,6 +106,16 @@ exports.approveUserAdmin = async (req, res) => {
     .catch((err) => res.status(500).json(err));
 };
 
+exports.approveGuideAdmin = async (req, res)=> {
+  const { publicKey } = req.body;
+  User.findOne({publicKey}).then((user) => {
+    user.isApproved = true;
+    user.save();
+    return res.status(200).json({ msg: "sucess" });
+})
+}
+
+
 exports.rejectUserAdmin = async (req, res) => {
   const { publicKey } = req.body;
   if (!publicKey) {
@@ -170,7 +180,8 @@ exports.approveUserStudent = async (req, res) => {
               User.findById(guardian_id).then((user) => {
                 user.students.push({
                   id: student.id,
-                  name: student.name
+                  name: student.name,
+                  publicKey: student.publicKey
                 });
                 user.save();
                 return res.status(200).json({ msg: "sucess" });
@@ -199,7 +210,8 @@ exports.approveUserProfileUpdate = async (req, res) => {
       User.findById(projectGuideId).then((user) => {
         user.students.push({
           id: student.id,
-          name: student.name
+          name: student.name,
+          publicKey: student.publicKey
         });
         user.save();
         return res.status(200).json({ msg: "sucess" });

@@ -12,15 +12,18 @@ contract LeaveApplication {
         uint endDate;
         address[] approvels;
         uint approveLevel;
+        // check if the leave is academic or hostel leave, if true, 
+        // leave is forwarded to onl HoD
+        bool academicLeave; 
+        // if the leave is for more than 3 days, this will be true
+        // and leave will be forwared to DSW.
+        bool dswReq;
+        bool withDrawn;
     }
 
     address system_admin;
     mapping (address => bool) public AdminList;
     mapping (address => Application[]) public ApplicationRegistry;
-
-    event NewApplicationCreated(address _applier, Application _app, uint _date);
-    event ApplicationGranted(address _applier, address indexed _approver, Application _app, uint _date);
-    event ApplicationRejected(address _applier, address indexed _approver, Application _app, uint _date);
 
     constructor() {
         system_admin = msg.sender;
@@ -28,7 +31,7 @@ contract LeaveApplication {
     }
 
    
-    function applyLeave(string memory _sub, string memory _reason, uint _startDate, uint _endDate) public {
+    function applyLeave(string memory _sub, string memory _reason, uint _startDate, uint _endDate, bool _academicLeave, bool _dswReq) public {
         Application memory _app = Application({
             studentKey: msg.sender, 
             subject: _sub, 
@@ -36,11 +39,13 @@ contract LeaveApplication {
             startDate: _startDate, 
             endDate: _endDate,
             approvels: new address[] (0),
-            approveLevel: 1
+            approveLevel: 1,
+            academicLeave: _academicLeave,
+            dswReq: _dswReq,
+            withDrawn: false
         });
         
         ApplicationRegistry[msg.sender].push(_app);
-        emit NewApplicationCreated(msg.sender, _app, block.timestamp);
     }
 
 
@@ -53,19 +58,24 @@ contract LeaveApplication {
         require(AdminList[msg.sender], "grantLeave: Unpriviledged");
         uint applicationIndex = _getTotalApplicationOfStudent(_key) - 1;
         require(ApplicationRegistry[_key][applicationIndex].approveLevel > 0, "grantLeave: Already rejected");
+        require(ApplicationRegistry[_key][applicationIndex].withDrawn == false, "grantLeave: Already withdrawn");
         ApplicationRegistry[_key][applicationIndex].approvels.push(msg.sender);
         ApplicationRegistry[_key][applicationIndex].approveLevel++;
-
-        emit ApplicationGranted(_key, msg.sender, ApplicationRegistry[_key][applicationIndex], block.timestamp);
     }
 
     function rejectLeave(address _key) public {
         require(AdminList[msg.sender], "rejectLeave: Unpriviledged");
         uint applicationIndex = _getTotalApplicationOfStudent(_key) - 1;
         require(ApplicationRegistry[_key][applicationIndex].approveLevel > 0, "rejectLeave: Already rejected");
+        require(ApplicationRegistry[_key][applicationIndex].withDrawn == false, "rejectLeave: Already withdrawn");
         ApplicationRegistry[_key][applicationIndex].approvels.push(msg.sender);
         ApplicationRegistry[_key][applicationIndex].approveLevel = 0;
-        emit ApplicationRejected(_key, msg.sender, ApplicationRegistry[_key][applicationIndex], block.timestamp);
+    }
+
+    function withDrawLeave() public {
+        uint applicationIndex = _getTotalApplicationOfStudent(msg.sender) - 1;
+        require(ApplicationRegistry[msg.sender][applicationIndex].approveLevel > 0, "grantLeave: Already rejected");
+        ApplicationRegistry[msg.sender][applicationIndex].withDrawn = true;
     }
 
     function getApplicationsByStudentId(address key) public view returns (Application[] memory) {

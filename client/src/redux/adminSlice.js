@@ -35,6 +35,24 @@ export const approveAdmin = createAsyncThunk(
     }
 )
 
+export const approveGuideAdmin = createAsyncThunk(
+  'admin/approve-guide-admin',
+  async (userData, thunkAPI) => {
+    try {
+      return await adminService.approveGuideAdmin(userData)
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString()
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
+
+
 export const rejectAdmin = createAsyncThunk(
     'admin/reject-admin',
     async (userData, thunkAPI) => {

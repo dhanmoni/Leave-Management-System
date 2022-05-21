@@ -80,7 +80,7 @@ function PendingProfileUpdate() {
               <>
                 {students.map((student) => {
                   console.log('pending students', student)
-                  return (!student.isApproved && student.projectGuide.id) && (
+                  return (!student.isApproved && student.email && student.projectGuide?.id) && (
                     <>
                       <ListItem
                       key={student.publicKey}
@@ -167,9 +167,9 @@ function PendingProfileUpdate() {
                                 Local Guardian: {student.localGuardian.name}
                               </Typography>
                               {
-                                student.projectGuide.id ? (
+                                student.projectGuide?.id ? (
                                   <Typography variant="body2" color="text.primary">
-                                  Project Guide: {student.projectGuide.name}
+                                  Project Guide: {student.projectGuide?.name}
                                 </Typography>
                                 ) : null
                               }

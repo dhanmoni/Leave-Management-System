@@ -26,6 +26,46 @@ export const getStudentsByDept = async (userData)=> {
             })
 }
 
+export const getStudentsByLocalGuardian = async (userData)=> {
+    console.log(userData)
+    
+    return fetch(`http://localhost:5000/api/users/get-students-local-guardian/${userData.id}`, {
+                headers: {
+                    'x-auth-token': userData.jwt_token
+                }
+            }).then(res=> res.json())
+            .then(data=> {
+                console.log({data})
+                return data;
+            })
+}
+
+export const getStudentsByProjectGuide = async (userData)=> {
+    console.log(userData)
+    
+    return fetch(`http://localhost:5000/api/users/get-students-project-guide/${userData.id}`, {
+                headers: {
+                    'x-auth-token': userData.jwt_token
+                }
+            }).then(res=> res.json())
+            .then(data=> {
+                console.log({data})
+                return data;
+            })
+}
+
+export const getStudentsByIds = async (userData)=> {
+    return fetch(`http://localhost:5000/api/users/get-students-by-ids/${userData.ids}`, {
+                headers: {
+                    'x-auth-token': userData.jwt_token
+                }
+            }).then(res=> res.json())
+            .then(data=> {
+                console.log({data})
+                return data;
+            })
+}
+
 export const getAllStudents = async (userData)=> {
     
     return fetch(`http://localhost:5000/api/users/get-students`, {
@@ -79,7 +119,10 @@ const studentsService = {
     getStudentsByHostel,
     approveStudent,
     rejectStudent,
-    getAllStudents
+    getAllStudents,
+    getStudentsByIds,
+    getStudentsByLocalGuardian,
+    getStudentsByProjectGuide
 }
 
 export default studentsService;

@@ -35,6 +35,57 @@ export const getStudentsByDepartment = createAsyncThunk(
   }
 )
 
+export const getStudentsByLocalGuardian = createAsyncThunk(
+  'students/get-students-local-guide',
+  async (userData, thunkAPI) => {
+    try {
+      return await studentsService.getStudentsByLocalGuardian(userData)
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString()
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
+
+export const getStudentsByProjectGuide = createAsyncThunk(
+  'students/get-students-project-guide',
+  async (userData, thunkAPI) => {
+    try {
+      return await studentsService.getStudentsByProjectGuide(userData)
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString()
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
+
+export const getStudentsByIds = createAsyncThunk(
+  'students/get-students-by-ids',
+  async (userData, thunkAPI) => {
+    try {
+      return await studentsService.getStudentsByIds(userData)
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString()
+      return thunkAPI.rejectWithValue(message)
+    }
+  }
+)
+
 export const getAllStudents = createAsyncThunk(
     'students/get-students',
     async (userData, thunkAPI) => {
@@ -135,6 +186,46 @@ export const studentSlice = createSlice({
             state.students = null,
             state.isError = true
           })
+
+        builder.addCase(getStudentsByLocalGuardian.pending, (state, action)=> {
+            state.isLoading = true
+        })
+        builder.addCase(getStudentsByLocalGuardian.fulfilled, (state, action) => {
+          state.isLoading = false,
+          state.students = action.payload
+        })
+        builder.addCase(getStudentsByLocalGuardian.rejected, (state, action) => {
+            state.isLoading = false,
+            state.students = null,
+            state.isError = true
+          })
+
+        builder.addCase(getStudentsByProjectGuide.pending, (state, action)=> {
+            state.isLoading = true
+        })
+        builder.addCase(getStudentsByProjectGuide.fulfilled, (state, action) => {
+          state.isLoading = false,
+          state.students = action.payload
+        })
+        builder.addCase(getStudentsByProjectGuide.rejected, (state, action) => {
+            state.isLoading = false,
+            state.students = null,
+            state.isError = true
+          })
+
+        builder.addCase(getStudentsByIds.pending, (state, action)=> {
+            state.isLoading = true
+        })
+        builder.addCase(getStudentsByIds.fulfilled, (state, action) => {
+          state.isLoading = false,
+          state.students = action.payload
+        })
+        builder.addCase(getStudentsByIds.rejected, (state, action) => {
+            state.isLoading = false,
+            state.students = null,
+            state.isError = true
+          })
+          
         builder.addCase(rejectStudent.pending, (state, action)=> {
             state.isLoading = true
         })

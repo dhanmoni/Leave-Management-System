@@ -36,17 +36,16 @@ import {
 const ApplicationCard = ({ application, student, system_admin }) => {
   const dispatch = useDispatch();
   const btnClicked = useRef(1);
-  const [status, setStatus] = useState("")
+  const [status, setStatus] = useState("");
   const handleRejectApplication = (key) => {
     dispatch(rejectApplication(key));
     btnClicked.current--;
-    setStatus("reject")
+    setStatus("reject");
   };
   const handleApproveApplication = (key) => {
     dispatch(approveApplication(key));
     btnClicked.current++;
-    setStatus("approve")
-
+    setStatus("approve");
   };
   console.log({ student, application, system_admin });
   const {
@@ -115,7 +114,7 @@ const ApplicationCard = ({ application, student, system_admin }) => {
                   startIcon={<CloseRounded />}
                   onClick={() => handleRejectApplication(student.publicKey)}
                 >
-                  "Reject"
+                  Reject
                 </Button>
               </>
             )}
@@ -135,10 +134,11 @@ function PendingLeaves() {
 
   useEffect(() => {
     if (user.isApproved) {
-      students && students.map((s) => {
-        console.log("geting application for ", s.publicKey);
-        dispatch(getApplications(s.publicKey));
-      });
+        students &&
+          students.map((s) => {
+            console.log("geting application for ", s.publicKey);
+            dispatch(getApplications(s.publicKey));
+          });
     }
   }, [refresh]);
 
@@ -226,8 +226,22 @@ function PendingLeaves() {
                     ? studentInfo[0].department.id
                     : 0;
                   if (
-                    user.roles[0] == "WARDEN" &&
-                    user.hostel.id == studentHostelID
+                    app.academicLeave &&
+                    user.roles[0] === "HOD" &&
+                    user.department.id === studentDeptID
+                  ) {
+                    if (app.approveLevel === 1) {
+                      return (
+                        <ApplicationCard
+                          key={index}
+                          application={app}
+                          student={studentInfo[0]}
+                        />
+                      );
+                    }
+                  } else if (
+                    user.roles[0] === "LOCAL_GUARDIAN" &&
+                    user._id === studentInfo[0].localGuardian.id
                   ) {
                     if (app.approveLevel == 1) {
                       return (
@@ -238,11 +252,119 @@ function PendingLeaves() {
                         />
                       );
                     }
-                  } else if (
-                    user.roles[0] == "HOD" &&
-                    user.department.id == studentDeptID
+                  }
+                  // if project guide exists then show him the card
+                  else if (
+                    studentInfo[0].projectGuide.id &&
+                    user.roles[0] === "PROJECT_GUIDE" &&
+                    user._id === studentInfo[0].projectGuide.id
                   ) {
-                    if (app.approveLevel == 2) {
+                    if (!app.academicLeave && app.approveLevel === 2) {
+                      return (
+                        <ApplicationCard
+                          key={index}
+                          application={app}
+                          student={studentInfo[0]}
+                        />
+                      );
+                    }
+                  }
+
+                  // condition to check if admin is HOD of student's dept
+                  else if (
+                    user.roles[0] === "HOD" &&
+                    user.department.id === studentDeptID
+                  ) {
+                    // check if project guide exists, if so then approvelevel is 3 for HOD
+                    if (
+                      studentInfo[0].projectGuide.id &&
+                      app.approveLevel === 3
+                    ) {
+                      return (
+                        <ApplicationCard
+                          key={index}
+                          application={app}
+                          student={studentInfo[0]}
+                        />
+                      );
+                      // if project guide doesnot exist, then approvelevel is 2 for HOD
+                    } else if (
+                      !studentInfo[0].projectGuide.id &&
+                      app.approveLevel === 2
+                    ) {
+                      return (
+                        <ApplicationCard
+                          key={index}
+                          application={app}
+                          student={studentInfo[0]}
+                        />
+                      );
+                    }
+                  }
+                  // check if application requires dsw sign
+                  else if (user.roles[0] === "DSW" && app.dswReq) {
+                    // check if project guide exists, if so then approvelevel is 4 for DSW
+                    if (
+                      studentInfo[0].projectGuide.id &&
+                      app.approveLevel === 4
+                    ) {
+                      return (
+                        <ApplicationCard
+                          key={index}
+                          application={app}
+                          student={studentInfo[0]}
+                        />
+                      );
+                      // if project guide doesnot exist, then approvelevel is 3 for DSW
+                    } else if (
+                      !studentInfo[0].projectGuide.id &&
+                      app.approveLevel === 3
+                    ) {
+                      return (
+                        <ApplicationCard
+                          key={index}
+                          application={app}
+                          student={studentInfo[0]}
+                        />
+                      );
+                    }
+                  }
+                  //checl for warden
+                  else if (
+                    user.roles[0] === "WARDEN" &&
+                    user.hostel.id === studentHostelID
+                  ) {
+                    // check if project guide exists and dsw required, if so then approvelevel is 5 for warden
+                    if (
+                      studentInfo[0].projectGuide.id & app.dswReq &&
+                      app.approveLevel === 5
+                    ) {
+                      return (
+                        <ApplicationCard
+                          key={index}
+                          application={app}
+                          student={studentInfo[0]}
+                        />
+                      );
+                      // if project guide exists but dsw not required, then approvelevel is 4 for Warden
+                    } else if (
+                      studentInfo[0].projectGuide.id &&
+                      !app.dswReq &&
+                      app.approveLevel === 4
+                    ) {
+                      return (
+                        <ApplicationCard
+                          key={index}
+                          application={app}
+                          student={studentInfo[0]}
+                        />
+                      );
+                      // if project guide doesnot exist and dsw not required, then approvelevel is 3 for Warden
+                    } else if (
+                      !studentInfo[0].projectGuide.id &&
+                      !app.dswReq &&
+                      app.approveLevel === 3
+                    ) {
                       return (
                         <ApplicationCard
                           key={index}

@@ -111,7 +111,7 @@ function RecentLeaves() {
                     (s) => s.publicKey == appObj[0]
                   );
                   console.log({ studentInfo });
-                  if(app.approveLevel == 0 || app.approveLevel > 3){
+                  if(app.approveLevel == 0){
                     return (
                         <ApplicationCard
                           key={index}
@@ -119,6 +119,23 @@ function RecentLeaves() {
                           student={studentInfo[0]}
                         />
                       );
+                  } else if(app.academicLeave && app.approveLevel == 2){
+                    console.log('hod approved')
+                    return (
+                      <ApplicationCard
+                        key={index}
+                        application={app}
+                        student={studentInfo[0]}
+                      />
+                    );
+                  } else if(app.withDrawn){
+                    return (
+                      <ApplicationCard
+                        key={index}
+                        application={app}
+                        student={studentInfo[0]}
+                      />
+                    )
                   }
                 });
               })}

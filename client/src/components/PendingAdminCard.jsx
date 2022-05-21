@@ -18,7 +18,7 @@ import {
   DoneRounded,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllAdmins, approveAdmin, rejectAdmin } from "../redux/adminSlice";
+import { getAllAdmins, approveAdmin, rejectAdmin, approveGuideAdmin } from "../redux/adminSlice";
 
 
 function PendingAdminCard({ admin }) {
@@ -35,6 +35,7 @@ function PendingAdminCard({ admin }) {
             role: 'HOD',
             publicKey: s.publicKey
           };
+        dispatch(approveAdmin(userData))
     } else if(s.roles[0] == 'WARDEN') {
         userData = {
             jwt_token,
@@ -42,21 +43,24 @@ function PendingAdminCard({ admin }) {
             role: 'WARDEN',
             publicKey: s.publicKey
           };
+    dispatch(approveAdmin(userData))
+        
     } else if(s.roles[0] == 'LOCAL_GUARDIAN') {
       userData = {
         jwt_token,
         role: 'LOCAL_GUARDIAN',
         publicKey: s.publicKey
       };
+    dispatch(approveGuideAdmin(userData))
     } else if(s.roles[0] == 'PROJECT_GUIDE') {
       userData = {
         jwt_token,
         role: 'PROJECT_GUIDE',
         publicKey: s.publicKey
       };
+    dispatch(approveGuideAdmin(userData))
     } 
     console.log({ userData });
-    dispatch(approveAdmin(userData))
     setStatus('approve')
   };
   const handleRejectAdmin = (s) => {
@@ -134,12 +138,7 @@ function PendingAdminCard({ admin }) {
         }
         secondary={
           <Box>
-            {/* <Typography variant="body2" color="text.primary">
-                                Department: {admin.department.name}
-                              </Typography>
-                              <Typography variant="body2" color="text.primary">
-                                Hostel: {admin.hostel.name}
-                              </Typography> */}
+           
             <Typography variant="body2" color="text.primary">
               Email: {admin.email}
             </Typography>

@@ -22,40 +22,51 @@ import { useDispatch, useSelector } from "react-redux";
 import AdminDashboard from "../components/AdminDashboard";
 import StudentDashboard from "../components/StudentDashboard";
 import SystemAdminDashboard from "../components/SystemAdminDashboard";
-import { getDepartment, getHostel, getProjectGuides, addProjectGuide } from "../redux/dataSlice";
+import {
+  getDepartment,
+  getHostel,
+  getProjectGuides,
+  addProjectGuide,
+} from "../redux/dataSlice";
 import {
   getStudentsByHostel,
   getStudentsByDepartment,
   approveStudent,
   rejectStudent,
   getAllStudents,
+  getStudentsByLocalGuardian,
+  getStudentsByProjectGuide
 } from "../redux/studentsSlice";
 
 function Dashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false)
-  const [projectGuide, setProjectGuide] = useState("")
+  const [open, setOpen] = useState(false);
+  const [projectGuide, setProjectGuide] = useState("");
   const { publicKey, jwt_token, user, isLoggedIn } = useSelector(
     (state) => state.auth
   );
   const { projectGuides } = useSelector((state) => state.info);
 
   useEffect(() => {
-    dispatch(getProjectGuides(jwt_token))
+    dispatch(getProjectGuides(jwt_token));
     if (user.roles[0] == "WARDEN") {
       dispatch(getStudentsByHostel({ id: user.hostel.id, jwt_token }));
     } else if (user.roles[0] == "HOD") {
       dispatch(getStudentsByDepartment({ id: user.department.id, jwt_token }));
     } else if (user.roles[0] == "SYSTEM_ADMIN") {
       dispatch(getAllStudents({ jwt_token }));
+    } else if(user.roles[0] === "LOCAL_GUARDIAN"){
+      dispatch(getStudentsByLocalGuardian({ id: user._id, jwt_token }))
+    } else if(user.roles[0] === "PROJECT_GUIDE"){
+      dispatch(getStudentsByProjectGuide({ id: user._id, jwt_token }))
     }
   }, []);
+  
 
-
-  const handleProjectGuideChange = (e)=> {
-    setProjectGuide(e.target.value)
-  }
+  const handleProjectGuideChange = (e) => {
+    setProjectGuide(e.target.value);
+  };
 
   const parseProjectGuideData = () => {
     const projectGuideInfo = projectGuide.split("&&&");
@@ -68,24 +79,25 @@ function Dashboard() {
     return projectGuideData;
   };
 
-
-  const handleProjectGuideUpdate = ()=> {
-    const projectGuideData = parseProjectGuideData()
-    console.log('helo', projectGuideData)
+  const handleProjectGuideUpdate = () => {
+    const projectGuideData = parseProjectGuideData();
+    console.log("helo", projectGuideData);
     const userData = {
       projectGuide: projectGuideData,
       publicKey,
       jwt_token,
-    }
-    dispatch(addProjectGuide(userData))
-    setOpen(false)
-  }
+    };
+    dispatch(addProjectGuide(userData));
+    setOpen(false);
+  };
 
- if(!user){
-   return <Layout>
-     <Typography>Loading...</Typography>
-   </Layout>
- }
+  if (!user) {
+    return (
+      <Layout>
+        <Typography>Loading...</Typography>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -163,12 +175,23 @@ function Dashboard() {
                         <Typography noWrap>
                           Local Guardian: {user.localGuardian.name}
                         </Typography>
-                        <Button 
-                        onClick={()=> setOpen(true)}
-                        variant="outlined" 
-                        sx={{fontSize:'10px', marginTop:'10px', padding:'4px', maxWidth:'20%'}}>
-                        Add/Change Project Guide
-                        </Button>
+                        {user.projectGuide?.id  && (
+                            <Typography noWrap>
+                              Project Guide: {user.projectGuide.name}
+                            </Typography>
+                        ) }
+                          <Button
+                            onClick={() => setOpen(true)}
+                            variant="outlined"
+                            sx={{
+                              fontSize: "10px",
+                              marginTop: "10px",
+                              padding: "4px",
+                              maxWidth: "20%",
+                            }}
+                          >
+                            Add/Change Project Guide
+                          </Button>
                       </>
                     ) : user.roles[0] == "HOD" ? (
                       <>
@@ -186,11 +209,15 @@ function Dashboard() {
                       </>
                     ) : user.roles[0] == "LOCAL_GUARDIAN" ? (
                       <>
-                        <Typography noWrap>Role: Admin (Local Guardian)</Typography>
+                        <Typography noWrap>
+                          Role: Admin (Local Guardian)
+                        </Typography>
                       </>
                     ) : user.roles[0] == "PROJECT_GUIDE" ? (
                       <>
-                        <Typography noWrap>Role: Admin (Project Guide)</Typography>
+                        <Typography noWrap>
+                          Role: Admin (Project Guide)
+                        </Typography>
                         <Typography noWrap>
                           Department: {user.department.name}
                         </Typography>
@@ -215,42 +242,48 @@ function Dashboard() {
           </Grid>
         </Container>
       </Box>
-      <Dialog open={open} onClose={()=> setOpen(false)}>
+      <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Add/Change Project Guide:</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Select a project guide from the dropdown.
           </DialogContentText>
           <TextField
-                  id="select-project-guide"
-                  select
-                  margin="normal"
-                  //required
-                  fullWidth
-                  label="Select Project Guide"
-                  onChange={handleProjectGuideChange}
-                  variant="outlined"
-                  value={projectGuide}
+            id="select-project-guide"
+            select
+            margin="normal"
+            //required
+            fullWidth
+            label="Select Project Guide"
+            onChange={handleProjectGuideChange}
+            variant="outlined"
+            value={projectGuide}
+          >
+            {projectGuides &&
+              projectGuides.map((option) => (
+                <MenuItem
+                  style={{ whiteSpace: "normal" }}
+                  key={option.name}
+                  value={`${option._id}&&&${option.name}`}
                 >
-                  {projectGuides &&
-                    projectGuides.map((option) => (
-                      <MenuItem
-                      style={{whiteSpace: 'normal'}}
-                        key={option.name}
-                        value={`${option._id}&&&${option.name}`}
-                      >
-                        <>
-                        <Typography>{option.name} : {option.email} :</Typography>
-                        <Typography> Department: {option.department.name}</Typography>
-                        </>
-                      </MenuItem>
-                    ))}
-                </TextField>
+                  <>
+                    <Typography>
+                      {option.name} : {option.email} :
+                    </Typography>
+                    <Typography>
+                      {" "}
+                      Department: {option.department.name}
+                    </Typography>
+                  </>
+                </MenuItem>
+              ))}
+          </TextField>
           <Typography variant="body2" sx={{ fontSize: "0.8rem" }}>
-            (Your profile will be inactivated until your HOD or system admin approves the update!)
+            (Your profile will be inactivated until your HOD or system admin
+            approves the update!)
           </Typography>
           <DialogActions>
-            <Button onClick={()=> setOpen(false)}>Cancel</Button>
+            <Button onClick={() => setOpen(false)}>Cancel</Button>
             <Button
               variant="outlined"
               color="primary"
