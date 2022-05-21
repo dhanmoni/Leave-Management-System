@@ -188,7 +188,7 @@ function ApplyLeave() {
                     Object.keys(applications).length != 0 &&
                     applications[publicKey] &&
                     applications[publicKey].map((app) => {
-                      if(app.academicLeave && app.approveLevel === 1){
+                      if(app.academicLeave && !app.withDrawn && app.approveLevel === 1){
                         showApplyBtn[0] = false;
                         return (
                           <Typography sx={{ color: "red", margin: 2 }}>
@@ -198,7 +198,7 @@ function ApplyLeave() {
                           </Typography>
                         );
                       } 
-                      if(user.projectGuide?.id && app.dswReq && app.approveLevel > 0 && app.approveLevel < 5){
+                      if(user.projectGuide?.id && app.dswReq && !app.withDrawn && app.approveLevel > 0 && app.approveLevel < 5){
                         showApplyBtn[0] = false;
                         return (
                           <Typography sx={{ color: "red", margin: 2 }}>
@@ -208,7 +208,7 @@ function ApplyLeave() {
                           </Typography>
                         );
                       }
-                      if(user.projectGuide?.id && !app.dswReq && !app.academicLeave && app.approveLevel > 0 && app.approveLevel < 4){
+                      if(user.projectGuide?.id && !app.dswReq && !app.withDrawn && !app.academicLeave && app.approveLevel > 0 && app.approveLevel < 4){
                         showApplyBtn[0] = false;
                         return (
                           <Typography sx={{ color: "red", margin: 2 }}>
@@ -218,7 +218,7 @@ function ApplyLeave() {
                           </Typography>
                         );
                       }
-                      if(!user.projectGuide?.id && !app.dswReq && !app.academicLeave && app.approveLevel > 0 && app.approveLevel < 3){
+                      if(!user.projectGuide?.id && !app.dswReq && !app.withDrawn && !app.academicLeave && app.approveLevel > 0 && app.approveLevel < 3){
                         showApplyBtn[0] = false;
                         return (
                           <Typography sx={{ color: "red", margin: 2 }}>

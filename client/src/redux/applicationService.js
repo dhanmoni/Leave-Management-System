@@ -30,18 +30,23 @@ export const applyApplication = async (data)=> {
 }
 
 export const rejectApplication = async (key)=> {
-    return appContract.rejectLeave(key)
+    return appContract.rejectLeave(key).then(res=> console.log({res})).catch(err=> console.log({err}))
 }
 
 export const approveApplication = async (key)=> {
-    console.log('approvong applicatuon', key)
-    return appContract.grantLeave(key)
+    return appContract.grantLeave(key).then(res=> console.log({res})).catch(err=> console.log({err}))
 }
+
+export const withdrawApplication = async ()=> {
+    return appContract.withDrawLeave().then(res=> console.log({res})).catch(err=> console.log({err}))
+}
+
 const applicationService = {
     getApplications,
     applyApplication,
     rejectApplication,
-    approveApplication
+    approveApplication,
+    withdrawApplication
 }
 
 export default applicationService;

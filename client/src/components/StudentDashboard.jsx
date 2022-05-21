@@ -25,6 +25,7 @@ import {
 } from "@mui/material";
 import {
   AddOutlined,
+  CancelScheduleSend,
   KeyboardArrowDown,
   KeyboardArrowUp,
 } from "@mui/icons-material";
@@ -40,7 +41,7 @@ const Row = ({ application, user, status }) => {
   const s_date = new Date(startDate * 1000).toLocaleDateString("en-GB");
   const e_date = new Date(endDate * 1000).toLocaleDateString("en-GB");
   const [open, setOpen] = React.useState(false);
-  
+
   return (
     <React.Fragment>
       <TableRow
@@ -59,14 +60,12 @@ const Row = ({ application, user, status }) => {
         <TableCell>{subject}</TableCell>
         <TableCell align="right">{s_date}</TableCell>
         <TableCell align="right">{e_date}</TableCell>
-        <TableCell align="right">
-          {status}
-        </TableCell>
+        <TableCell align="right">{status}</TableCell>
       </TableRow>
       <TableRow sx={{ borderBottom: 1 }}>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <PendingLeaveCard application={application} user={user}/>
+            <PendingLeaveCard application={application} user={user} showWitdrawBtn={false}/>
           </Collapse>
         </TableCell>
       </TableRow>
@@ -94,60 +93,92 @@ function StudentDashboard() {
             p: 2,
             display: "flex",
             flexDirection: "column",
+            justifyContent: "space-between",
             borderRadius: 3,
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: 600, padding: 2 }}>
             Active Leave Application
           </Typography>
+
           <Divider variant="middle" />
           {applications &&
             Object.keys(applications).length != 0 &&
             applications[publicKey] &&
             applications[publicKey].map((app) => {
-
-              if(app.academicLeave && app.approveLevel === 1){
+              if (app.academicLeave && !app.withDrawn && app.approveLevel === 1) {
                 showApplyBtn[0] = false;
                 return (
-                  <PendingLeaveCard
-                    application={app}
-                    user={user}
-                    key={app.studentKey}
-                  />
-                );
-              } 
-              if(user.projectGuide?.id && app.dswReq && !app.academicLeave && app.approveLevel > 0 &&  app.approveLevel < 6){
-                showApplyBtn[0] = false;
-                return (
-                  <PendingLeaveCard
-                    application={app}
-                    user={user}
-                    key={app.studentKey}
-                  />
+                  <>
+                    <PendingLeaveCard
+                      application={app}
+                      user={user}
+                      key={app.studentKey}
+                      showWitdrawBtn={true}
+                    />
+                  </>
                 );
               }
-              if(user.projectGuide?.id && !app.dswReq && !app.academicLeave  && app.approveLevel > 0 && app.approveLevel < 5){
+              if (
+                user.projectGuide?.id &&
+                app.dswReq &&
+                !app.academicLeave && 
+                !app.withDrawn &&
+                app.approveLevel > 0 &&
+                app.approveLevel < 6
+              ) {
                 showApplyBtn[0] = false;
                 return (
-                  <PendingLeaveCard
-                    application={app}
-                    user={user}
-                    key={app.studentKey}
-                  />
+                  <>
+                    <PendingLeaveCard
+                      application={app}
+                      user={user}
+                      key={app.studentKey}
+                      showWitdrawBtn={true}
+                    />
+                  </>
                 );
               }
-              if(!user.projectGuide?.id && !app.dswReq && !app.academicLeave && app.approveLevel > 0 && app.approveLevel < 4){
+              if (
+                user.projectGuide?.id &&
+                !app.dswReq &&
+                !app.academicLeave &&
+                !app.withDrawn &&
+                app.approveLevel > 0 &&
+                app.approveLevel < 5
+              ) {
                 showApplyBtn[0] = false;
                 return (
-                  <PendingLeaveCard
-                    application={app}
-                    user={user}
-                    key={app.studentKey}
-                  />
+                  <>
+                    <PendingLeaveCard
+                      application={app}
+                      user={user}
+                      key={app.studentKey}
+                      showWitdrawBtn={true}
+                    />
+                  </>
                 );
               }
-
-
+              if (
+                !user.projectGuide?.id &&
+                !app.dswReq &&
+                !app.academicLeave &&
+                !app.withDrawn &&
+                app.approveLevel > 0 &&
+                app.approveLevel < 4
+              ) {
+                showApplyBtn[0] = false;
+                return (
+                  <>
+                    <PendingLeaveCard
+                      application={app}
+                      user={user}
+                      key={app.studentKey}
+                      showWitdrawBtn={true}
+                    />
+                  </>
+                );
+              }
             })}
           {showApplyBtn[0] == true && (
             <Box
@@ -220,18 +251,89 @@ function StudentDashboard() {
                   {applications &&
                     Object.entries(applications).map((appObj, index) => {
                       return appObj[1].map((app) => {
-                        if (app.approveLevel == 0) {
-                          return <Row key={index} application={app} user={user} status="Rejected"/>
-                        } else if(app.academicLeave && app.approveLevel === 2){
-                          return <Row key={index} application={app} user={user} status="Approved"/>
-                        } else if(user.projectGuide?.id && app.dswReq && app.approveLevel === 6){
-                          return <Row key={index} application={app} user={user} status="Approved"/>
-                        } else if(user.projectGuide?.id && !app.dswReq && app.approveLevel === 5){
-                          return <Row key={index} application={app} user={user} status="Approved"/>
-                        } else if(!user.projectGuide?.id && app.dswReq && app.approveLevel === 5){
-                          return <Row key={index} application={app} user={user} status="Approved"/>
-                        } else if(!user.projectGuide?.id && !app.dswReq && app.approveLevel === 4){
-                          return <Row key={index} application={app} user={user} status="Approved"/>
+                        if(app.withDrawn){
+                          return (
+                            <Row
+                              key={index}
+                              application={app}
+                              user={user}
+                              status="Withdrawn"
+                            />
+                          );
+                        }
+                        else if (app.approveLevel == 0) {
+                          return (
+                            <Row
+                              key={index}
+                              application={app}
+                              user={user}
+                              status="Rejected"
+                            />
+                          );
+                        } else if (
+                          app.academicLeave &&
+                          app.approveLevel === 2
+                        ) {
+                          return (
+                            <Row
+                              key={index}
+                              application={app}
+                              user={user}
+                              status="Approved"
+                            />
+                          );
+                        } else if (
+                          user.projectGuide?.id &&
+                          app.dswReq &&
+                          app.approveLevel === 6
+                        ) {
+                          return (
+                            <Row
+                              key={index}
+                              application={app}
+                              user={user}
+                              status="Approved"
+                            />
+                          );
+                        } else if (
+                          user.projectGuide?.id &&
+                          !app.dswReq &&
+                          app.approveLevel === 5
+                        ) {
+                          return (
+                            <Row
+                              key={index}
+                              application={app}
+                              user={user}
+                              status="Approved"
+                            />
+                          );
+                        } else if (
+                          !user.projectGuide?.id &&
+                          app.dswReq &&
+                          app.approveLevel === 5
+                        ) {
+                          return (
+                            <Row
+                              key={index}
+                              application={app}
+                              user={user}
+                              status="Approved"
+                            />
+                          );
+                        } else if (
+                          !user.projectGuide?.id &&
+                          !app.dswReq &&
+                          app.approveLevel === 4
+                        ) {
+                          return (
+                            <Row
+                              key={index}
+                              application={app}
+                              user={user}
+                              status="Approved"
+                            />
+                          );
                         }
                       });
                     })}

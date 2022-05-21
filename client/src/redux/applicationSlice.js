@@ -36,6 +36,23 @@ export const applyApplication = createAsyncThunk(
     }
   )
 
+  export const withdrawApplication = createAsyncThunk(
+    'app/apply-application',
+    async (thunkAPI) => {
+      try {
+        return await applicationService.withdrawApplication()
+      } catch (error) {
+        const message =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString()
+        return thunkAPI.rejectWithValue(message)
+      }
+    }
+  )
+
 export const rejectApplication = createAsyncThunk(
     'app/reject-application',
     async (data, thunkAPI) => {

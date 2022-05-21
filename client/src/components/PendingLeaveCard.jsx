@@ -14,9 +14,19 @@ import {
   StepLabel,
   StepContent,
   IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
+import { CancelScheduleSend } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { withdrawApplication } from "../redux/applicationSlice";
+import SnackBar from "./SnackBar";
 
-const PendingLeaveCard = ({ application, user }) => {
+const PendingLeaveCard = ({ application, user, showWitdrawBtn }) => {
+  const dispatch = useDispatch();
   let {
     subject,
     reason,
@@ -29,6 +39,18 @@ const PendingLeaveCard = ({ application, user }) => {
   } = application;
   const s_date = new Date(startDate * 1000).toLocaleDateString("en-GB");
   const e_date = new Date(endDate * 1000).toLocaleDateString("en-GB");
+  const [open, setOpen] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+  const handleWithDraw = () => {
+    setOpenSnackbar(true);
+    dispatch(withdrawApplication());
+    setOpen(false);
+  };
+
   let steps;
   if (academicLeave) {
     steps = [
@@ -112,7 +134,7 @@ const PendingLeaveCard = ({ application, user }) => {
           ),
       },
     ];
-  } else if(!dswReq && user.projectGuide.id){
+  } else if (!dswReq && user.projectGuide.id) {
     steps = [
       {
         label: (
@@ -123,7 +145,10 @@ const PendingLeaveCard = ({ application, user }) => {
       },
       {
         label:
-          approveLevel == 2 || approveLevel == 3 || approveLevel == 4 || approveLevel == 5 ? (
+          approveLevel == 2 ||
+          approveLevel == 3 ||
+          approveLevel == 4 ||
+          approveLevel == 5 ? (
             <Typography sx={{ fontWeight: "bold", color: "green" }}>
               Approved by Local Guardian
             </Typography>
@@ -187,7 +212,7 @@ const PendingLeaveCard = ({ application, user }) => {
           ),
       },
     ];
-  } else if(dswReq && user.projectGuide?.id){
+  } else if (dswReq && user.projectGuide?.id) {
     steps = [
       {
         label: (
@@ -276,7 +301,7 @@ const PendingLeaveCard = ({ application, user }) => {
           ),
       },
     ];
-  } else if(dswReq && !user.projectGuide?.id){
+  } else if (dswReq && !user.projectGuide?.id) {
     steps = [
       {
         label: (
@@ -349,7 +374,7 @@ const PendingLeaveCard = ({ application, user }) => {
           ) : (
             "Approval by Warden"
           ),
-      }
+      },
     ];
   }
 
@@ -386,6 +411,41 @@ const PendingLeaveCard = ({ application, user }) => {
           </Stepper>
         </Box>
       </CardContent>
+      <CardActions>
+        {showWitdrawBtn && (
+          <Button
+            variant="outlined"
+            color="danger"
+            startIcon={<CancelScheduleSend />}
+            onClick={() => setOpen(true)}
+          >
+            Withdraw
+          </Button>
+        )}
+      </CardActions>
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle>Withdraw leave application?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to withdraw this leave application? This
+            cannot be undone!
+          </DialogContentText>
+          <DialogActions>
+            <Button onClick={() => setOpen(false)}>Cancel</Button>
+            <Button variant="outlined" color="danger" onClick={handleWithDraw}>
+              Withdraw
+            </Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
+      {openSnackbar && (
+        <SnackBar
+          msg="Withdrawing application... This might take anywhere between 30 seconds to 5 minutes to reflect on your account"
+          timeout={5000}
+          open={openSnackbar}
+          handleClose={handleCloseSnackbar}
+        />
+      )}
     </Card>
   );
 };
