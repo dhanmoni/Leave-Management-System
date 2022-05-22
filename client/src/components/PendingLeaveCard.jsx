@@ -19,11 +19,11 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Snackbar
 } from "@mui/material";
 import { CancelScheduleSend } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { withdrawApplication } from "../redux/applicationSlice";
-import SnackBar from "./SnackBar";
 
 const PendingLeaveCard = ({ application, user, showWitdrawBtn }) => {
   const dispatch = useDispatch();
@@ -36,18 +36,30 @@ const PendingLeaveCard = ({ application, user, showWitdrawBtn }) => {
     approvels,
     dswReq,
     academicLeave,
+    prefixDate,
+    suffixDate,
+    prefixReason,
+    suffixReason,
   } = application;
   const s_date = new Date(startDate * 1000).toLocaleDateString("en-GB");
   const e_date = new Date(endDate * 1000).toLocaleDateString("en-GB");
   const [open, setOpen] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
+  let pre_date;
+  let suff_date;
+  if(prefixDate){
+    pre_date = new Date(prefixDate * 1000).toLocaleDateString("en-GB");
+  }
+  if(suffixDate){
+    suff_date = new Date(suffixDate * 1000).toLocaleDateString("en-GB");
+  }
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
   const handleWithDraw = () => {
     setOpenSnackbar(true);
-    dispatch(withdrawApplication());
+    dispatch(withdrawApplication(user.publicKey));
     setOpen(false);
   };
 
@@ -393,6 +405,30 @@ const PendingLeaveCard = ({ application, user, showWitdrawBtn }) => {
         <Typography>
           To: <span style={{ fontWeight: "bold" }}>{e_date}</span>
         </Typography>
+        {
+          pre_date && (
+            <>
+            <Typography>
+              Prefix Date: <span style={{ fontWeight: "bold" }}>{pre_date}</span>
+            </Typography>
+            <Typography>
+              Prefix Reason: <span style={{ fontWeight: "bold" }}>{prefixReason}</span>
+            </Typography>
+            </>
+          )
+        }
+        {
+          suff_date && (
+            <>
+            <Typography>
+              Suffix Date <span style={{ fontWeight: "bold" }}>{suff_date}</span>
+            </Typography>
+            <Typography>
+              Suffix Reason: <span style={{ fontWeight: "bold" }}>{suffixReason}</span>
+            </Typography>
+            </>
+          )
+        }
         <Box
           sx={{
             display: "flex",
@@ -438,14 +474,12 @@ const PendingLeaveCard = ({ application, user, showWitdrawBtn }) => {
           </DialogActions>
         </DialogContent>
       </Dialog>
-      {openSnackbar && (
-        <SnackBar
-          msg="Withdrawing application... This might take anywhere between 30 seconds to 5 minutes to reflect on your account"
-          timeout={5000}
-          open={openSnackbar}
-          handleClose={handleCloseSnackbar}
-        />
-      )}
+        <Snackbar
+        open={openSnackbar}
+        autoHideDuration={5000}
+        onClose={handleCloseSnackbar}
+        message="Withdrawing... This might take anywhere between 30 seconds to 5 minutes... Do not re-withdraw!"
+      />
     </Card>
   );
 };

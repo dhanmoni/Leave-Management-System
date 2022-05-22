@@ -40,6 +40,13 @@ exports.getAllStudents = async (req,res)=> {
         .catch(err=> res.status(404).json({error: 'No students found'}))
 }
 
+exports.getAllApprovedStudents = async (req,res)=> {
+    User.find({ roles: 'STUDENT', isApproved: true})
+        .sort({createdAt: -1})
+        .then(students=> res.json(students))
+        .catch(err=> res.status(404).json({error: 'No students found'}))
+}
+
 exports.getAllLocalGuardians = async (req,res)=> {
     User.find({ roles: 'LOCAL_GUARDIAN', isApproved: true})
         .sort({createdAt: -1})

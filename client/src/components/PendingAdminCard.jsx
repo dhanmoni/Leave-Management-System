@@ -11,6 +11,7 @@ import {
   Box,
   Paper,
   Button,
+  Snackbar
 } from "@mui/material";
 import {
   AccessTimeOutlined,
@@ -26,7 +27,15 @@ function PendingAdminCard({ admin }) {
   const [status, setStatus] = useState("");
   const { user, jwt_token } = useSelector((state) => state.auth);
   const { admins } = useSelector((state) => state.admins);
+
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+
   const handleApproveAdmin = (s) => {
+      setOpenSnackbar(true)
     let userData;
     if(s.roles[0] == 'HOD'){
         userData = {
@@ -59,7 +68,14 @@ function PendingAdminCard({ admin }) {
         publicKey: s.publicKey
       };
     dispatch(approveGuideAdmin(userData))
-    } 
+    } else if(s.roles[0] == 'DSW') {
+        userData = {
+          jwt_token,
+          role: 'DSW',
+          publicKey: s.publicKey
+        };
+      dispatch(approveGuideAdmin(userData))
+      } 
     console.log({ userData });
     setStatus('approve')
   };
@@ -168,6 +184,12 @@ function PendingAdminCard({ admin }) {
             </Button>
           </Box>
         }
+      />
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={5000}
+        onClose={handleCloseSnackbar}
+        message="Processing... This might take anywhere between 30 seconds to 5 minutes!"
       />
     </ListItem>
   );

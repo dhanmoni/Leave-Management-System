@@ -113,7 +113,7 @@ function StudentDashboard() {
                     <PendingLeaveCard
                       application={app}
                       user={user}
-                      key={app.studentKey}
+                      key={app.subject}
                       showWitdrawBtn={true}
                     />
                   </>
@@ -133,7 +133,7 @@ function StudentDashboard() {
                     <PendingLeaveCard
                       application={app}
                       user={user}
-                      key={app.studentKey}
+                      key={app.subject}
                       showWitdrawBtn={true}
                     />
                   </>
@@ -153,7 +153,7 @@ function StudentDashboard() {
                     <PendingLeaveCard
                       application={app}
                       user={user}
-                      key={app.studentKey}
+                      key={app.subject}
                       showWitdrawBtn={true}
                     />
                   </>
@@ -173,7 +173,7 @@ function StudentDashboard() {
                     <PendingLeaveCard
                       application={app}
                       user={user}
-                      key={app.studentKey}
+                      key={app.subject}
                       showWitdrawBtn={true}
                     />
                   </>

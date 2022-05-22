@@ -26,6 +26,10 @@ function ApplyLeave() {
   const [toDate, setToDate] = useState("");
   const [subject, setSubject] = useState("");
   const [reason, setReason] = useState("");
+  const [prefixReason, setPrefixReason] = useState("");
+  const [suffixReason, setSuffixReason] = useState("");
+  const [prefixDate, setprefixDate] = useState("");
+  const [suffixDate, setSuffixDate] = useState("");
   const [isAcademicLeave, setIsAcademicLeave] = useState(false);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const showApplyBtn = useState(true);
@@ -52,9 +56,12 @@ function ApplyLeave() {
   const handleApply = (e) => {
     e.preventDefault();
     let dsw_req = false;
-
+    // convert to unix timestamp
     const start_date = new Date(fromDate).getTime() / 1000;
     const end_date = new Date(toDate).getTime() / 1000;
+
+    let prefix_date = new Date(prefixDate).getTime() / 1000;
+    let suffix_date = new Date(suffixDate).getTime() / 1000;
 
     const date1 = new Date(fromDate);
     const date2 = new Date(toDate);
@@ -63,6 +70,43 @@ function ApplyLeave() {
     if (diffInHours >= 72) {
       dsw_req = true;
     }
+    if(!reason || !subject){
+      return alert("Please enter the required fields!")
+    }
+    if(isNaN(start_date)){
+      return alert("Please enter a valid start date")
+    }
+    if(isNaN(end_date)){
+      return alert("Please enter a valid end date")
+    }
+    if(isNaN(prefix_date)){
+      prefix_date = 0;
+    }
+    if(isNaN(suffix_date)){
+      suffix_date = 0;
+    }
+    if(prefix_date && !prefixReason){
+      return alert("Please enter a valid reason for prefix date")
+    }
+    if(suffix_date && !suffixReason){
+      return alert("Please enter a valid reason for suffix date")
+    }
+    if(!prefix_date && prefixReason.length > 0){
+      return alert("Please enter a valid date for prefix reason")
+    }
+    if(!suffix_date && suffixReason.length > 0){
+      return alert("Please enter a valid date for suffix reason")
+    }
+
+    if(end_date < start_date){
+      return alert("Please enter a valid start and end date")
+    }
+    if(prefix_date > start_date){
+      return alert("Please enter a valid start and prefix date")
+    }
+    if(suffix_date < end_date){
+      return alert("Please enter a valid start and suffix date")
+    }
     console.log({
       subject,
       reason,
@@ -70,6 +114,10 @@ function ApplyLeave() {
       end_date,
       isAcademicLeave,
       dsw_req,
+      prefixReason,
+      suffixReason,
+      prefix_date,
+      suffix_date
     });
 
     dispatch(
@@ -80,6 +128,10 @@ function ApplyLeave() {
         end_date,
         isAcademicLeave,
         dsw_req,
+        prefix_date,
+        prefixReason,
+        suffix_date,
+        suffixReason,
       })
     );
     setOpenSnackbar(true);
@@ -122,7 +174,6 @@ function ApplyLeave() {
                 <Box>
                   <TextField
                     variant="outlined"
-                    size="small"
                     margin="normal"
                     required
                     fullWidth
@@ -134,7 +185,6 @@ function ApplyLeave() {
                   />
                   <TextField
                     variant="outlined"
-                    size="small"
                     margin="normal"
                     required
                     multiline
@@ -183,22 +233,63 @@ function ApplyLeave() {
                     }
                     label="Apply for academic leave"
                   />
+                  <br />
+
+                  {/* prefix and suffix */}
+                  <Box>
+                    <TextField
+                      id="prefix"
+                      label="Prefix Date"
+                      type="date"
+                      sx={{ width: "200px", mt: 2 }}
+                      defaultValue={prefixDate}
+                      onChange={(e) => setprefixDate(e.target.value)}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                    <TextField
+                      variant="outlined"
+                      margin="normal"
+                      fullWidth
+                      name="prefixReason"
+                      label="Reason for prefix date"
+                      id="prefixReason"
+                      value={prefixReason}
+                      onChange={(e) => setPrefixReason(e.target.value)}
+                    />
+                    <TextField
+                      id="suffix"
+                      label="Suffix Date"
+                      type="date"
+                      sx={{ width: "200px", mt: 2 }}
+                      defaultValue={suffixDate}
+                      onChange={(e) => setSuffixDate(e.target.value)}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                    <TextField
+                      variant="outlined"
+                      margin="normal"
+                      fullWidth
+                      name="suffixReason"
+                      label="Reason for suffix date"
+                      id="suffixReason"
+                      value={suffixReason}
+                      onChange={(e) => setSuffixReason(e.target.value)}
+                    />
+                  </Box>
 
                   {applications &&
                     Object.keys(applications).length != 0 &&
                     applications[publicKey] &&
                     applications[publicKey].map((app) => {
-                      if(app.academicLeave && !app.withDrawn && app.approveLevel === 1){
-                        showApplyBtn[0] = false;
-                        return (
-                          <Typography sx={{ color: "red", margin: 2 }}>
-                            You already have an active leave application. You
-                            can only apply for another once the previous
-                            application gets approved/rejected!
-                          </Typography>
-                        );
-                      } 
-                      if(user.projectGuide?.id && app.dswReq && !app.withDrawn && app.approveLevel > 0 && app.approveLevel < 5){
+                      if (
+                        app.academicLeave &&
+                        !app.withDrawn &&
+                        app.approveLevel === 1
+                      ) {
                         showApplyBtn[0] = false;
                         return (
                           <Typography sx={{ color: "red", margin: 2 }}>
@@ -208,7 +299,30 @@ function ApplyLeave() {
                           </Typography>
                         );
                       }
-                      if(user.projectGuide?.id && !app.dswReq && !app.withDrawn && !app.academicLeave && app.approveLevel > 0 && app.approveLevel < 4){
+                      if (
+                        user.projectGuide?.id &&
+                        app.dswReq &&
+                        !app.withDrawn &&
+                        app.approveLevel > 0 &&
+                        app.approveLevel < 5
+                      ) {
+                        showApplyBtn[0] = false;
+                        return (
+                          <Typography sx={{ color: "red", margin: 2 }}>
+                            You already have an active leave application. You
+                            can only apply for another once the previous
+                            application gets approved/rejected!
+                          </Typography>
+                        );
+                      }
+                      if (
+                        user.projectGuide?.id &&
+                        !app.dswReq &&
+                        !app.withDrawn &&
+                        !app.academicLeave &&
+                        app.approveLevel > 0 &&
+                        app.approveLevel < 4
+                      ) {
                         showApplyBtn[0] = false;
                         return (
                           <Typography sx={{ color: "red", margin: 2 }}>
@@ -218,7 +332,14 @@ function ApplyLeave() {
                           </Typography>
                         );
                       }
-                      if(!user.projectGuide?.id && !app.dswReq && !app.withDrawn && !app.academicLeave && app.approveLevel > 0 && app.approveLevel < 3){
+                      if (
+                        !user.projectGuide?.id &&
+                        !app.dswReq &&
+                        !app.withDrawn &&
+                        !app.academicLeave &&
+                        app.approveLevel > 0 &&
+                        app.approveLevel < 3
+                      ) {
                         showApplyBtn[0] = false;
                         return (
                           <Typography sx={{ color: "red", margin: 2 }}>
@@ -263,7 +384,7 @@ function ApplyLeave() {
           open={openSnackbar}
           autoHideDuration={5000}
           onClose={handleSnackbarClose}
-          message="Adding application to blockchain. This might take a minute..."
+          message="Adding application to blockchain. This might take a minute... Do not re-submit!"
         />
       </Box>
     </Layout>

@@ -44,7 +44,7 @@ export default function Layout({ children }) {
 
   let menuItems = []
 
-  if(user.roles[0] == 'SYSTEM_ADMIN'){
+  if(user.roles[0] === 'SYSTEM_ADMIN'){
     menuItems = [
       {
         text: "Dashboard",
@@ -62,7 +62,7 @@ export default function Layout({ children }) {
         path: "/leave-request",
       }
     ];
-  } else if(user.roles[0] == 'STUDENT'){
+  } else if(user.roles[0] === 'STUDENT'){
     menuItems = [
       {
         text: "Dashboard",
@@ -75,10 +75,11 @@ export default function Layout({ children }) {
         path: "/apply",
       },
     ];
-  } else if(user.roles[0] == 'WARDEN' 
-          || user.roles[0] == 'HOD'
-          || user.roles[0] == 'PROJECT_GUIDE'
-          || user.roles[0] == 'LOCAL_GUARDIAN'
+  } else if(user.roles[0] === 'WARDEN' 
+          || user.roles[0] === 'HOD'
+          || user.roles[0] === 'PROJECT_GUIDE'
+          || user.roles[0] === 'LOCAL_GUARDIAN'
+          || user.roles[0] === 'DSW'
           ){
     menuItems = [
       {

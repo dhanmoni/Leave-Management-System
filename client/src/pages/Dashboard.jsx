@@ -35,7 +35,8 @@ import {
   rejectStudent,
   getAllStudents,
   getStudentsByLocalGuardian,
-  getStudentsByProjectGuide
+  getStudentsByProjectGuide,
+  getAllApprovedStudents
 } from "../redux/studentsSlice";
 
 function Dashboard() {
@@ -60,6 +61,8 @@ function Dashboard() {
       dispatch(getStudentsByLocalGuardian({ id: user._id, jwt_token }))
     } else if(user.roles[0] === "PROJECT_GUIDE"){
       dispatch(getStudentsByProjectGuide({ id: user._id, jwt_token }))
+    } else if(user.roles[0] === "DSW"){
+      dispatch(getAllApprovedStudents({jwt_token }))
     }
   }, []);
   
@@ -222,11 +225,16 @@ function Dashboard() {
                           Department: {user.department.name}
                         </Typography>
                       </>
+                    ) : user.roles[0] == "DSW" ? (
+                      <>
+                        <Typography noWrap>Role: DSW</Typography>
+                      </>
                     ) : (
                       <>
                         <Typography noWrap>Role: System Admin</Typography>
                       </>
-                    )}
+                    )
+                  }
                   </Box>
                 </Box>
               </Paper>

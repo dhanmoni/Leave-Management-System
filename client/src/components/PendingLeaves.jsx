@@ -53,6 +53,10 @@ const ApplicationCard = ({ application, student, system_admin }) => {
     reason,
     startDate,
     endDate,
+    prefixDate,
+    suffixDate,
+    prefixReason,
+    suffixReason,
     approveLevel,
     approvels,
     studentKey,
@@ -60,6 +64,14 @@ const ApplicationCard = ({ application, student, system_admin }) => {
 
   const s_date = new Date(startDate * 1000).toLocaleDateString("en-GB");
   const e_date = new Date(endDate * 1000).toLocaleDateString("en-GB");
+  let pre_date;
+  let suff_date;
+  if(prefixDate){
+    pre_date = new Date(prefixDate * 1000).toLocaleDateString("en-GB");
+  }
+  if(suffixDate){
+    suff_date = new Date(suffixDate * 1000).toLocaleDateString("en-GB");
+  }
   return (
     <Card sx={{ margin: 2 }} spacing={2} elevation={4}>
       <CardHeader
@@ -90,6 +102,30 @@ const ApplicationCard = ({ application, student, system_admin }) => {
         <Typography>
           To: <span style={{ fontWeight: "bold" }}>{e_date}</span>
         </Typography>
+        {
+          pre_date && (
+            <>
+            <Typography>
+              Prefix Date: <span style={{ fontWeight: "bold" }}>{pre_date}</span>
+            </Typography>
+            <Typography>
+              Prefix Reason: <span style={{ fontWeight: "bold" }}>{prefixReason}</span>
+            </Typography>
+            </>
+          )
+        }
+        {
+          suff_date && (
+            <>
+            <Typography>
+              Suffix Date <span style={{ fontWeight: "bold" }}>{suff_date}</span>
+            </Typography>
+            <Typography>
+              Suffix Reason: <span style={{ fontWeight: "bold" }}>{suffixReason}</span>
+            </Typography>
+            </>
+          )
+        }
       </CardContent>
       {!system_admin && (
         <CardActions sx={{ margin: 1 }}>
@@ -227,8 +263,8 @@ function PendingLeaves() {
                     : 0;
                   if (
                     app.academicLeave &&
-                    user.roles[0] === "HOD" &&
-                    user.department.id === studentDeptID && 
+                    (user.roles[0] === "HOD" || user.roles[0] == "SYSTEM_ADMIN") &&
+                    user.department?.id === studentDeptID && 
                     !app.withDrawn
                   ) {
                     if (app.approveLevel === 1) {
@@ -237,11 +273,12 @@ function PendingLeaves() {
                           key={index}
                           application={app}
                           student={studentInfo[0]}
+                          system_admin={user.roles[0] == "SYSTEM_ADMIN" ? true : false}
                         />
                       );
                     }
                   } else if (
-                    user.roles[0] === "LOCAL_GUARDIAN" &&
+                    (user.roles[0] === "LOCAL_GUARDIAN" || user.roles[0] == "SYSTEM_ADMIN") &&
                     user._id === studentInfo[0].localGuardian.id && 
                     !app.withDrawn
                   ) {
@@ -251,6 +288,7 @@ function PendingLeaves() {
                           key={index}
                           application={app}
                           student={studentInfo[0]}
+                          system_admin={user.roles[0] == "SYSTEM_ADMIN" ? true : false}
                         />
                       );
                     }
@@ -258,7 +296,7 @@ function PendingLeaves() {
                   // if project guide exists then show him the card
                   else if (
                     studentInfo[0].projectGuide.id &&
-                    user.roles[0] === "PROJECT_GUIDE" &&
+                    (user.roles[0] === "PROJECT_GUIDE" || user.roles[0] == "SYSTEM_ADMIN") &&
                     user._id === studentInfo[0].projectGuide.id && 
                     !app.withDrawn
                   ) {
@@ -268,6 +306,7 @@ function PendingLeaves() {
                           key={index}
                           application={app}
                           student={studentInfo[0]}
+                          system_admin={user.roles[0] == "SYSTEM_ADMIN" ? true : false}
                         />
                       );
                     }
@@ -275,8 +314,8 @@ function PendingLeaves() {
 
                   // condition to check if admin is HOD of student's dept
                   else if (
-                    user.roles[0] === "HOD" &&
-                    user.department.id === studentDeptID && 
+                    (user.roles[0] === "HOD" || user.roles[0] == "SYSTEM_ADMIN") &&
+                    user.department?.id === studentDeptID && 
                     !app.withDrawn
                   ) {
                     // check if project guide exists, if so then approvelevel is 3 for HOD
@@ -289,6 +328,7 @@ function PendingLeaves() {
                           key={index}
                           application={app}
                           student={studentInfo[0]}
+                          system_admin={user.roles[0] == "SYSTEM_ADMIN" ? true : false}
                         />
                       );
                       // if project guide doesnot exist, then approvelevel is 2 for HOD
@@ -306,7 +346,8 @@ function PendingLeaves() {
                     }
                   }
                   // check if application requires dsw sign
-                  else if (user.roles[0] === "DSW" && 
+                  else if (
+                    (user.roles[0] === "DSW" || user.roles[0] == "SYSTEM_ADMIN") && 
                   app.dswReq && 
                   !app.withDrawn) {
                     // check if project guide exists, if so then approvelevel is 4 for DSW
@@ -319,6 +360,7 @@ function PendingLeaves() {
                           key={index}
                           application={app}
                           student={studentInfo[0]}
+                          system_admin={user.roles[0] == "SYSTEM_ADMIN" ? true : false}
                         />
                       );
                       // if project guide doesnot exist, then approvelevel is 3 for DSW
@@ -337,8 +379,8 @@ function PendingLeaves() {
                   }
                   //checl for warden
                   else if (
-                    user.roles[0] === "WARDEN" &&
-                    user.hostel.id === studentHostelID && 
+                    (user.roles[0] === "WARDEN" || user.roles[0] == "SYSTEM_ADMIN") &&
+                    user.hostel?.id === studentHostelID && 
                     !app.withDrawn
                   ) {
                     // check if project guide exists and dsw required, if so then approvelevel is 5 for warden
@@ -351,6 +393,7 @@ function PendingLeaves() {
                           key={index}
                           application={app}
                           student={studentInfo[0]}
+                          system_admin={user.roles[0] == "SYSTEM_ADMIN" ? true: false}
                         />
                       );
                       // if project guide exists but dsw not required, then approvelevel is 4 for Warden
@@ -381,16 +424,7 @@ function PendingLeaves() {
                       );
                     }
                   } else if (user.roles[0] == "SYSTEM_ADMIN") {
-                    if (app.approveLevel > 0) {
-                      return (
-                        <ApplicationCard
-                          key={index}
-                          application={app}
-                          student={studentInfo[0]}
-                          system_admin={true}
-                        />
-                      );
-                    }
+                    
                   }
                 });
               })}

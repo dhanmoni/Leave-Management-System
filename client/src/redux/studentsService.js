@@ -79,6 +79,19 @@ export const getAllStudents = async (userData)=> {
             })
 }
 
+export const getAllApprovedStudents = async (userData)=> {
+    
+    return fetch(`http://localhost:5000/api/users/get-approved-students`, {
+                headers: {
+                    'x-auth-token': userData.jwt_token
+                }
+            }).then(res=> res.json())
+            .then(students=> {
+                console.log({students})
+                return students;
+            })
+}
+
 export const approveStudent = async (userData)=> {
     
     console.log("approving...", userData)
@@ -122,7 +135,8 @@ const studentsService = {
     getAllStudents,
     getStudentsByIds,
     getStudentsByLocalGuardian,
-    getStudentsByProjectGuide
+    getStudentsByProjectGuide,
+    getAllApprovedStudents
 }
 
 export default studentsService;

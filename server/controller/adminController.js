@@ -238,7 +238,7 @@ exports.rejectUserStudent = async (req, res) => {
 };
 
 exports.getAllAdmins = async (req, res) => {
-  User.find({ roles: { $in: ["HOD", "WARDEN", "PROJECT_GUIDE", "LOCAL_GUARDIAN"] } })
+  User.find({ roles: { $in: ["HOD", "WARDEN", "PROJECT_GUIDE", "LOCAL_GUARDIAN", "DSW"] } })
     .sort({ createdAt: -1 })
     .then((admins) => res.json(admins))
     .catch((err) => res.status(404).json({ error: "No admins found" }));

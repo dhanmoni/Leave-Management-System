@@ -102,6 +102,22 @@ export const getAllStudents = createAsyncThunk(
       }
     }
   )
+  export const getAllApprovedStudents = createAsyncThunk(
+    'students/get-approved-students',
+    async (userData, thunkAPI) => {
+      try {
+        return await studentsService.getAllApprovedStudents(userData)
+      } catch (error) {
+        const message =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString()
+        return thunkAPI.rejectWithValue(message)
+      }
+    }
+  )
 
 export const approveStudent = createAsyncThunk(
     'students/approve-student',
@@ -225,7 +241,20 @@ export const studentSlice = createSlice({
             state.students = null,
             state.isError = true
           })
-          
+
+          builder.addCase(getAllApprovedStudents.pending, (state, action)=> {
+            state.isLoading = true
+        })
+        builder.addCase(getAllApprovedStudents.fulfilled, (state, action) => {
+          state.isLoading = false,
+          state.students = action.payload
+        })
+        builder.addCase(getAllApprovedStudents.rejected, (state, action) => {
+            state.isLoading = false,
+            state.students = null,
+            state.isError = true
+          })
+
         builder.addCase(rejectStudent.pending, (state, action)=> {
             state.isLoading = true
         })

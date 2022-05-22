@@ -23,11 +23,12 @@ module.exports = function (req, res, next) {
           return res.status(401).json({ msg: 'Only approved admins can access' });
         }
         //console.log("user=", user);
-        if(user.roles[0] == 'HOD' 
-          || user.roles[0] == 'WARDEN' 
-          || user.roles[0] == 'PROJECT_GUIDE' 
-          || user.roles[0] == 'LOCAL_GUARDIAN'
-          || user.roles[0] == 'SYSTEM_ADMIN'){
+        if(user.roles[0] === 'HOD' 
+          || user.roles[0] === 'WARDEN' 
+          || user.roles[0] === 'PROJECT_GUIDE' 
+          || user.roles[0] === 'LOCAL_GUARDIAN'
+          || user.roles[0] === 'DSW'
+          || user.roles[0] === 'SYSTEM_ADMIN'){
             console.log('normal admin and system admin...')
             req.user = user;
             next();

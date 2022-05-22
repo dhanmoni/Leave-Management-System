@@ -38,9 +38,9 @@ export const applyApplication = createAsyncThunk(
 
   export const withdrawApplication = createAsyncThunk(
     'app/apply-application',
-    async (thunkAPI) => {
+    async (key, thunkAPI) => {
       try {
-        return await applicationService.withdrawApplication()
+        return await applicationService.withdrawApplication(key)
       } catch (error) {
         const message =
           (error.response &&

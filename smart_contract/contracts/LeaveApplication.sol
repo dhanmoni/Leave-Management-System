@@ -5,7 +5,6 @@ pragma solidity >=0.7.0 <0.9.0;
 contract LeaveApplication {
 
     struct Application { 
-        address studentKey;
         string subject;
         string reason;
         uint startDate;
@@ -19,6 +18,10 @@ contract LeaveApplication {
         // and leave will be forwared to DSW.
         bool dswReq;
         bool withDrawn;
+        uint prefixDate;
+        string prefixReason;
+        uint suffixDate;
+        string suffixReason;
     }
 
     address system_admin;
@@ -31,9 +34,17 @@ contract LeaveApplication {
     }
 
    
-    function applyLeave(string memory _sub, string memory _reason, uint _startDate, uint _endDate, bool _academicLeave, bool _dswReq) public {
+    function applyLeave(string memory _sub, 
+        string memory _reason, 
+        uint _startDate, 
+        uint _endDate, 
+        bool _academicLeave, 
+        bool _dswReq, 
+        uint _prefixDate, 
+        string memory _prefixReason, 
+        uint _suffixDate, 
+        string memory _suffixReason) public {
         Application memory _app = Application({
-            studentKey: msg.sender, 
             subject: _sub, 
             reason: _reason, 
             startDate: _startDate, 
@@ -42,7 +53,11 @@ contract LeaveApplication {
             approveLevel: 1,
             academicLeave: _academicLeave,
             dswReq: _dswReq,
-            withDrawn: false
+            withDrawn: false,
+            prefixDate: _prefixDate,
+            prefixReason: _prefixReason,
+            suffixDate: _suffixDate,
+            suffixReason: _suffixReason
         });
         
         ApplicationRegistry[msg.sender].push(_app);
@@ -72,10 +87,10 @@ contract LeaveApplication {
         ApplicationRegistry[_key][applicationIndex].approveLevel = 0;
     }
 
-    function withDrawLeave() public {
-        uint applicationIndex = _getTotalApplicationOfStudent(msg.sender) - 1;
-        require(ApplicationRegistry[msg.sender][applicationIndex].approveLevel > 0, "grantLeave: Already rejected");
-        ApplicationRegistry[msg.sender][applicationIndex].withDrawn = true;
+    function withDrawLeave(address _key) public {
+        uint applicationIndex = _getTotalApplicationOfStudent(_key) - 1;
+        require(ApplicationRegistry[_key][applicationIndex].approveLevel > 0, "grantLeave: Already rejected");
+        ApplicationRegistry[_key][applicationIndex].withDrawn = true;
     }
 
     function getApplicationsByStudentId(address key) public view returns (Application[] memory) {

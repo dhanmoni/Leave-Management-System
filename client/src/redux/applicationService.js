@@ -4,7 +4,6 @@ export const getApplications = async (_key)=> {
     const data = await  appContract.getApplicationsByStudentId(_key)
     data.map(d=> {
         returnValue.push({
-            studentKey: d.studentKey.toLowerCase(),
             subject: d.subject,
             reason: d.reason,
             startDate: d.startDate.toNumber(),
@@ -13,7 +12,11 @@ export const getApplications = async (_key)=> {
             approveLevel: d.approveLevel.toNumber(),
             academicLeave: d.academicLeave,
             dswReq: d.dswReq,
-            withDrawn: d.withDrawn
+            withDrawn: d.withDrawn,
+            prefixDate: d.prefixDate.toNumber(),
+            prefixReason: d.prefixReason,
+            suffixDate: d.suffixDate.toNumber(),
+            suffixReason: d.suffixReason,
         })
     })
     console.log({returnValue})
@@ -25,8 +28,8 @@ export const getApplications = async (_key)=> {
 }
 
 export const applyApplication = async (data)=> {
-    const {subject, reason, start_date, end_date, isAcademicLeave, dsw_req} = data
-    return appContract.applyLeave(subject, reason, start_date, end_date, isAcademicLeave, dsw_req).then(res=> console.log({res})).catch(err=> console.log({err}))
+    const {subject, reason, start_date, end_date, isAcademicLeave, dsw_req, prefixDate, prefixReason, suffixDate, suffixReason} = data
+    return appContract.applyLeave(subject, reason, start_date, end_date, isAcademicLeave, dsw_req, prefixDate, prefixReason, suffixDate, suffixReason).then(res=> console.log({res})).catch(err=> console.log({err}))
 }
 
 export const rejectApplication = async (key)=> {
@@ -37,8 +40,8 @@ export const approveApplication = async (key)=> {
     return appContract.grantLeave(key).then(res=> console.log({res})).catch(err=> console.log({err}))
 }
 
-export const withdrawApplication = async ()=> {
-    return appContract.withDrawLeave().then(res=> console.log({res})).catch(err=> console.log({err}))
+export const withdrawApplication = async (key)=> {
+    return appContract.withDrawLeave(key).then(res=> console.log({res})).catch(err=> console.log({err}))
 }
 
 const applicationService = {

@@ -41,7 +41,7 @@ function AllStudents() {
               <>
               {
                 user.roles[0] === "HOD"
-                || user.roles[0] === "WARDEN" ? (
+                || user.roles[0] === "WARDEN" || user.roles[0] === "SYSTEM_ADMIN" ? (
                   <PendingStudents />
                 ) : null
               }

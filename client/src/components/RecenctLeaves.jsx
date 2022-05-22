@@ -16,15 +16,26 @@ import {
   CardContent,
   CardActions,
   IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Snackbar
 } from "@mui/material";
 
 import { CloseRounded, DoneRounded, Refresh } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { getApplications, rejectApplication, refeshApplicationState } from "../redux/applicationSlice";
+import {
+  getApplications,
+  rejectApplication,
+  refeshApplicationState,
+  withdrawApplication
+} from "../redux/applicationSlice";
 
 const ApplicationCard = ({ application, student }) => {
-  
   console.log({ student, application });
+  const dispatch = useDispatch();
   const {
     subject,
     reason,
@@ -32,8 +43,14 @@ const ApplicationCard = ({ application, student }) => {
     endDate,
     approveLevel,
     approvels,
-    studentKey,
+    withDrawn,
   } = application;
+
+  const handleWithDraw = () => {
+    // setOpenSnackbar(true);
+    dispatch(withdrawApplication(student.publicKey));
+    // setOpen(false);
+  };
 
   const s_date = new Date(startDate * 1000).toLocaleDateString("en-GB");
   const e_date = new Date(endDate * 1000).toLocaleDateString("en-GB");
@@ -45,9 +62,25 @@ const ApplicationCard = ({ application, student }) => {
           <Typography sx={{ fontWeight: "bold" }}>{student.name}</Typography>
         }
         action={
-                approveLevel == 0 ? <Button variant="outlined" color="danger">Rejected</Button> : <Button color="success">Approved</Button>
-            
-          }
+          approveLevel === 0 ? (
+            <Button variant="outlined" color="danger">
+              Rejected
+            </Button>
+          ) : withDrawn ? (
+            <Button variant="outlined" color="success">
+              Withdrawn
+            </Button>
+          ) : (
+            <Box style={{display:'flex', flexDirection:'column'}}>
+            <Button variant="outlined" color="success">
+              Approved
+            </Button>
+            <Button onClick={handleWithDraw} sx={{marginTop: '8px'}} variant="outlined" color="danger">
+              Cancel
+            </Button>
+            </Box>
+          )
+        }
         subheader={
           <Box>
             <Typography sx={{}}>
@@ -71,15 +104,12 @@ const ApplicationCard = ({ application, student }) => {
         <Typography>
           To: <span style={{ fontWeight: "bold" }}>{e_date}</span>
         </Typography>
-        
       </CardContent>
-      
     </Card>
   );
 };
 
 function RecentLeaves() {
-  const dispatch = useDispatch();
   const { user, jwt_token } = useSelector((state) => state.auth);
   const { applications } = useSelector((state) => state.applications);
   const { students } = useSelector((state) => state.students);
@@ -90,7 +120,7 @@ function RecentLeaves() {
         elevation={4}
         sx={{ p: 2, display: "flex", flexDirection: "column", borderRadius: 3 }}
       >
-          <Typography variant="h6" sx={{ fontWeight: 600, padding: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: 600, padding: 2 }}>
           Recent leaves
         </Typography>
         <Divider variant="middle" />
@@ -111,16 +141,7 @@ function RecentLeaves() {
                     (s) => s.publicKey == appObj[0]
                   );
                   console.log({ studentInfo });
-                  if(app.approveLevel == 0){
-                    return (
-                        <ApplicationCard
-                          key={index}
-                          application={app}
-                          student={studentInfo[0]}
-                        />
-                      );
-                  } else if(app.academicLeave && app.approveLevel == 2){
-                    console.log('hod approved')
+                  if (app.approveLevel == 0) {
                     return (
                       <ApplicationCard
                         key={index}
@@ -128,14 +149,29 @@ function RecentLeaves() {
                         student={studentInfo[0]}
                       />
                     );
-                  } else if(app.withDrawn){
+                  } else if (
+                    (app.academicLeave && app.approveLevel == 2) ||
+                    app.withDrawn ||
+                    (studentInfo[0].projectGuide?.id &&
+                      app.dswReq &&
+                      app.approveLevel === 6) ||
+                    (studentInfo[0].projectGuide?.id &&
+                      !app.dswReq &&
+                      app.approveLevel === 5) ||
+                    (!studentInfo[0].projectGuide?.id &&
+                      app.dswReq &&
+                      app.approveLevel === 5) ||
+                    (!studentInfo[0].projectGuide?.id &&
+                      !app.dswReq &&
+                      app.approveLevel === 4)
+                  ) {
                     return (
                       <ApplicationCard
                         key={index}
                         application={app}
                         student={studentInfo[0]}
                       />
-                    )
+                    );
                   }
                 });
               })}
