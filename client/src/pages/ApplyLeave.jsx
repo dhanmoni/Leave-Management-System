@@ -80,33 +80,35 @@ function ApplyLeave() {
       return alert("Please enter a valid end date")
     }
     if(isNaN(prefix_date)){
-      prefix_date = 0;
+      prefix_date = 1;
     }
     if(isNaN(suffix_date)){
-      suffix_date = 0;
+      suffix_date = 1;
     }
-    if(prefix_date && !prefixReason){
+    if(prefix_date > 1 && !prefixReason){
       return alert("Please enter a valid reason for prefix date")
     }
-    if(suffix_date && !suffixReason){
+    if(suffix_date > 1 && !suffixReason){
       return alert("Please enter a valid reason for suffix date")
     }
-    if(!prefix_date && prefixReason.length > 0){
+    if(prefix_date > 1 && prefixReason.length > 0){
       return alert("Please enter a valid date for prefix reason")
     }
-    if(!suffix_date && suffixReason.length > 0){
+    if(suffix_date > 1 && suffixReason.length > 0){
       return alert("Please enter a valid date for suffix reason")
     }
 
     if(end_date < start_date){
       return alert("Please enter a valid start and end date")
     }
-    if(prefix_date > start_date){
+    if(prefix_date > 1 && prefix_date > start_date){
       return alert("Please enter a valid start and prefix date")
     }
-    if(suffix_date < end_date){
+    if(suffix_date > 1 && suffix_date < end_date){
       return alert("Please enter a valid start and suffix date")
     }
+    // let updatedPreReason = prefixReason.length > 0 ? prefixReason : "NULL";
+    // let updatedSuffReason = suffixReason.length > 0 ? suffixReason : "NULL";
     console.log({
       subject,
       reason,
@@ -119,7 +121,6 @@ function ApplyLeave() {
       prefix_date,
       suffix_date
     });
-
     dispatch(
       applyApplication({
         subject,

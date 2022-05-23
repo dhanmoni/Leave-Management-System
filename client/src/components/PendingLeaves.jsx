@@ -58,18 +58,17 @@ const ApplicationCard = ({ application, student, system_admin }) => {
     prefixReason,
     suffixReason,
     approveLevel,
-    approvels,
-    studentKey,
+    approvels
   } = application;
 
   const s_date = new Date(startDate * 1000).toLocaleDateString("en-GB");
   const e_date = new Date(endDate * 1000).toLocaleDateString("en-GB");
   let pre_date;
   let suff_date;
-  if(prefixDate){
+  if(prefixDate > 1){
     pre_date = new Date(prefixDate * 1000).toLocaleDateString("en-GB");
   }
-  if(suffixDate){
+  if(suffixDate > 1){
     suff_date = new Date(suffixDate * 1000).toLocaleDateString("en-GB");
   }
   return (
@@ -385,7 +384,7 @@ function PendingLeaves() {
                   ) {
                     // check if project guide exists and dsw required, if so then approvelevel is 5 for warden
                     if (
-                      studentInfo[0].projectGuide.id & app.dswReq &&
+                      studentInfo[0].projectGuide.id && app.dswReq &&
                       app.approveLevel === 5
                     ) {
                       return (

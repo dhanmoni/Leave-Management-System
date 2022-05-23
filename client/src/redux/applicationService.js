@@ -28,8 +28,8 @@ export const getApplications = async (_key)=> {
 }
 
 export const applyApplication = async (data)=> {
-    const {subject, reason, start_date, end_date, isAcademicLeave, dsw_req, prefixDate, prefixReason, suffixDate, suffixReason} = data
-    return appContract.applyLeave(subject, reason, start_date, end_date, isAcademicLeave, dsw_req, prefixDate, prefixReason, suffixDate, suffixReason).then(res=> console.log({res})).catch(err=> console.log({err}))
+    const {subject, reason, start_date, end_date, isAcademicLeave, dsw_req, prefix_date, prefixReason, suffix_date, suffixReason} = data
+    return appContract.applyLeave(subject, reason, start_date, end_date, isAcademicLeave, dsw_req, prefix_date, prefixReason, suffix_date, suffixReason).then(res=> console.log({res})).catch(err=> console.log({err}))
 }
 
 export const rejectApplication = async (key)=> {

@@ -19,7 +19,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Snackbar
+  Snackbar,
 } from "@mui/material";
 import { CancelScheduleSend } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,13 +45,13 @@ const PendingLeaveCard = ({ application, user, showWitdrawBtn }) => {
   const e_date = new Date(endDate * 1000).toLocaleDateString("en-GB");
   const [open, setOpen] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-
+  console.log({ prefixDate, suffixDate });
   let pre_date;
   let suff_date;
-  if(prefixDate){
+  if (prefixDate > 1) {
     pre_date = new Date(prefixDate * 1000).toLocaleDateString("en-GB");
   }
-  if(suffixDate){
+  if (suffixDate > 1) {
     suff_date = new Date(suffixDate * 1000).toLocaleDateString("en-GB");
   }
   const handleCloseSnackbar = () => {
@@ -119,7 +119,7 @@ const PendingLeaveCard = ({ application, user, showWitdrawBtn }) => {
         label:
           approveLevel == 3 ||
           approveLevel == 4 ||
-          (approveLevel == 0 && approvels.length == 3) ? (
+          (approveLevel == 0 && approvels.length > 2) ? (
             <Typography sx={{ fontWeight: "bold", color: "green" }}>
               Approved by HoD
             </Typography>
@@ -133,7 +133,7 @@ const PendingLeaveCard = ({ application, user, showWitdrawBtn }) => {
       },
       {
         label:
-          approveLevel == 4 || (approveLevel == 0 && approvels.length == 4) ? (
+          approveLevel == 4 || (approveLevel == 0 && approvels.length > 3) ? (
             <Typography sx={{ fontWeight: "bold", color: "green" }}>
               Approved by Warden
             </Typography>
@@ -215,7 +215,7 @@ const PendingLeaveCard = ({ application, user, showWitdrawBtn }) => {
             <Typography sx={{ fontWeight: "bold", color: "green" }}>
               Approved by Warden
             </Typography>
-          ) : approveLevel == 0 && approvels.length > 4 ? (
+          ) : approveLevel == 0 && approvels.length == 4 ? (
             <Typography sx={{ fontWeight: "bold", color: "red" }}>
               Rejected by Warden
             </Typography>
@@ -235,7 +235,11 @@ const PendingLeaveCard = ({ application, user, showWitdrawBtn }) => {
       },
       {
         label:
-          approveLevel == 2 || approveLevel == 3 || approveLevel == 4 ? (
+          approveLevel == 2 ||
+          approveLevel == 3 ||
+          approveLevel == 4 ||
+          approveLevel == 5 ||
+          approveLevel == 6 ? (
             <Typography sx={{ fontWeight: "bold", color: "green" }}>
               Approved by Local Guardian
             </Typography>
@@ -256,6 +260,7 @@ const PendingLeaveCard = ({ application, user, showWitdrawBtn }) => {
           approveLevel == 3 ||
           approveLevel == 4 ||
           approveLevel == 5 ||
+          approveLevel == 6 ||
           (approveLevel == 0 && approvels.length > 2) ? (
             <Typography sx={{ fontWeight: "bold", color: "green" }}>
               Approved by Project Guide
@@ -272,6 +277,7 @@ const PendingLeaveCard = ({ application, user, showWitdrawBtn }) => {
         label:
           approveLevel == 4 ||
           approveLevel == 5 ||
+          approveLevel == 6 ||
           (approveLevel == 0 && approvels.length > 3) ? (
             <Typography sx={{ fontWeight: "bold", color: "green" }}>
               Approved by HoD
@@ -286,11 +292,11 @@ const PendingLeaveCard = ({ application, user, showWitdrawBtn }) => {
       },
       {
         label:
-          approveLevel == 5 || (approveLevel == 0 && approvels.length > 4) ? (
+          approveLevel == 5 || approveLevel == 6 || (approveLevel == 0 && approvels.length > 4) ? (
             <Typography sx={{ fontWeight: "bold", color: "green" }}>
               Approved by DSW
             </Typography>
-          ) : approveLevel == 0 && approvels.length > 4 ? (
+          ) : approveLevel == 0 && approvels.length == 4 ? (
             <Typography sx={{ fontWeight: "bold", color: "red" }}>
               Rejected by DSW
             </Typography>
@@ -304,7 +310,7 @@ const PendingLeaveCard = ({ application, user, showWitdrawBtn }) => {
             <Typography sx={{ fontWeight: "bold", color: "green" }}>
               Approved by Warden
             </Typography>
-          ) : approveLevel == 0 && approvels.length > 5 ? (
+          ) : approveLevel == 0 && approvels.length == 5 ? (
             <Typography sx={{ fontWeight: "bold", color: "red" }}>
               Rejected by Warden
             </Typography>
@@ -379,7 +385,7 @@ const PendingLeaveCard = ({ application, user, showWitdrawBtn }) => {
             <Typography sx={{ fontWeight: "bold", color: "green" }}>
               Approved by Warden
             </Typography>
-          ) : approveLevel == 0 && approvels.length > 4 ? (
+          ) : approveLevel == 0 && approvels.length == 4 ? (
             <Typography sx={{ fontWeight: "bold", color: "red" }}>
               Rejected by Warden
             </Typography>
@@ -405,30 +411,30 @@ const PendingLeaveCard = ({ application, user, showWitdrawBtn }) => {
         <Typography>
           To: <span style={{ fontWeight: "bold" }}>{e_date}</span>
         </Typography>
-        {
-          pre_date && (
-            <>
+        {pre_date && (
+          <>
             <Typography>
-              Prefix Date: <span style={{ fontWeight: "bold" }}>{pre_date}</span>
+              Prefix Date:{" "}
+              <span style={{ fontWeight: "bold" }}>{pre_date}</span>
             </Typography>
             <Typography>
-              Prefix Reason: <span style={{ fontWeight: "bold" }}>{prefixReason}</span>
+              Prefix Reason:{" "}
+              <span style={{ fontWeight: "bold" }}>{prefixReason}</span>
             </Typography>
-            </>
-          )
-        }
-        {
-          suff_date && (
-            <>
+          </>
+        )}
+        {suff_date && (
+          <>
             <Typography>
-              Suffix Date <span style={{ fontWeight: "bold" }}>{suff_date}</span>
+              Suffix Date{" "}
+              <span style={{ fontWeight: "bold" }}>{suff_date}</span>
             </Typography>
             <Typography>
-              Suffix Reason: <span style={{ fontWeight: "bold" }}>{suffixReason}</span>
+              Suffix Reason:{" "}
+              <span style={{ fontWeight: "bold" }}>{suffixReason}</span>
             </Typography>
-            </>
-          )
-        }
+          </>
+        )}
         <Box
           sx={{
             display: "flex",
@@ -474,7 +480,7 @@ const PendingLeaveCard = ({ application, user, showWitdrawBtn }) => {
           </DialogActions>
         </DialogContent>
       </Dialog>
-        <Snackbar
+      <Snackbar
         open={openSnackbar}
         autoHideDuration={5000}
         onClose={handleCloseSnackbar}
