@@ -1,6 +1,6 @@
 const {ethers} =  require('ethers')
 const jwt = require('jsonwebtoken');
-
+require('dotenv').config();
 const User = require('../models/User');
 
 exports.userAuth = async (req, res) => {
@@ -65,7 +65,7 @@ exports.userAuth = async (req, res) => {
             };
             jwt.sign(
                 payload,
-                'jwt-secret-token',
+                process.env.JWT_TOKEN,
                 { expiresIn: '24h' },
                 (err, token) => {
                 if (err) throw err;
