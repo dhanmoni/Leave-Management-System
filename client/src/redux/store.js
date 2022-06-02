@@ -16,7 +16,7 @@ import dataReducer from './dataSlice'
 import applicationReducer from './applicationSlice'
 
 const persistConfig = {
-    key: 'root2',
+    key: 'root5',
     version: 1,
     storage,
 }
