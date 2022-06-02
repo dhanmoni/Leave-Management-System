@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import {
-  Chip,
   Avatar,
   Drawer,
   AppBar,
@@ -16,7 +15,6 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import avatar from "../assets/me.jpeg";
 
 import "../App.css";
 import {
@@ -38,13 +36,11 @@ export default function Layout({ children }) {
   const location = useLocation();
   const dispatch = useDispatch();
 
-  const { publicKey, jwt_token, isLoggedIn, user } = useSelector(
-    (state) => state.auth
-  );
+  const { user } = useSelector((state) => state.auth);
 
-  let menuItems = []
+  let menuItems = [];
 
-  if(user.roles[0] === 'SYSTEM_ADMIN'){
+  if (user.roles[0] === "SYSTEM_ADMIN") {
     menuItems = [
       {
         text: "Dashboard",
@@ -60,9 +56,9 @@ export default function Layout({ children }) {
         text: "Leave Request",
         icon: <Difference />,
         path: "/leave-request",
-      }
+      },
     ];
-  } else if(user.roles[0] === 'STUDENT'){
+  } else if (user.roles[0] === "STUDENT") {
     menuItems = [
       {
         text: "Dashboard",
@@ -71,16 +67,17 @@ export default function Layout({ children }) {
       },
       {
         text: "Apply Leave",
-        icon: <AddOutlined/>,
+        icon: <AddOutlined />,
         path: "/apply",
       },
     ];
-  } else if(user.roles[0] === 'WARDEN' 
-          || user.roles[0] === 'HOD'
-          || user.roles[0] === 'PROJECT_GUIDE'
-          || user.roles[0] === 'LOCAL_GUARDIAN'
-          || user.roles[0] === 'DSW'
-          ){
+  } else if (
+    user.roles[0] === "WARDEN" ||
+    user.roles[0] === "HOD" ||
+    user.roles[0] === "PROJECT_GUIDE" ||
+    user.roles[0] === "LOCAL_GUARDIAN" ||
+    user.roles[0] === "DSW"
+  ) {
     menuItems = [
       {
         text: "Dashboard",
@@ -89,7 +86,7 @@ export default function Layout({ children }) {
       },
       {
         text: "Students",
-        icon: <AssignmentInd/>,
+        icon: <AssignmentInd />,
         path: "/students",
       },
     ];
@@ -97,7 +94,7 @@ export default function Layout({ children }) {
 
   const handleSignOut = () => {
     dispatch(signOutUser());
-    dispatch(refreshApplicationState())
+    dispatch(refreshApplicationState());
     navigate("/");
   };
 
@@ -159,7 +156,7 @@ export default function Layout({ children }) {
                   padding: "0px 10px 0px 10px",
                 }}
               >
-                {user.isApproved ? 'Approved' : 'Pending'}
+                {user.isApproved ? "Approved" : "Pending"}
               </span>
             </Typography>
           </Box>

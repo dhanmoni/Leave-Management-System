@@ -263,8 +263,8 @@ function PendingLeaves() {
                   if (
                     app.academicLeave &&
                     ((user.roles[0] === "HOD" &&
-                    user.department?.id === studentDeptID) ||
-                    user.roles[0] == "SYSTEM_ADMIN") &&
+                      user.department?.id === studentDeptID) ||
+                      user.roles[0] == "SYSTEM_ADMIN") &&
                     !app.withDrawn
                   ) {
                     if (app.approveLevel === 1) {
@@ -281,8 +281,8 @@ function PendingLeaves() {
                     }
                   } else if (
                     ((user.roles[0] === "LOCAL_GUARDIAN" &&
-                    user._id === studentInfo[0].localGuardian.id) ||
-                    user.roles[0] == "SYSTEM_ADMIN") &&
+                      user._id === studentInfo[0].localGuardian.id) ||
+                      user.roles[0] == "SYSTEM_ADMIN") &&
                     !app.withDrawn
                   ) {
                     if (app.approveLevel == 1) {
@@ -323,8 +323,8 @@ function PendingLeaves() {
                   // condition to check if admin is HOD of student's dept
                   else if (
                     ((user.roles[0] === "HOD" &&
-                    user.department?.id === studentDeptID) ||
-                    user.roles[0] == "SYSTEM_ADMIN") &&
+                      user.department?.id === studentDeptID) ||
+                      user.roles[0] == "SYSTEM_ADMIN") &&
                     !app.withDrawn
                   ) {
                     // check if project guide exists, if so then approvelevel is 3 for HOD
@@ -358,8 +358,8 @@ function PendingLeaves() {
                   }
                   // check if application requires dsw sign
                   else if (
-                   ( (user.roles[0] === "DSW" &&
-                    app.dswReq) || user.roles[0] == "SYSTEM_ADMIN") &&
+                    ((user.roles[0] === "DSW" && app.dswReq) ||
+                      user.roles[0] == "SYSTEM_ADMIN") &&
                     !app.withDrawn
                   ) {
                     // check if project guide exists, if so then approvelevel is 4 for DSW
@@ -394,8 +394,8 @@ function PendingLeaves() {
                   //checl for warden
                   else if (
                     ((user.roles[0] === "WARDEN" &&
-                    user.hostel?.id === studentHostelID) ||
-                    user.roles[0] == "SYSTEM_ADMIN") &&
+                      user.hostel?.id === studentHostelID) ||
+                      user.roles[0] == "SYSTEM_ADMIN") &&
                     !app.withDrawn
                   ) {
                     // check if project guide exists and dsw required, if so then approvelevel is 5 for warden

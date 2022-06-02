@@ -1,26 +1,12 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../components/Layout";
-import PendingAdmins from "../components/PendingAdmins";
-import PendingStudents from "../components/PendingStudents";
-
+import React from "react";
 import {
   Box,
   Typography,
   Grid,
-  Container,
-  Paper,
-  Avatar,
-  Divider,
-  Button,
-  Tooltip,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
+  Container
 } from "@mui/material";
 
-import { useNavigate, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import Layout from "../components/Layout";
 import PendingLeaves from "../components/PendingLeaves";
 import RecentLeaves from "../components/RecenctLeaves";
 function LeaveRequests() {

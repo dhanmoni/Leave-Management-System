@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   List,
   ListItem,
@@ -13,23 +13,11 @@ import {
   Button,
   Card,
   CardHeader,
-  CardContent,
-  CardActions,
-  IconButton,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Snackbar
+  CardContent
 } from "@mui/material";
 
-import { CloseRounded, DoneRounded, Refresh } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getApplications,
-  rejectApplication,
-  refreshApplicationState,
   withdrawApplication
 } from "../redux/applicationSlice";
 

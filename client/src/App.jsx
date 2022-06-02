@@ -1,21 +1,23 @@
+import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import {createTheme, ThemeProvider} from '@mui/material/styles'
+import { useDispatch, useSelector } from 'react-redux';
+import jwt_decode from 'jwt-decode'
+import './App.css'
+
 import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
 import ApplyLeave from './pages/ApplyLeave'
-import './App.css'
 import CreateProfile from './pages/CreateProfile'
 import PrivateRoute from './components/PrivateRoute'
-import { useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux';
-import jwt_decode from 'jwt-decode'
-import { signOutUser } from './redux/authSlice'
 import Hostel from './pages/Hostel'
 import Department from './pages/Department'
 import User from './pages/User'
 import PendingUserRequest from './pages/PendingUserRequests'
 import AllStudents from './pages/AllStudents'
 import LeaveRequests from './pages/LeaveRequests'
+import { signOutUser } from './redux/authSlice'
+
 const { palette } = createTheme();
 const { augmentColor } = palette;
 const createColor = (mainColor) => augmentColor({ color: { main: mainColor } });
@@ -118,7 +120,7 @@ if(jwt_token){
                   <LeaveRequests />
                 </PrivateRoute>
               }
-            />
+              />
             <Route
               exact
               path="/students"
@@ -154,7 +156,7 @@ if(jwt_token){
                   <User />
                 </PrivateRoute>
               }
-            />
+              />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
