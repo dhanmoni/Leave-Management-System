@@ -29,7 +29,7 @@ import {
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { signOutUser } from "../redux/authSlice";
-import { refeshApplicationState } from "../redux/applicationSlice";
+import { refreshApplicationState } from "../redux/applicationSlice";
 
 const drawerWidth = 240;
 
@@ -97,7 +97,7 @@ export default function Layout({ children }) {
 
   const handleSignOut = () => {
     dispatch(signOutUser());
-    dispatch(refeshApplicationState())
+    dispatch(refreshApplicationState())
     navigate("/");
   };
 

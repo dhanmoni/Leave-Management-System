@@ -97,7 +97,7 @@ export const applicationSlice = createSlice({
     name:"applications",
     initialState,
     reducers: {
-        refeshApplicationState: (state, action)=> {
+        refreshApplicationState: (state, action)=> {
             state.applications = {}
             state.isError = false,
             state.isLoading = false
@@ -144,6 +144,6 @@ export const applicationSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const {refeshApplicationState } = applicationSlice.actions
+export const {refreshApplicationState } = applicationSlice.actions
 
 export default applicationSlice.reducer

@@ -29,7 +29,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getApplications,
   rejectApplication,
-  refeshApplicationState,
+  refreshApplicationState,
   withdrawApplication
 } from "../redux/applicationSlice";
 
@@ -141,15 +141,9 @@ function RecentLeaves() {
                     (s) => s.publicKey == appObj[0]
                   );
                   console.log({ studentInfo });
-                  if (app.approveLevel == 0) {
-                    return (
-                      <ApplicationCard
-                        key={index}
-                        application={app}
-                        student={studentInfo[0]}
-                      />
-                    );
-                  } else if (
+                  
+                   if (
+                    (app.approveLevel == 0) || 
                     (app.academicLeave && app.approveLevel == 2) ||
                     app.withDrawn ||
                     (studentInfo[0].projectGuide?.id &&

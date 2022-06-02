@@ -34,7 +34,7 @@ import React, { useEffect, useState } from "react";
 import PendingLeaveCard from "./PendingLeaveCard";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getApplications } from "../redux/applicationSlice";
+import { getApplications, refreshApplicationState } from "../redux/applicationSlice";
 
 const Row = ({ application, user, status }) => {
   const { subject, reason, startDate, endDate, approveLevel, approvels } =
@@ -110,6 +110,7 @@ function StudentDashboard() {
             Active Leave Application
           </Typography>
           <Button startIcon={<Refresh />} onClick={()=> {
+            dispatch(refreshApplicationState())
             dispatch(getApplications(publicKey));
           }}>
             Refresh
