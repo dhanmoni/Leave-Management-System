@@ -85,16 +85,16 @@ function ApplyLeave() {
     if(isNaN(suffix_date)){
       suffix_date = 1;
     }
-    if(prefix_date > 1 && !prefixReason){
+    if(prefix_date == 1 && prefixReason.length > 0){
       return alert("Please enter a valid reason for prefix date")
     }
-    if(suffix_date > 1 && !suffixReason){
+    if(suffix_date == 1  && suffixReason.length > 0){
       return alert("Please enter a valid reason for suffix date")
     }
-    if(prefix_date > 1 && prefixReason.length > 0){
+    if(prefix_date > 1 && prefixReason.length < 1){
       return alert("Please enter a valid date for prefix reason")
     }
-    if(suffix_date > 1 && suffixReason.length > 0){
+    if(suffix_date > 1 && suffixReason.length < 1){
       return alert("Please enter a valid date for suffix reason")
     }
 

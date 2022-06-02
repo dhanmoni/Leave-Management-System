@@ -28,6 +28,7 @@ import {
   CancelScheduleSend,
   KeyboardArrowDown,
   KeyboardArrowUp,
+  Refresh,
 } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 import PendingLeaveCard from "./PendingLeaveCard";
@@ -97,10 +98,23 @@ function StudentDashboard() {
             borderRadius: 3,
           }}
         >
+          <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           <Typography variant="h6" sx={{ fontWeight: 600, padding: 2 }}>
             Active Leave Application
           </Typography>
-
+          <Button startIcon={<Refresh />} onClick={()=> {
+            dispatch(getApplications(publicKey));
+          }}>
+            Refresh
+          </Button>
+        </Box>
           <Divider variant="middle" />
           {applications &&
             Object.keys(applications).length != 0 &&
