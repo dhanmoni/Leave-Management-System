@@ -26,7 +26,7 @@ export default function Landing() {
   }, []);
 
   const handleAuthenticate = async ({publicKey,signature}) =>{
-		const res = await fetch(`http://localhost:5000/api/auth/`, {
+		const res = await fetch(`/api/auth/`, {
 			body: JSON.stringify({ publicKey, signature }),
 			headers: {
 				'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ export default function Landing() {
   }
 
   const handleSignup = async (publicKey) =>{
-		const res = await fetch(`http://localhost:5000/api/auth/register`, {
+		const res = await fetch(`/api/auth/register`, {
 			body: JSON.stringify({ publicKey }),
 			headers: {
 				'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ export default function Landing() {
       
       userPublicKey = accounts[0]
 
-      fetch(`http://localhost:5000/api/auth/get-user/${accounts[0]}`)
+      fetch(`/api/auth/get-user/${accounts[0]}`)
         .then((response) => response.json())
         // If yes, retrieve it. If no, create it.
         .then((user) => {

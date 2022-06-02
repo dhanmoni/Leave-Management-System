@@ -2,7 +2,7 @@ import {appContract} from '../utils/blockchain'
 export const getAllAdmins = async (userData)=> {
     console.log(userData)
     
-    return fetch(`http://localhost:5000/api/admin/admins`, {
+    return fetch(`/api/admin/admins`, {
                 headers: {
                     'x-auth-token': userData.jwt_token
                 }
@@ -17,7 +17,7 @@ export const getAllAdmins = async (userData)=> {
 export const approveAdmin = async (userData)=> {
         appContract.makeAdmin(userData.publicKey).then(async ()=> {
         console.log("approving...", userData)
-        return fetch(`http://localhost:5000/api/admin/approve-user-admin`, {
+        return fetch(`/api/admin/approve-user-admin`, {
                 body: JSON.stringify(userData),
                 headers: {
                     'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ export const approveAdmin = async (userData)=> {
 export const approveGuideAdmin = async (userData)=> {
     appContract.makeAdmin(userData.publicKey).then(async ()=> {
     console.log("approving guide...", userData)
-    return fetch(`http://localhost:5000/api/admin/approve-guide-admin`, {
+    return fetch(`/api/admin/approve-guide-admin`, {
             body: JSON.stringify(userData),
             headers: {
                 'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export const approveGuideAdmin = async (userData)=> {
 export const rejectAdmin = async (userData)=> {
     
     console.log("rejecting...", userData)
-    return fetch(`http://localhost:5000/api/admin/reject-user-admin`, {
+    return fetch(`/api/admin/reject-user-admin`, {
                 body: JSON.stringify(userData),
                 headers: {
                     'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ export const rejectAdmin = async (userData)=> {
 export const approveProfileUpdate = async (userData)=> {
     
     console.log("approvig update...", userData)
-    return fetch(`http://localhost:5000/api/admin/approve-user-profile-update`, {
+    return fetch(`/api/admin/approve-user-profile-update`, {
                 body: JSON.stringify(userData),
                 headers: {
                     'Content-Type': 'application/json',

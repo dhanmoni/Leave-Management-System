@@ -50,7 +50,7 @@ function Hostels() {
     if (!hostelName) {
       setError("Please Enter a name!");
     } else {
-      fetch(`http://localhost:5000/api/admin/add-hostel`, {
+      fetch(`/api/admin/add-hostel`, {
         body: JSON.stringify({ name: hostelName }),
         headers: {
           "Content-Type": "application/json",

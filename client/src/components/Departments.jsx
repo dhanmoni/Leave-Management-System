@@ -52,7 +52,7 @@ function Departments() {
       if(!deptName){
           setError("Please Enter a name!")
       } else {
-        fetch(`http://localhost:5000/api/admin/add-department`, {
+        fetch(`/api/admin/add-department`, {
 			body: JSON.stringify({ name: deptName }),
 			headers: {
 				'Content-Type': 'application/json',

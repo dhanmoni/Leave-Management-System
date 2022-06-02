@@ -2,7 +2,7 @@ export const createUserProfile = async (userData)=> {
     
       const token = userData.get('jwt_token')
       
-    return fetch(`http://localhost:5000/api/profile/create-profile`, {
+    return fetch(`/api/profile/create-profile`, {
                 body: userData,
                 headers: {
                     'x-auth-token': token
@@ -20,7 +20,7 @@ export const createAdminProfile = async (adminData)=> {
     const token = adminData.get('jwt_token')
     console.log('fetching...', token)
       
-    return fetch(`http://localhost:5000/api/profile/create-admin-profile`, {
+    return fetch(`/api/profile/create-admin-profile`, {
                 body: adminData,
                 headers: {
                     'x-auth-token': token

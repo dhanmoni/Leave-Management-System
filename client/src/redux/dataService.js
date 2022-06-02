@@ -1,5 +1,5 @@
 export const getHostels = async ()=> {
-    return fetch(`http://localhost:5000/api/profile/get-hostels`).then(res=> res.json())
+    return fetch(`/api/profile/get-hostels`).then(res=> res.json())
             .then(hostels=> {
                 console.log({hostels})
                 return hostels;
@@ -7,7 +7,7 @@ export const getHostels = async ()=> {
 }
 
 export const getDepts = async ()=> {
-    return fetch(`http://localhost:5000/api/profile/get-departments`).then(res=> res.json())
+    return fetch(`/api/profile/get-departments`).then(res=> res.json())
             .then(depts=> {
                 console.log({depts})
                 return depts;
@@ -16,7 +16,7 @@ export const getDepts = async ()=> {
 
 export const getLocalGuardians = async(jwt_token)=> {
     console.log('getting guardians...')
-    return fetch(`http://localhost:5000/api/users/get-local-guardians`, {
+    return fetch(`/api/users/get-local-guardians`, {
         headers: {
             'x-auth-token': jwt_token
         }
@@ -29,7 +29,7 @@ export const getLocalGuardians = async(jwt_token)=> {
 
 export const getProjectGuides = async(jwt_token)=> {
     console.log('getting project guides...')
-    return fetch(`http://localhost:5000/api/users/get-project-guides`, {
+    return fetch(`/api/users/get-project-guides`, {
         headers: {
             'x-auth-token': jwt_token
         }
@@ -42,7 +42,7 @@ export const getProjectGuides = async(jwt_token)=> {
 
 export const addProjectGuide = async (userData)=> {
     console.log({userData})
-    return fetch(`http://localhost:5000/api/profile/add-project-guide`, {
+    return fetch(`/api/profile/add-project-guide`, {
                 body: JSON.stringify(userData),
                 headers: {
                     'Content-Type': 'application/json',

@@ -440,7 +440,7 @@ export default function CreateProfile() {
               </>
             )}
             
-            <Typography variant="body2">Upload an ID proof</Typography>
+            <Typography variant="body2">Upload an ID proof (Max file size: 3MB)</Typography>
             <TextField
               name="idProof"
               type="file"

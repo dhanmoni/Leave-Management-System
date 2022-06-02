@@ -1,7 +1,7 @@
 export const getStudentsByHostel = async (userData)=> {
     console.log(userData)
     
-    return fetch(`http://localhost:5000/api/users/get-students-hostels/${userData.id}`, {
+    return fetch(`/api/users/get-students-hostels/${userData.id}`, {
                 headers: {
                     'x-auth-token': userData.jwt_token
                 }
@@ -15,7 +15,7 @@ export const getStudentsByHostel = async (userData)=> {
 export const getStudentsByDept = async (userData)=> {
     console.log(userData)
     
-    return fetch(`http://localhost:5000/api/users/get-students-departments/${userData.id}`, {
+    return fetch(`/api/users/get-students-departments/${userData.id}`, {
                 headers: {
                     'x-auth-token': userData.jwt_token
                 }
@@ -29,7 +29,7 @@ export const getStudentsByDept = async (userData)=> {
 export const getStudentsByLocalGuardian = async (userData)=> {
     console.log(userData)
     
-    return fetch(`http://localhost:5000/api/users/get-students-local-guardian/${userData.id}`, {
+    return fetch(`/api/users/get-students-local-guardian/${userData.id}`, {
                 headers: {
                     'x-auth-token': userData.jwt_token
                 }
@@ -43,7 +43,7 @@ export const getStudentsByLocalGuardian = async (userData)=> {
 export const getStudentsByProjectGuide = async (userData)=> {
     console.log(userData)
     
-    return fetch(`http://localhost:5000/api/users/get-students-project-guide/${userData.id}`, {
+    return fetch(`/api/users/get-students-project-guide/${userData.id}`, {
                 headers: {
                     'x-auth-token': userData.jwt_token
                 }
@@ -55,7 +55,7 @@ export const getStudentsByProjectGuide = async (userData)=> {
 }
 
 export const getStudentsByIds = async (userData)=> {
-    return fetch(`http://localhost:5000/api/users/get-students-by-ids/${userData.ids}`, {
+    return fetch(`/api/users/get-students-by-ids/${userData.ids}`, {
                 headers: {
                     'x-auth-token': userData.jwt_token
                 }
@@ -68,7 +68,7 @@ export const getStudentsByIds = async (userData)=> {
 
 export const getAllStudents = async (userData)=> {
     
-    return fetch(`http://localhost:5000/api/users/get-students`, {
+    return fetch(`/api/users/get-students`, {
                 headers: {
                     'x-auth-token': userData.jwt_token
                 }
@@ -81,7 +81,7 @@ export const getAllStudents = async (userData)=> {
 
 export const getAllApprovedStudents = async (userData)=> {
     
-    return fetch(`http://localhost:5000/api/users/get-approved-students`, {
+    return fetch(`/api/users/get-approved-students`, {
                 headers: {
                     'x-auth-token': userData.jwt_token
                 }
@@ -95,7 +95,7 @@ export const getAllApprovedStudents = async (userData)=> {
 export const approveStudent = async (userData)=> {
     
     console.log("approving...", userData)
-    return fetch(`http://localhost:5000/api/admin/approve-user-student`, {
+    return fetch(`/api/admin/approve-user-student`, {
                 body: JSON.stringify(userData),
                 headers: {
                     'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ export const approveStudent = async (userData)=> {
 export const rejectStudent = async (userData)=> {
     
     console.log("rejecting...", userData)
-    return fetch(`http://localhost:5000/api/admin/reject-user-student`, {
+    return fetch(`/api/admin/reject-user-student`, {
                 body: JSON.stringify(userData),
                 headers: {
                     'Content-Type': 'application/json',

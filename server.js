@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 require('dotenv').config();
 const router = require('./router')
+const path = require("path");
 
 const app = express()
 
@@ -36,6 +37,15 @@ mongoose.connect(process.env.MONGODB_ATLAS_URI,
 const port = process.env.PORT || 5000;
 
 app.use(router);
+
+// For production
+if(process.env.NODE_ENV === 'production'){
+  app.use(express.static(path.resolve(__dirname, "./client/dist")));
+
+  app.get("*", function (request, response) {
+    response.sendFile(path.resolve(__dirname, "./client/dist", "index.html"));
+  });
+}
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
