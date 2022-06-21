@@ -42,53 +42,53 @@ Features/Workflow of the system:
 
 **The leave application contains the following information:**
 
-    - Reason/Subject
+- Reason/Subject
 
-    - A detailed explaination
+- A detailed explaination
 
-    - From Date
+- From Date
 
-    - To Date
+- To Date
 
-    - Whether academic leave or normal leave
+- Whether academic leave or normal leave
 
-    - Prefix date and reason(if any)
+- Prefix date and reason(if any)
 
-    - Suffix date and reason(if any)
+- Suffix date and reason(if any)
 
 **The application is a combination of MERN stack and Ethereum Blockchain(Ropsten testnet). The interaction with blockchain happens when:**
 
-    - the system admin approves admins(Local guide, Project guide, HoD and Warden)
+- the system admin approves admins(Local guide, Project guide, HoD and Warden)
 
-    - a student applies for a leave
+- a student applies for a leave
 
-    - admin approves/rejects a leave application
+- admin approves/rejects a leave application
 
-    - a student withdraw his/her leave application
+- a student withdraw his/her leave application
 
 **Tasks that can be performed by system admin:**
 
-    - Add hostels and departments
+- Add hostels and departments
 
-    - Approve/reject admins' and students' profile
+- Approve/reject admins' and students' profile
 
-    - Cancel already approved leave applications
+- Cancel already approved leave applications
 
-    - Delete users
+- Delete users
 
 **Tasks that can be performed by normal admins:**
 
-    - Approve/reject leave applications of students under the admin, ie, HoD can approve/reject application of students of his/her department, similarly local guardian and project guide can approve/reject application of students under their guidance, warden can approve/reject application of students of his/her hostel
+- Approve/reject leave applications of students under the admin, ie, HoD can approve/reject application of students of his/her department, similarly local guardian and project guide can approve/reject application of students under their guidance, warden can approve/reject application of students of his/her hostel
 
-    - Approve/reject student profile of his/her department/hostel (only by HoD and warden)
+- Approve/reject student profile of his/her department/hostel (only by HoD and warden)
 
-    - View student profile
+- View student profile
 
 **Tasks that can be performed by students:**
 
-    - Apply for leave, withdraw leave.
+- Apply for leave, withdraw leave.
 
-    - Add/change project guide(needs verification of HoD or system admin).
+- Add/change project guide(needs verification of HoD or system admin).
 
  
 
